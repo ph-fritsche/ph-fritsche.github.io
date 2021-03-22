@@ -1,0 +1,20 @@
+{
+    "include": [
+        "./src/**/*"
+    ],
+    "compilerOptions": {
+        "target": "esnext",
+        "module": "CommonJS",
+        "lib": [
+            "DOM",
+            "ESNEXT"
+        ],
+        "jsx": "react",
+        "strict": true,
+        "esModuleInterop": true,
+        // "experimentalDecorators": true,
+        // "emitDecoratorMetadata": true,
+        // "noEmit": true,
+        // "skipLibCheck": true
+    }
+}
