@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Article } from '../components/Article'
+import { Article } from '~src/components/Article'
 
 export default function Blog() {
 

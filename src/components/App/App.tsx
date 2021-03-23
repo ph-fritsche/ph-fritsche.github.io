@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { AppBar, Container, CssBaseline, makeStyles, ThemeProvider } from "@material-ui/core"
 import { Helmet } from 'react-helmet'
 
-import lowPolyGrid from '../../../resources/images/low-poly-grid.svg'
+import lowPolyGrid from '~res/images/low-poly-grid.svg'
 import { Link } from 'gatsby'
-import { theme } from '../../theme'
+import { theme } from '~src/theme'
 
 export function App({
     children

@@ -3,6 +3,7 @@
         "./src/**/*"
     ],
     "compilerOptions": {
+        "outDir": "dist",
         "target": "esnext",
         "module": "CommonJS",
         "lib": [
@@ -13,5 +14,11 @@
         "allowJs": true,
         "strict": true,
         "esModuleInterop": true,
+
+        "baseUrl": ".",
+        "paths": {
+            "~src/*": ["./src/*"],
+            "~res/*": ["./resources/*"],
+        },
     }
 }
