@@ -12,8 +12,8 @@ plugins: [
   {
     resolve: `gatsby-source-filesystem`,
     options: {
-      name: `images`,
-      path: `${__dirname}/src/images`,
+      name: `resources`,
+      path: `${__dirname}/resources`,
     },
   },
   `gatsby-transformer-sharp`,
@@ -27,7 +27,7 @@ plugins: [
       background_color: colorPrimary,
       theme_color: colorPrimary,
       display: `minimal-ui`,
-      icon: `src/images/chevron.svg`, // This path is relative to the root of the site.
+      icon: `resources/images/chevron.svg`, // This path is relative to the root of the site.
     },
   },
   `gatsby-plugin-gatsby-cloud`,

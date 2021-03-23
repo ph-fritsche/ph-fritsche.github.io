@@ -1,7 +1,11 @@
 import React from 'react'
 import { alpha, makeStyles, Paper } from '@material-ui/core'
 
-export function Article({children}) {
+export function Article({
+    children,
+}: {
+    children: React.ReactNode,
+}) {
     const classes = useStyles()
 
     return (

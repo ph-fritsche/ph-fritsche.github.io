@@ -10,11 +10,8 @@
             "ESNEXT"
         ],
         "jsx": "react",
+        "allowJs": true,
         "strict": true,
         "esModuleInterop": true,
-        // "experimentalDecorators": true,
-        // "emitDecoratorMetadata": true,
-        // "noEmit": true,
-        // "skipLibCheck": true
     }
 }

@@ -2,11 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { AppBar, Container, CssBaseline, makeStyles, ThemeProvider } from "@material-ui/core"
 import { Helmet } from 'react-helmet'
 
-import lowPolyGrid from '../../images/low-poly-grid.svg'
+import lowPolyGrid from '../../../resources/images/low-poly-grid.svg'
 import { Link } from 'gatsby'
 import { theme } from '../../theme'
 
-export function App({ children }: { children: React.ReactChildren}) {
+export function App({
+    children
+}: {
+    children: React.ReactChildren,
+}) {
     const classes = useStyles()
     const bgClasses = useBackgrounds()
     const [hue, setHue] = useState(0)

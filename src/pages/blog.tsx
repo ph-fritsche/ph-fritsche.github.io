@@ -10,3 +10,5 @@ export default function Blog() {
         </Article>
     </>
 }
+
+Blog.title = 'foo'
