@@ -23,7 +23,15 @@ export default function Seo({
   }[],
   title?: string,
 } = {}) {
-  const { site } = useStaticQuery(
+  const { site } = useStaticQuery<{
+    site?: {
+      siteMetadata?: {
+        title?: string,
+        description?: string,
+        author?: string,
+      },
+    },
+  }>(
     graphql`
       query {
         site {
@@ -37,8 +45,8 @@ export default function Seo({
     `
   )
 
-  const metaDescription = description || site.siteMetadata.description
-  const defaultTitle = site.siteMetadata?.title
+  const metaDescription = description || site?.siteMetadata?.description
+  const defaultTitle = site?.siteMetadata?.title
 
   return (
     <Helmet
@@ -70,7 +78,7 @@ export default function Seo({
         },
         {
           name: `twitter:creator`,
-          content: site.siteMetadata?.author || ``,
+          content: site?.siteMetadata?.author || ``,
         },
         {
           name: `twitter:title`,

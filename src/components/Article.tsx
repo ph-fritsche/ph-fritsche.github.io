@@ -19,6 +19,6 @@ export function Article({
 
 const useStyles = makeStyles(theme => ({
     root: {
-        backgroundColor: alpha(theme.palette.background.default, .95),
-    }
+        backgroundColor: `${alpha(theme.palette.background.paper, .95)} !important}`,
+    },
 }))

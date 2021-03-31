@@ -1,8 +1,8 @@
 import React from 'react'
-import { Container } from "@material-ui/core"
+import Container from "~src/components/App/Container"
 import Seo from './Seo'
 
-export function Page({
+export default function Page({
     children
 }: {
     children: React.ReactNode,
@@ -13,7 +13,7 @@ export function Page({
 
     return <>
         <Seo title={title}/>
-        <Container sx={{maxWidth: 800}}>
+        <Container>
             {children}
         </Container>
     </>
