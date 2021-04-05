@@ -6,19 +6,24 @@ export default function Footer() {
     const classes = useStyles()
 
     return (
-        <div className={classes.footer}>
+        <footer className={classes.footer}>
             <Container>
-                (c) {(new Date()).getFullYear()} Philipp Fritsche
+                <div aria-hidden="true">
+                    (c) {(new Date()).getFullYear()} Philipp Fritsche
+                </div>
             </Container>
-        </div>
+        </footer>
     )
 }
 
 const useStyles = makeStyles(theme => ({
     footer: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
         marginTop: 'auto',
         fontSize: '8px',
-        paddingTop: '10vh',
+        minHeight: '5vh',
         textAlign: 'center',
         color: alpha(theme.palette.getContrastText(theme.palette.background.default), .7),
     },

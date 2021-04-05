@@ -1,5 +1,6 @@
 import React from 'react'
-import { alpha, makeStyles, Paper } from '@material-ui/core'
+import { makeStyles, Paper } from '@material-ui/core'
+import { useDarkModeSwitch } from './App/Config'
 
 export function Article({
     children,
@@ -7,6 +8,7 @@ export function Article({
     children: React.ReactNode,
 }) {
     const classes = useStyles()
+    useDarkModeSwitch()
 
     return (
         <Paper className={classes.root}>
@@ -19,6 +21,6 @@ export function Article({
 
 const useStyles = makeStyles(theme => ({
     root: {
-        backgroundColor: `${alpha(theme.palette.background.paper, .95)} !important}`,
+        padding: '8px',
     },
 }))

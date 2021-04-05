@@ -3,7 +3,7 @@ import { alpha, AppBar as MuiAppBar, Button, IconButton, Link, makeStyles } from
 import { SettingsBrightness } from '@material-ui/icons'
 import { getLinkProps } from "~src/components/Link";
 import Container from "./Container";
-import { useSettings } from "./Settings";
+import { useConfig } from "./Config";
 
 export default function AppBar({
     className,
@@ -22,7 +22,7 @@ export default function AppBar({
         return () => observer.disconnect()
     }, [])
 
-    const [settings, setSettings] = useSettings()
+    const [config, setConfig] = useConfig()
 
     return (<>
         <div
@@ -54,13 +54,15 @@ export default function AppBar({
                     </ul>
                 </nav>
                 <div className={classes.options}>
-                    <IconButton
-                        size="small"
-                        onClick={() => setSettings({nightmode: !settings.nightmode})}
-                        className={classes[settings.nightmode ? 'nightModeOff' : 'nightModeOn']}
-                    >
-                        <SettingsBrightness/>
-                    </IconButton>
+                    {config.darkModeSwitch && (
+                        <IconButton
+                            size="small"
+                            onClick={() => setConfig({darkMode: !config.darkMode})}
+                            className={classes[config.darkMode ? 'nightModeOff' : 'nightModeOn']}
+                            >
+                            <SettingsBrightness/>
+                        </IconButton>
+                    )}
                 </div>
             </Container>
         </MuiAppBar>
