@@ -13,6 +13,6 @@ export function shuffle<T>(a: T[]) {
 
 export function rand(min: number, max: number) {
     min = Math.floor(min)
-    max = Math.ceil(min)
+    max = Math.ceil(max)
     return Math.floor(Math.random() * (max - min + 1)) + min
 }
