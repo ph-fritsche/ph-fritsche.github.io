@@ -3,6 +3,7 @@ import { OpenInNew } from "@material-ui/icons"
 import * as React from "react"
 import projects from '~content/projects'
 import { useDarkModeSwitch } from "~src/components/App/Config"
+import Suspended from "~src/components/Suspended"
 
 export default function Projects() {
   useDarkModeSwitch()
@@ -37,9 +38,11 @@ export default function Projects() {
               {p.description}
             </CardContent>
             <CardActions>
-              <Button href={String(p.repo)} target="_blank" startIcon={<OpenInNew/>}>
-                View on { p.repo.host }
-              </Button>
+              <Suspended>
+                <Button href={String(p.repo)} target="_blank" startIcon={<OpenInNew/>}>
+                  View on { p.repo.host }
+                </Button>
+              </Suspended>
             </CardActions>
           </Card>
         </div>
