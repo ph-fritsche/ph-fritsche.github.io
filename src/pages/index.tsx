@@ -19,7 +19,7 @@ export default function Home() {
         </Grid>
         <Grid item xs={12} sm={8} className={classes.gridItem}>
           <Typography variant="body1">{me.description}</Typography>
-          <Quote>{me.quotes[rand(0, me.quotes.length)]}</Quote>
+          <Quote>{me.quotes[rand(0, me.quotes.length -1)]}</Quote>
         </Grid>
         <Grid item xs={12} className={classes.actions}>
           <Suspended>
