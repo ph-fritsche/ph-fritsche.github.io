@@ -4,17 +4,22 @@ import * as React from "react"
 import projects from '~content/projects'
 import { useDarkModeSwitch } from "~src/components/App/Config"
 import Suspended from "~src/components/Suspended"
+import { shuffle } from "~src/utils"
 
 export default function Projects() {
   useDarkModeSwitch()
 
   const classes = useStyles()
 
+  const shuffledProjects = React.useMemo(() => {
+    return shuffle(projects)
+  }, [projects])
+
   return (<>
     <Typography>Some open source projects I am very proud of contributing to:</Typography>
     <div className={classes.grid}>
 
-      { projects.map(p => (
+      { shuffledProjects.map(p => (
         <div>
           <Card
             classes={{
