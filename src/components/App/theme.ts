@@ -1,4 +1,4 @@
-import { alpha, createMuiTheme,  } from "@material-ui/core";
+import { alpha, createMuiTheme, darken, lighten,  } from "@material-ui/core";
 import { useMemo } from "react";
 import { colorPrimary } from "../../config"; // ts paths don't work for the cjs module
 import { useConfig } from "./Config";
@@ -11,18 +11,19 @@ export default function useTheme() {
 function createTheme(
     config: ReturnType<typeof useConfig>[0]
 ) {
+    const primaryOnLight = config.darkMode
+        ? colorPrimary
+        : darken(colorPrimary, .5)
+
     const themeObject: Parameters<typeof createMuiTheme>[0] = {
         palette: {
+            mode: config.darkMode ? 'dark' : 'light',
             primary: {
                 main: colorPrimary,
             },
             background: {
                 default: alpha(dark, 1),
-                paper: config.darkMode ? dark : light,
             },
-            text: {
-                primary: config.darkMode ? light : dark,
-            }
         },
         typography: {
             fontFamily: `'Alegreya Sans', sans-serif`,
@@ -38,6 +39,23 @@ function createTheme(
                 styleOverrides: {
                     root: {
                         transition: createTransition(),
+                    },
+                },
+            },
+            MuiCard: {
+                styleOverrides: {
+                    root: {
+                        border: '1px solid transparent',
+                        borderColor: primaryOnLight,
+                    },
+                },
+            },
+            MuiCardActions: {
+                styleOverrides: {
+                    root: {
+                        '& > *': {
+                            color: `${config.darkMode ? colorPrimary : darken(colorPrimary, .5)} !important`,
+                        },
                     },
                 },
             },

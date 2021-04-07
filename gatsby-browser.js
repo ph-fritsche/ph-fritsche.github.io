@@ -8,13 +8,13 @@ const React = require("react")
 const App = require("./src/components/App").default;
 const Page = require("./src/components/Page").default;
 
-exports.wrapRootElement = ({ element }) => (
+export const wrapRootElement = ({ element }) => (
     <App>
         {element}
     </App>
 )
 
-exports.wrapPageElement = ({element, props}) => (
+export const wrapPageElement = ({element, props}) => (
     <Page {...props}>
         {element}
     </Page>

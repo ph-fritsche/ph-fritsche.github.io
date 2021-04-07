@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { alpha, AppBar as MuiAppBar, Button, IconButton, Link, makeStyles } from "@material-ui/core";
+import { alpha, AppBar as MuiAppBar, Button, IconButton, makeStyles } from "@material-ui/core";
 import { SettingsBrightness } from '@material-ui/icons'
 import { getLinkProps } from "~src/components/Link";
 import Container from "./Container";
@@ -110,5 +110,6 @@ const useStyles = makeStyles(theme => ({
 
 const navigationLinks = [
     {name: 'Home', to: '/'},
+    {name: 'Projects', to: '/projects'},
     {name: 'Blog', to: '/blog'},
 ]

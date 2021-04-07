@@ -18,7 +18,8 @@
         "baseUrl": ".",
         "paths": {
             "~src/*": ["./src/*"],
-            "~res/*": ["./resources/*"]
+            "~res/*": ["./resources/*"],
+            "~content/*": ["./content/*"]
         }
     }
 }

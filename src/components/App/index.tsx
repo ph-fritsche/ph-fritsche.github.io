@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import { CssBaseline, makeStyles, ThemeProvider } from "@material-ui/core"
 import { Helmet } from 'react-helmet'
 

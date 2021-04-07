@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles, Paper } from '@material-ui/core'
+import { Card, makeStyles, Paper } from '@material-ui/core'
 import { useDarkModeSwitch } from './App/Config'
 
 export function Article({
@@ -11,11 +11,11 @@ export function Article({
     useDarkModeSwitch()
 
     return (
-        <Paper className={classes.root}>
+        <Card className={classes.root}>
             <article>
                 {children}
             </article>
-        </Paper>
+        </Card>
     )
 }
 
