@@ -47,6 +47,7 @@ export default function AppBar({
                                 key={to}
                                 component="li"
                                 {...getLinkProps(to)}
+                                className={classes.appBarButton}
                             >
                                 {name}
                             </Button>
@@ -89,6 +90,9 @@ const useStyles = makeStyles(theme => ({
         display: 'flex !important',
         flexDirection: 'row',
         alignItems: 'center',
+    },
+    appBarButton: {
+        color: `${theme.palette.primary.light} !important`,
     },
     navList: {
         marginBlock: 0,

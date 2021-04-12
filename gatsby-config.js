@@ -34,8 +34,8 @@ plugins: [
   {
     resolve: `gatsby-source-filesystem`,
     options: {
-      name: `content`,
-      path: `${__dirname}/content`,
+      name: `blog`,
+      path: `${__dirname}/content/blog/`,
     },
   },
   `gatsby-plugin-mdx`,

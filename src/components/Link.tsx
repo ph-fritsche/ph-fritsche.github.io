@@ -3,13 +3,12 @@ import { navigate } from "gatsby"
 import { Link as MuiLink } from '@material-ui/core'
 
 export function Link({
-    to,
+    href,
     children
 }: React.PropsWithChildren<{
-    to: string
+    href: string
 }>) {
-
-    return <MuiLink {...getLinkProps(to)}>{children}</MuiLink>
+    return <MuiLink {...getLinkProps(href)}>{children}</MuiLink>
 }
 
 export function getLinkProps(to: string) {
@@ -17,7 +16,7 @@ export function getLinkProps(to: string) {
 
     return typeof destination === 'function'
         ? { onClick: destination, href: to }
-        : { href: destination }
+        : { href: destination, target: '_blank' }
 }
 
 function getLinkDestination(destination: string) {

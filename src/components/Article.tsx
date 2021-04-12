@@ -11,10 +11,8 @@ export function Article({
     useDarkModeSwitch()
 
     return (
-        <Card className={classes.root}>
-            <article>
-                {children}
-            </article>
+        <Card className={classes.root} component="article">
+            {children}
         </Card>
     )
 }

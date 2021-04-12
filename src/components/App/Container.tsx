@@ -7,9 +7,20 @@ export default function Container({
 }: React.PropsWithChildren<{
     className?: string,
 }>) {
+    const classes = useStyles()
+
     return (
-        <MuiContainer maxWidth="md" className={className}>
+        <MuiContainer
+            maxWidth="md"
+            className={`${classes.root} ${className}`}
+        >
             {children}
         </MuiContainer>
     )
 }
+
+const useStyles = makeStyles(theme => ({
+    root: {
+        overflow: 'hidden',
+    },
+}))

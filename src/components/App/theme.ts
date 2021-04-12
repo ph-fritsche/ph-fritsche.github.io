@@ -1,4 +1,5 @@
-import { alpha, createMuiTheme, darken, lighten,  } from "@material-ui/core";
+import { alpha, ComponentsProps, createMuiTheme, darken, lighten, Theme } from "@material-ui/core";
+import createBreakpoints from "@material-ui/core/styles/createBreakpoints";
 import { useMemo } from "react";
 import { colorPrimary } from "../../config"; // ts paths don't work for the cjs module
 import { useConfig } from "./Config";
@@ -11,15 +12,26 @@ export default function useTheme() {
 function createTheme(
     config: ReturnType<typeof useConfig>[0]
 ) {
-    const primaryOnLight = config.darkMode
-        ? colorPrimary
-        : darken(colorPrimary, .5)
+    const colorPrimaryDark = darken(colorPrimary, .5)
+
+    const breakpoints = createBreakpoints({
+        values: {
+            xs: 400,
+            sm: 600,
+            md: 960,
+            lg: 1280,
+            xl: 1920,
+        }
+    })
 
     const themeObject: Parameters<typeof createMuiTheme>[0] = {
+        breakpoints,
         palette: {
             mode: config.darkMode ? 'dark' : 'light',
             primary: {
-                main: colorPrimary,
+                main: config.darkMode ? colorPrimary : colorPrimaryDark,
+                light: colorPrimary,
+                dark: colorPrimaryDark,
             },
             background: {
                 default: alpha(dark, 1),
@@ -30,9 +42,19 @@ function createTheme(
             button: {
                 fontFamily: `'Roboto', sans-serif`,
             },
-            body1: {
-                margin: '1em',
+            h1: {
+                fontSize: '3rem',
             },
+            h2: {
+                fontSize: '2.5rem',
+            },
+            h3: {
+                fontSize: '1.5rem',
+            },
+            body1: {
+                marginTop: '.5em',
+                marginBottom: '.5em',
+            }
         },
         components: {
             MuiPaper: {
@@ -46,16 +68,63 @@ function createTheme(
                 styleOverrides: {
                     root: {
                         border: '1px solid transparent',
-                        borderColor: primaryOnLight,
+                        borderColor: config.darkMode ? colorPrimary : colorPrimaryDark,
                     },
                 },
             },
-            MuiCardActions: {
+            MuiCardActionArea: {
                 styleOverrides: {
                     root: {
-                        '& > *': {
-                            color: `${config.darkMode ? colorPrimary : darken(colorPrimary, .5)} !important`,
+                        border: '1px solid transparent !important', // this stretches the element by the children's margins
+                    },
+                },
+            },
+            MuiCardContent: {
+                styleOverrides: {
+                    root: {
+                        paddingTop: '0 !important',
+                        paddingBottom: '0 !important',
+                        marginTop: '8px',
+                        marginBottom: '8px',
+                        [breakpoints.down('sm')]: {
+                            paddingLeft: '8px !important',
+                            paddingRight: '8px !important',
                         },
+                    },
+                },
+            },
+            MuiCardHeader: {
+                styleOverrides: {
+                    root: {
+                        paddingTop: '0 !important',
+                        paddingBottom: '0 !important',
+                        marginTop: '8px',
+                        marginBottom: '8px',
+                        [breakpoints.down('sm')]: {
+                            paddingLeft: '8px !important',
+                            paddingRight: '8px !important',
+                        },
+                    },
+                },
+            },
+            MuiContainer: {
+                styleOverrides: {
+                    root: {
+                        [breakpoints.down('sm')]: {
+                            paddingLeft: '8px',
+                            paddingRight: '8px',
+                        },
+                        [breakpoints.down('xs')]: {
+                            paddingLeft: '4px',
+                            paddingRight: '4px',
+                        },
+                    },
+                },
+            },
+            MuiGrid: {
+                styleOverrides: {
+                    item: {
+                        flexBasis: '100%',
                     },
                 },
             },

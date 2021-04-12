@@ -26,6 +26,7 @@ const useStyles = makeStyles(theme => ({
         position: 'relative',
     },
     quote: {
+        margin: '1em !important',
     },
     leadingQuotes: {
         position: 'absolute',
@@ -33,7 +34,7 @@ const useStyles = makeStyles(theme => ({
         left: 0,
         width: '1.2em !important',
         height: '1.2em !important',
-        color: alpha(theme.palette.primary.main, .5),
+        color: alpha(theme.palette.primary.dark, .5),
     },
     trailingQuotes: {
         position: 'absolute',
@@ -41,6 +42,6 @@ const useStyles = makeStyles(theme => ({
         right: 0,
         width: '1.2em !important',
         height: '1.2em !important',
-        color: alpha(theme.palette.primary.main, .5),
+        color: alpha(theme.palette.primary.dark, .5),
     },
 }))
