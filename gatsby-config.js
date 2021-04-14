@@ -7,6 +7,7 @@ module.exports = {
   author: `@ph_fritsche`,
 },
 plugins: [
+  `gatsby-plugin-typegen`,
   `gatsby-plugin-react-helmet`,
   `gatsby-plugin-image`,
   {
