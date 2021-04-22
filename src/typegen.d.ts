@@ -557,9 +557,10 @@ type ImageSharpResize = {
 };
 
 type Mdx = Node & {
-  readonly frontmatter: Maybe<MdxFrontmatter>;
+  readonly meta: MdxMeta;
   readonly rawBody: Scalars['String'];
   readonly fileAbsolutePath: Scalars['String'];
+  readonly frontmatter: Maybe<MdxFrontmatter>;
   readonly slug: Maybe<Scalars['String']>;
   readonly body: Scalars['String'];
   readonly excerpt: Scalars['String'];
@@ -589,6 +590,13 @@ type Mdx_headingsArgs = {
 
 type Mdx_tableOfContentsArgs = {
   maxDepth: Maybe<Scalars['Int']>;
+};
+
+type MdxMeta = {
+  readonly title: Scalars['String'];
+  readonly date: Maybe<Scalars['Date']>;
+  readonly tags: ReadonlyArray<Scalars['String']>;
+  readonly slug: Scalars['String'];
 };
 
 type MdxFrontmatter = {
@@ -893,9 +901,10 @@ type Query_allImageSharpArgs = {
 
 
 type Query_mdxArgs = {
-  frontmatter: Maybe<MdxFrontmatterFilterInput>;
+  meta: Maybe<MdxMetaFilterInput>;
   rawBody: Maybe<StringQueryOperatorInput>;
   fileAbsolutePath: Maybe<StringQueryOperatorInput>;
+  frontmatter: Maybe<MdxFrontmatterFilterInput>;
   slug: Maybe<StringQueryOperatorInput>;
   body: Maybe<StringQueryOperatorInput>;
   excerpt: Maybe<StringQueryOperatorInput>;
@@ -1105,9 +1114,10 @@ type MdxFilterListInput = {
 };
 
 type MdxFilterInput = {
-  readonly frontmatter: Maybe<MdxFrontmatterFilterInput>;
+  readonly meta: Maybe<MdxMetaFilterInput>;
   readonly rawBody: Maybe<StringQueryOperatorInput>;
   readonly fileAbsolutePath: Maybe<StringQueryOperatorInput>;
+  readonly frontmatter: Maybe<MdxFrontmatterFilterInput>;
   readonly slug: Maybe<StringQueryOperatorInput>;
   readonly body: Maybe<StringQueryOperatorInput>;
   readonly excerpt: Maybe<StringQueryOperatorInput>;
@@ -1121,6 +1131,13 @@ type MdxFilterInput = {
   readonly parent: Maybe<NodeFilterInput>;
   readonly children: Maybe<NodeFilterListInput>;
   readonly internal: Maybe<InternalFilterInput>;
+};
+
+type MdxMetaFilterInput = {
+  readonly title: Maybe<StringQueryOperatorInput>;
+  readonly date: Maybe<DateQueryOperatorInput>;
+  readonly tags: Maybe<StringQueryOperatorInput>;
+  readonly slug: Maybe<StringQueryOperatorInput>;
 };
 
 type MdxFrontmatterFilterInput = {
@@ -1358,11 +1375,15 @@ type FileFieldsEnum =
   | 'childImageSharp.internal.owner'
   | 'childImageSharp.internal.type'
   | 'childrenMdx'
+  | 'childrenMdx.meta.title'
+  | 'childrenMdx.meta.date'
+  | 'childrenMdx.meta.tags'
+  | 'childrenMdx.meta.slug'
+  | 'childrenMdx.rawBody'
+  | 'childrenMdx.fileAbsolutePath'
   | 'childrenMdx.frontmatter.title'
   | 'childrenMdx.frontmatter.date'
   | 'childrenMdx.frontmatter.tags'
-  | 'childrenMdx.rawBody'
-  | 'childrenMdx.fileAbsolutePath'
   | 'childrenMdx.slug'
   | 'childrenMdx.body'
   | 'childrenMdx.excerpt'
@@ -1414,11 +1435,15 @@ type FileFieldsEnum =
   | 'childrenMdx.internal.mediaType'
   | 'childrenMdx.internal.owner'
   | 'childrenMdx.internal.type'
+  | 'childMdx.meta.title'
+  | 'childMdx.meta.date'
+  | 'childMdx.meta.tags'
+  | 'childMdx.meta.slug'
+  | 'childMdx.rawBody'
+  | 'childMdx.fileAbsolutePath'
   | 'childMdx.frontmatter.title'
   | 'childMdx.frontmatter.date'
   | 'childMdx.frontmatter.tags'
-  | 'childMdx.rawBody'
-  | 'childMdx.fileAbsolutePath'
   | 'childMdx.slug'
   | 'childMdx.body'
   | 'childMdx.excerpt'
@@ -2488,11 +2513,15 @@ type MdxEdge = {
 };
 
 type MdxFieldsEnum =
+  | 'meta.title'
+  | 'meta.date'
+  | 'meta.tags'
+  | 'meta.slug'
+  | 'rawBody'
+  | 'fileAbsolutePath'
   | 'frontmatter.title'
   | 'frontmatter.date'
   | 'frontmatter.tags'
-  | 'rawBody'
-  | 'fileAbsolutePath'
   | 'slug'
   | 'body'
   | 'excerpt'
@@ -2933,11 +2962,6 @@ type PagesQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
 type PagesQueryQuery = { readonly allSitePage: { readonly nodes: ReadonlyArray<Pick<SitePage, 'path'>> } };
 
-type Unnamed_1_QueryVariables = Exact<{ [key: string]: never; }>;
-
-
-type Unnamed_1_Query = { readonly site: Maybe<{ readonly siteMetadata: Maybe<Pick<SiteSiteMetadata, 'title' | 'description' | 'author'>> }> };
-
 type BlogQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2945,6 +2969,11 @@ type BlogQuery = { readonly allMdx: { readonly pageInfo: Pick<PageInfo, 'current
         Pick<Mdx, 'excerpt'>
         & { readonly frontmatter: Maybe<Pick<MdxFrontmatter, 'title' | 'date'>>, readonly parent: Maybe<Pick<File, 'name'>> }
       ) }> } };
+
+type Unnamed_1_QueryVariables = Exact<{ [key: string]: never; }>;
+
+
+type Unnamed_1_Query = { readonly site: Maybe<{ readonly siteMetadata: Maybe<Pick<SiteSiteMetadata, 'title' | 'description' | 'author'>> }> };
 
 type BlogListQueryVariables = Exact<{
   skip?: Maybe<Scalars['Int']>;

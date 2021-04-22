@@ -1,10 +1,17 @@
 # changes in this file require restarting gastby development
 
-type Mdx implements Node @dontInfer {
-    frontmatter: MdxFrontmatter
+extend type Mdx {
+    meta: MdxMeta!
 }
 
-type MdxFrontmatter {
+type MdxMeta {
+    title: String!
+    date: Date
+    tags: [String!]!
+    slug: String!
+}
+
+extend type MdxFrontmatter {
     title: String
     date: Date
     tags: [String!]
