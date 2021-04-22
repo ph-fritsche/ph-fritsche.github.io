@@ -1,0 +1,11 @@
+# changes in this file require restarting gastby development
+
+type Mdx implements Node @dontInfer {
+    frontmatter: MdxFrontmatter
+}
+
+type MdxFrontmatter {
+    title: String
+    date: Date
+    tags: [String!]
+}

@@ -6,64 +6,33 @@ import Card from "~src/components/Card"
 import { getLinkProps } from "~src/components/Link"
 import Panel from "~src/components/Panel"
 import Suspended from "~src/components/Suspended"
+import { useBlogQuery } from "~src/query/blog"
 
 export default function Blog() {
-    useDarkModeSwitch()
+  useDarkModeSwitch()
 
-    const pageSize = 10
-    const pageStart = 0
+  const pageSize = 10
+  const pageStart = 0
 
-    const result = useStaticQuery(graphql`
-query MyQuery {
-  allMdx(
-    filter: {fileAbsolutePath: {regex: "//content/blog//"}}
-    sort: {fields: frontmatter___date, order: DESC}
-    limit: 10
-    skip: 0
-  ) {
-    pageInfo {
-      currentPage
-      pageCount
-      hasNextPage
-      hasPreviousPage
-      totalCount
-      perPage
-    }
-    edges {
-      node {
-        frontmatter {
-          title
-          date
-        }
-        parent {
-          ... on File {
-            name
-          }
-        }
-        excerpt(pruneLength: 180)
-      }
-    }
-  }
-}
-    `)
+  const result = useBlogQuery()
 
-    return <>
-        <Panel>
-            {result.allMdx.edges.map(({node}: any) => (
-                <Card>
-                    <Suspended>
-                        <CardActionArea {...getLinkProps(`/blog/${node.parent.name}`)}>
-                            <CardHeader
-                                title={node.frontmatter.title}
-                            />
-                            <CardContent>
-                                {node.excerpt}
-                            </CardContent>
-                        </CardActionArea>
-                    </Suspended>
-                </Card>
+  return <>
+    <Panel>
+      {result.allMdx.edges.map(({ node }: any) => (
+        <Card>
+          <Suspended>
+            <CardActionArea {...getLinkProps(`/blog/${node.parent.name}`)}>
+              <CardHeader
+                title={node.frontmatter.title}
+              />
+              <CardContent>
+                {node.excerpt}
+              </CardContent>
+            </CardActionArea>
+          </Suspended>
+        </Card>
 
-            ))}
-        </Panel>
-    </>
+      ))}
+    </Panel>
+  </>
 }

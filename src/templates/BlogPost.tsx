@@ -4,38 +4,28 @@ import { MDXRenderer } from 'gatsby-plugin-mdx'
 import { graphql } from 'gatsby'
 import { useDarkModeSwitch } from '~src/components/App/Config'
 import * as mdxComponents from './mdxComponents'
-import { Article } from '~src/components/Article'
-import { CardContent, CardHeader, Typography } from '@material-ui/core'
+import { CardContent, CardHeader } from '@material-ui/core'
 import Card from '~src/components/Card'
 
 export interface blogPostFrontmatter {
   title?: string
-  keywords?: string[],
+  tags?: string[],
   date?: string,
 }
 
-export default function BlogPost({
-  data: {mdx}
-}: {
-  data: {
-    mdx: {
-      body: string,
-      frontmatter: blogPostFrontmatter,
-    }
-  }
-}) {
+export default function BlogPost({mdx}: GatsbyTypes.BlogPostQuery) {
     useDarkModeSwitch()
 
     return (
       <Card component="article">
         <CardHeader
-          title={mdx.frontmatter.title}
+          title={mdx?.frontmatter?.title}
           titleTypographyProps={{variant: 'h1'}}
-          subheader={mdx.frontmatter.date && (new Date(mdx.frontmatter.date)).toLocaleDateString()}
+          subheader={mdx?.frontmatter?.date && (new Date(mdx.frontmatter.date)).toLocaleDateString()}
         />
         <CardContent>
           <MDXProvider components={mdxComponents}>
-              <MDXRenderer>{mdx.body}</MDXRenderer>
+              <MDXRenderer>{mdx?.body ?? ""}</MDXRenderer>
           </MDXProvider>
         </CardContent>
       </Card>
@@ -43,13 +33,12 @@ export default function BlogPost({
 }
 
 export const pageQuery = graphql`
-  query BlogPostQuery($id: String) {
+  query BlogPost($id: String) {
     mdx(id: { eq: $id }) {
       body
       frontmatter {
         title
         date
-        keywords
       }
     }
   }
