@@ -16,3 +16,10 @@ export function rand(min: number, max: number) {
     max = Math.ceil(max)
     return Math.floor(Math.random() * (max - min + 1)) + min
 }
+
+export function capitalize(str: string, g = true) {
+    return str.replace(
+        new RegExp(/\S+/, g ? 'g' : ''),
+        (s: string) => s.substr(0, 1).toUpperCase() + s.substr(1)
+    )
+}
