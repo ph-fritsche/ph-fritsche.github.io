@@ -3,8 +3,14 @@ import React, { useEffect, useMemo, useReducer, useRef } from 'react';
 const key = 'appConfig'
 const ConfigContext = React.createContext<ReturnType<typeof useConfigProvider> | undefined>(undefined)
 
+function getLocalStorage() {
+    if (typeof localStorage !== 'undefined') {
+        return localStorage
+    }
+}
+
 function getFromStore(): ReturnType<typeof createConfig> {
-    const stored = localStorage.getItem(key)
+    const stored = getLocalStorage()?.getItem(key)
     return stored
         ? JSON.parse(stored)
         : createConfig()
@@ -24,7 +30,7 @@ function useConfigProvider() {
             newConfig: Partial<ReturnType<typeof createConfig>>,
         ) => {
             const mergedConfig = { ...oldConfig, ...newConfig }
-            localStorage.setItem(key, JSON.stringify(mergedConfig))
+            getLocalStorage()?.setItem(key, JSON.stringify(mergedConfig))
             return mergedConfig
         },
         getFromStore(),
