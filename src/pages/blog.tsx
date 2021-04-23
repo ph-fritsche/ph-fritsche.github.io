@@ -7,6 +7,7 @@ import { getLinkProps } from "~src/components/Link"
 import Panel from "~src/components/Panel"
 import Suspended from "~src/components/Suspended"
 import { useBlogQuery } from "~src/query/blog"
+import { capitalize } from "~src/utils"
 
 export default function Blog() {
   useDarkModeSwitch()
@@ -18,12 +19,12 @@ export default function Blog() {
 
   return <>
     <Panel>
-      {result.allMdx.edges.map(({ node }: any) => (
+      {result.allMdx.edges.map(({ node }) => (
         <Card>
           <Suspended>
-            <CardActionArea {...getLinkProps(`/blog/${node.parent.name}`)}>
+            <CardActionArea {...getLinkProps(`/blog/${node.meta.slug}`)}>
               <CardHeader
-                title={node.frontmatter.title}
+                title={node.meta.title}
               />
               <CardContent>
                 {node.excerpt}

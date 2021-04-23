@@ -2962,18 +2962,18 @@ type PagesQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
 type PagesQueryQuery = { readonly allSitePage: { readonly nodes: ReadonlyArray<Pick<SitePage, 'path'>> } };
 
+type Unnamed_1_QueryVariables = Exact<{ [key: string]: never; }>;
+
+
+type Unnamed_1_Query = { readonly site: Maybe<{ readonly siteMetadata: Maybe<Pick<SiteSiteMetadata, 'title' | 'description' | 'author'>> }> };
+
 type BlogQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 type BlogQuery = { readonly allMdx: { readonly pageInfo: Pick<PageInfo, 'currentPage' | 'pageCount' | 'hasNextPage' | 'hasPreviousPage' | 'totalCount' | 'perPage'>, readonly edges: ReadonlyArray<{ readonly node: (
         Pick<Mdx, 'excerpt'>
-        & { readonly frontmatter: Maybe<Pick<MdxFrontmatter, 'title' | 'date'>>, readonly parent: Maybe<Pick<File, 'name'>> }
+        & { readonly meta: Pick<MdxMeta, 'title' | 'slug'> }
       ) }> } };
-
-type Unnamed_1_QueryVariables = Exact<{ [key: string]: never; }>;
-
-
-type Unnamed_1_Query = { readonly site: Maybe<{ readonly siteMetadata: Maybe<Pick<SiteSiteMetadata, 'title' | 'description' | 'author'>> }> };
 
 type BlogListQueryVariables = Exact<{
   skip?: Maybe<Scalars['Int']>;

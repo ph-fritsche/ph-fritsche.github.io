@@ -4,7 +4,7 @@ export const useBlogQuery = () => useStaticQuery<GatsbyTypes.BlogQuery>(graphql`
     query Blog {
         allMdx(
             filter: {fileAbsolutePath: {regex: "//content/blog//"}}
-            sort: {fields: frontmatter___date, order: DESC}
+            sort: {fields: meta___date, order: DESC}
             limit: 10
             skip: 0
         ) {
@@ -17,18 +17,13 @@ export const useBlogQuery = () => useStaticQuery<GatsbyTypes.BlogQuery>(graphql`
             perPage
             }
             edges {
-            node {
-                frontmatter {
-                title
-                date
+                node {
+                    meta {
+                        title
+                        slug
+                    }
+                    excerpt(pruneLength: 180)
                 }
-                parent {
-                ... on File {
-                    name
-                }
-                }
-                excerpt(pruneLength: 180)
-            }
             }
         }
     }
