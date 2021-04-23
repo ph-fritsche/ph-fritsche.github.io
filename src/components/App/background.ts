@@ -1,10 +1,10 @@
-import { makeStyles } from "@material-ui/core"
-import { useEffect, useState } from "react"
+import { makeStyles } from '@material-ui/core'
+import { useEffect, useState } from 'react'
 import lowPolyGrid from '~res/images/low-poly-grid.svg'
 
 export default function useBackground() {
     const bgClasses = useBackgroundClasses()
-    
+
     const [hue, setHue] = useState(0)
     const bgClassName = `${bgClasses.background} ${bgClasses[`background-${hue}`]}`
 
@@ -14,7 +14,7 @@ export default function useBackground() {
         document.body.addEventListener('click', rotateBg)
 
         return () => document.body.removeEventListener('click', rotateBg)
-    }, [setHue, rotateHue])
+    }, [setHue])
 
     return bgClassName
 }
@@ -53,12 +53,12 @@ function getBackgroundImage(hue: number) {
                 hsla(${rotateHue(hue, 120)}, 100%, 7%, 100%),
                 hsla(${rotateHue(hue, 120)}, 100%, 0%, 0%) 90%
             )
-        `
+        `,
     }
 }
 const backgroundsStep = 30
 const backgrounds = Object.fromEntries(Array.from(Array(360 / backgroundsStep).keys())
-    .map(i => [`background-${i * backgroundsStep}`, getBackgroundImage(i * backgroundsStep)])
+    .map(i => [`background-${i * backgroundsStep}`, getBackgroundImage(i * backgroundsStep)]),
 )
 const useBackgroundClasses: () => Record<keyof typeof backgrounds, string> = makeStyles(theme => ({
     background: {

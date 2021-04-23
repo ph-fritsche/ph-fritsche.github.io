@@ -1,8 +1,8 @@
-import { alpha, ComponentsProps, createMuiTheme, darken, lighten, Theme } from "@material-ui/core";
-import createBreakpoints from "@material-ui/core/styles/createBreakpoints";
-import { useMemo } from "react";
-import { colorPrimary } from "../../config"; // ts paths don't work for the cjs module
-import { useConfig } from "./Config";
+import { createMuiTheme, darken } from '@material-ui/core';
+import createBreakpoints from '@material-ui/core/styles/createBreakpoints';
+import { useMemo } from 'react';
+import { colorPrimary } from '../../config'; // ts paths don't work for the cjs module
+import { useConfig } from './Config';
 
 export default function useTheme() {
     const [config] = useConfig()
@@ -10,7 +10,7 @@ export default function useTheme() {
 }
 
 function createTheme(
-    config: ReturnType<typeof useConfig>[0]
+    config: ReturnType<typeof useConfig>[0],
 ) {
     const colorPrimaryDark = darken(colorPrimary, .5)
 
@@ -21,7 +21,7 @@ function createTheme(
             md: 960,
             lg: 1280,
             xl: 1920,
-        }
+        },
     })
 
     const themeObject: Parameters<typeof createMuiTheme>[0] = {
@@ -34,7 +34,7 @@ function createTheme(
                 dark: colorPrimaryDark,
             },
             background: {
-                default: alpha(dark, 1),
+                default: `hsl(0, 0%, 3%)`,
             },
         },
         typography: {
@@ -54,7 +54,7 @@ function createTheme(
             body1: {
                 marginTop: '.5em',
                 marginBottom: '.5em',
-            }
+            },
         },
         components: {
             MuiPaper: {
@@ -134,14 +134,12 @@ function createTheme(
     return createMuiTheme(themeObject)
 }
 
-const dark = `hsla(0, 0%, 3%, 95%)`
-const light = `hsla(0, 0%, 97%, 95%)`
 const createTransition = (
     props: string[] = ['all'],
     {
         duration = '500ms',
         easing = 'cubic-bezier(0.4, 0, 0.2, 1)',
         delay = '0s',
-    } = {}
+    } = {},
 ) => props.map(p => `${p} ${duration} ${easing} ${delay}`).join(',')
 

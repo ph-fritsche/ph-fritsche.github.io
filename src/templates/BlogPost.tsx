@@ -17,18 +17,18 @@ export default function BlogPost({mdx}: GatsbyTypes.BlogPostQuery) {
     useDarkModeSwitch()
 
     return (
-      <Card component="article">
-        <CardHeader
-          title={mdx?.frontmatter?.title}
-          titleTypographyProps={{variant: 'h1'}}
-          subheader={mdx?.frontmatter?.date && (new Date(mdx.frontmatter.date)).toLocaleDateString()}
-        />
-        <CardContent>
-          <MDXProvider components={mdxComponents}>
-              <MDXRenderer>{mdx?.body ?? ""}</MDXRenderer>
-          </MDXProvider>
-        </CardContent>
-      </Card>
+        <Card component="article">
+            <CardHeader
+                title={mdx?.frontmatter?.title}
+                titleTypographyProps={{variant: 'h1'}}
+                subheader={mdx?.frontmatter?.date && (new Date(mdx.frontmatter.date)).toLocaleDateString()}
+            />
+            <CardContent>
+                <MDXProvider components={mdxComponents}>
+                    <MDXRenderer>{mdx?.body ?? ''}</MDXRenderer>
+                </MDXProvider>
+            </CardContent>
+        </Card>
     )
 }
 

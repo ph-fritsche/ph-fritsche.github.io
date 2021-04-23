@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import { Container as MuiContainer, makeStyles } from '@material-ui/core'
 
 export default function Container({
@@ -19,7 +19,7 @@ export default function Container({
     )
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(({
     root: {
         overflow: 'hidden',
     },

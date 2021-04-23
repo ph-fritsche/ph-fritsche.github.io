@@ -1,12 +1,10 @@
 import React from 'react'
-import { Card, makeStyles, Paper } from '@material-ui/core'
+import { Card, makeStyles } from '@material-ui/core'
 import { useDarkModeSwitch } from './App/Config'
 
 export function Article({
     children,
-}: {
-    children: React.ReactNode,
-}) {
+}: React.PropsWithChildren<unknown>) {
     const classes = useStyles()
     useDarkModeSwitch()
 
@@ -17,7 +15,7 @@ export function Article({
     )
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(({
     root: {
         padding: '8px',
     },

@@ -20,6 +20,6 @@ export function rand(min: number, max: number) {
 export function capitalize(str: string, g = true) {
     return str.replace(
         new RegExp(/\S+/, g ? 'g' : ''),
-        (s: string) => s.substr(0, 1).toUpperCase() + s.substr(1)
+        (s: string) => s.substr(0, 1).toUpperCase() + s.substr(1),
     )
 }

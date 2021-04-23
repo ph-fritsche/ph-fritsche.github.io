@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-export default function Suspended({children}: React.PropsWithChildren<{}>) {
+export default function Suspended({children}: React.PropsWithChildren<unknown>) {
     const [display, setDisplay] = useState(false)
     useEffect(() => {
         setDisplay(true)

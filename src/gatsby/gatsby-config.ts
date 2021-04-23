@@ -1,4 +1,4 @@
-import { colorPrimary } from "../config";
+import { colorPrimary } from '../config';
 
 const rootDir = `${__dirname}/../..`
 

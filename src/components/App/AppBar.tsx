@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
-import { alpha, AppBar as MuiAppBar, Button, IconButton, makeStyles } from "@material-ui/core";
+import React, { useEffect, useRef, useState } from 'react';
+import { alpha, AppBar as MuiAppBar, Button, IconButton, makeStyles } from '@material-ui/core';
 import { SettingsBrightness } from '@material-ui/icons'
-import { getLinkProps } from "~src/components/Link";
-import Container from "./Container";
-import { useConfig } from "./Config";
+import { getLinkProps } from '~src/components/Link';
+import Container from './Container';
+import { useConfig } from './Config';
 
 export default function AppBar({
     className,
@@ -60,7 +60,7 @@ export default function AppBar({
                             size="small"
                             onClick={() => setConfig({darkMode: !config.darkMode})}
                             className={classes[config.darkMode ? 'nightModeOff' : 'nightModeOn']}
-                            >
+                        >
                             <SettingsBrightness/>
                         </IconButton>
                     )}
@@ -80,7 +80,7 @@ const useStyles = makeStyles(theme => ({
         },
         borderBottom: `1px solid ${alpha(theme.palette.text.primary, .5)}`,
         transition: 'all 500ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, background 0s !important',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     appBarAnchored: {
         opacity: 1,

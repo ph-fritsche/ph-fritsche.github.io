@@ -1,5 +1,5 @@
 import React from 'react'
-import { CssBaseline, makeStyles, ThemeProvider } from "@material-ui/core"
+import { CssBaseline, makeStyles, ThemeProvider } from '@material-ui/core'
 import { Helmet } from 'react-helmet'
 
 import AppBar from './AppBar'
@@ -9,8 +9,8 @@ import useTheme from './theme'
 import useBackground from './background'
 
 export default function App({
-    children
-}: React.PropsWithChildren<{}>) {
+    children,
+}: React.PropsWithChildren<unknown>) {
     return (
         <ConfigProvider>
             <AppInConfig>{children}</AppInConfig>
@@ -19,8 +19,8 @@ export default function App({
 }
 
 function AppInConfig({
-    children
-}: React.PropsWithChildren<{}>) {
+    children,
+}: React.PropsWithChildren<unknown>) {
     const theme = useTheme()
 
     return (
@@ -32,8 +32,8 @@ function AppInConfig({
 }
 
 function AppInTheme({
-    children
-}: React.PropsWithChildren<{}>) {
+    children,
+}: React.PropsWithChildren<unknown>) {
     const classes = useStyles()
 
     const bgClass = useBackground()

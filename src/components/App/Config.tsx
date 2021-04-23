@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useReducer, useRef } from "react";
+import React, { useEffect, useMemo, useReducer, useRef } from 'react';
 
 const key = 'appConfig'
 const ConfigContext = React.createContext<ReturnType<typeof useConfigProvider> | undefined>(undefined)
@@ -21,13 +21,13 @@ function useConfigProvider() {
     const configReducer = useReducer(
         (
             oldConfig: ReturnType<typeof createConfig>,
-            newConfig: Partial<ReturnType<typeof createConfig>>
+            newConfig: Partial<ReturnType<typeof createConfig>>,
         ) => {
             const mergedConfig = { ...oldConfig, ...newConfig }
             localStorage.setItem(key, JSON.stringify(mergedConfig))
             return mergedConfig
         },
-        getFromStore()
+        getFromStore(),
     )
 
     const configRef = useRef({
@@ -41,8 +41,8 @@ function useConfigProvider() {
 }
 
 export function ConfigProvider({
-    children
-}: React.PropsWithChildren<{}>) {
+    children,
+}: React.PropsWithChildren<unknown>) {
     return (
         <ConfigContext.Provider value={useConfigProvider()}>
             {children}
@@ -66,7 +66,7 @@ export function useConfig() {
 
 export function useDarkModeSwitch() {
     const context = useConfigContext()
-    
+
     useEffect(() => {
         const ref = context.configRef
 
@@ -83,5 +83,5 @@ export function useDarkModeSwitch() {
                 context.configReducer[1]({darkModeSwitch: false})
             }
         }
-    }, [])
+    }, [context.configRef, context.configReducer])
 }

@@ -1,9 +1,9 @@
 import React from 'react'
-import Container from "~src/components/App/Container"
+import Container from '~src/components/App/Container'
 import Seo from './Seo'
 
 export default function Page({
-    children
+    children,
 }: {
     children: React.ReactNode,
 }) {
@@ -22,8 +22,8 @@ export default function Page({
 const isComponentNode = <
     T extends React.ReactNode,
 >(
-    node: T,
-): node is T & {type: Function & {title?: string}} => {
+        node: T,
+    ): node is T & {type: (() => unknown) & {title?: string}} => {
     if( typeof node === 'object'
         && node !== null
         && typeof (node as {type?: unknown}).type === 'function'

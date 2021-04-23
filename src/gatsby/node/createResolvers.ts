@@ -1,5 +1,5 @@
-import { CreateResolversArgs, GatsbyNode } from "gatsby";
-import { capitalize } from "../../utils";
+import { CreateResolversArgs, GatsbyNode } from 'gatsby';
+import { capitalize } from '../../utils';
 
 type GraphQLOutputType = unknown
 type FiltersCache = unknown
@@ -14,7 +14,7 @@ type pageDependencies = {
 type resolverContext = {
     nodeModel: {
         findRootNodeAncestor(
-            obj: {} | [],
+            obj: Record<PropertyKey, unknown> | [],
             predicate?: (node: GatsbyTypes.Node) => boolean
         ): GatsbyTypes.Node
         getAllNodes(
@@ -73,21 +73,21 @@ export const createResolvers: GatsbyNode['createResolvers'] = async ({
                     const tags = source.frontmatter?.tags ?? []
 
                     const file = context.nodeModel.getNodeById({
-                        id: source.parent
+                        id: source.parent,
                     }) as GatsbyTypes.File
 
                     const title = source.frontmatter?.title
                         || capitalize(file.name.replace(/-/g, ' ').replace(/_/g, '-'))
 
                     const slug = file.name.replace('/', '')
-                    
+
                     return {
                         date,
                         tags,
                         title,
                         slug,
                     }
-                }
+                },
             },
         },
     })

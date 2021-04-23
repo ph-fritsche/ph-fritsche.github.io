@@ -1,10 +1,10 @@
 import React, { SyntheticEvent } from 'react'
-import { navigate } from "gatsby"
+import { navigate } from 'gatsby'
 import { Link as MuiLink } from '@material-ui/core'
 
 export function Link({
     href,
-    children
+    children,
 }: React.PropsWithChildren<{
     href: string
 }>) {

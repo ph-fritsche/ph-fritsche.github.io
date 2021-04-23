@@ -18,12 +18,12 @@ export default function BlogList({allMdx}: GatsbyTypes.BlogListQuery) {
 
     return (
         <Panel>
-            {allMdx.edges.map(({ node }: any) => (
-                <Card>
+            {allMdx.edges.map(({ node }) => (
+                <Card key={node.parent?.name}>
                     <Suspended>
-                        <CardActionArea {...getLinkProps(`/blog/${node.parent.name}`)}>
+                        <CardActionArea {...getLinkProps(`/blog/${node.parent?.name}`)}>
                             <CardHeader
-                                title={node.frontmatter.title}
+                                title={node.frontmatter?.title}
                             />
                             <CardContent>
                                 {node.excerpt}

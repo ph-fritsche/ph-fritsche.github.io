@@ -1,13 +1,11 @@
 import path from 'path'
-import { GatsbyNode } from "gatsby"
+import { GatsbyNode } from 'gatsby'
 
 export const createPages: GatsbyNode['createPages'] = async ({
     graphql,
     actions,
-    getNode,
-    createContentDigest,
 }) => {
-    const blogPosts = await graphql<{
+    const blogPosts = await graphql< {
         allMdx: {
             edges: (GatsbyTypes.MdxEdge & {
                 node: {
@@ -16,8 +14,8 @@ export const createPages: GatsbyNode['createPages'] = async ({
                     }
                 }
             })[]
-        }
-    }>(`
+                }
+                }>(`
         query BlogMdx {
             allMdx(
                 filter: {fileAbsolutePath: {regex: "//content/blog//"}}
@@ -45,9 +43,6 @@ export const createPages: GatsbyNode['createPages'] = async ({
     if (blogPosts.errors) {
         throw blogPosts.errors
     }
-
-    blogPosts.data?.allMdx.edges.forEach(e => {
-    })
 
     const tags = new Set<string>()
     blogPosts.data?.allMdx.edges.forEach(e => {

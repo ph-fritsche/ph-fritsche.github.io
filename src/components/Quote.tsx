@@ -1,10 +1,10 @@
 import React from 'react'
-import { alpha, makeStyles, Typography } from "@material-ui/core";
-import { FormatQuote } from "@material-ui/icons";
+import { alpha, makeStyles, Typography } from '@material-ui/core';
+import { FormatQuote } from '@material-ui/icons';
 
 export default function Quote({
     children,
-}: React.PropsWithChildren<{}>) {
+}: React.PropsWithChildren<unknown>) {
     const classes = useStyles()
 
     return (

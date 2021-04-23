@@ -4,11 +4,10 @@
  * See: https://www.gatsbyjs.com/docs/browser-apis/
  */
 
-import { GatsbyBrowser } from "gatsby";
-
-const React = require("react")
-const App = require("../components/App").default;
-const Page = require("../components/Page").default;
+import React from 'react'
+import { GatsbyBrowser } from 'gatsby'
+import App from '../components/App'
+import Page from '../components/Page'
 
 export const wrapRootElement: GatsbyBrowser['wrapRootElement'] = ({ element }) => (
     <App>

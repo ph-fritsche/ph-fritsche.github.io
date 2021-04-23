@@ -1,5 +1,5 @@
-import { makeStyles } from "@material-ui/core";
-import React, { PropsWithChildren } from "react";
+import { makeStyles } from '@material-ui/core';
+import React, { PropsWithChildren } from 'react';
 
 export default function Panel({
     columns = 1,
