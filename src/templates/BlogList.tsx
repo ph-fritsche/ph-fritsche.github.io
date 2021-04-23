@@ -19,11 +19,11 @@ export default function BlogList({allMdx}: GatsbyTypes.BlogListQuery) {
     return (
         <Panel>
             {allMdx.edges.map(({ node }) => (
-                <Card key={node.parent?.name}>
+                <Card key={node.meta.slug}>
                     <Suspended>
-                        <CardActionArea {...getLinkProps(`/blog/${node.parent?.name}`)}>
+                        <CardActionArea {...getLinkProps(`/blog/${node.meta.slug}`)}>
                             <CardHeader
-                                title={node.frontmatter?.title}
+                                title={node.meta.title}
                             />
                             <CardContent>
                                 {node.excerpt}
@@ -43,7 +43,7 @@ export const pageQuery = graphql`
         filter: {
             fileAbsolutePath: {regex: "//content/blog//"}
         }
-        sort: {fields: frontmatter___date, order: DESC}
+        sort: {fields: meta___date, order: DESC}
         limit: $limit
         skip: $skip
     ) {
@@ -57,14 +57,9 @@ export const pageQuery = graphql`
         }
         edges {
             node {
-                frontmatter {
+                meta {
                     title
-                    date
-                }
-                parent {
-                    ... on File {
-                        name
-                    }
+                    slug
                 }
                 excerpt(pruneLength: 180)
             }

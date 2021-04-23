@@ -2996,25 +2996,6 @@ type Unnamed_1_QueryVariables = Exact<{ [key: string]: never; }>;
 
 type Unnamed_1_Query = { readonly site: Maybe<{ readonly siteMetadata: Maybe<Pick<SiteSiteMetadata, 'title' | 'description' | 'author'>> }> };
 
-type BlogQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-type BlogQuery = { readonly allMdx: { readonly pageInfo: Pick<PageInfo, 'currentPage' | 'pageCount' | 'hasNextPage' | 'hasPreviousPage' | 'totalCount' | 'perPage'>, readonly edges: ReadonlyArray<{ readonly node: (
-        Pick<Mdx, 'excerpt'>
-        & { readonly meta: Pick<MdxMeta, 'title' | 'slug'> }
-      ) }> } };
-
-type BlogListQueryVariables = Exact<{
-  skip?: Maybe<Scalars['Int']>;
-  limit?: Maybe<Scalars['Int']>;
-}>;
-
-
-type BlogListQuery = { readonly allMdx: { readonly pageInfo: Pick<PageInfo, 'currentPage' | 'pageCount' | 'hasNextPage' | 'hasPreviousPage' | 'totalCount' | 'perPage'>, readonly edges: ReadonlyArray<{ readonly node: (
-        Pick<Mdx, 'excerpt'>
-        & { readonly frontmatter: Maybe<Pick<MdxFrontmatter, 'title' | 'date'>>, readonly parent: Maybe<Pick<File, 'name'>> }
-      ) }> } };
-
 type BlogPostQueryVariables = Exact<{
   id: Maybe<Scalars['String']>;
 }>;
@@ -3022,8 +3003,16 @@ type BlogPostQueryVariables = Exact<{
 
 type BlogPostQuery = { readonly mdx: Maybe<(
     Pick<Mdx, 'body'>
-    & { readonly frontmatter: Maybe<Pick<MdxFrontmatter, 'title' | 'date'>> }
+    & { readonly meta: Pick<MdxMeta, 'title' | 'date'> }
   )> };
+
+type BlogQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+type BlogQuery = { readonly allMdx: { readonly pageInfo: Pick<PageInfo, 'currentPage' | 'pageCount' | 'hasNextPage' | 'hasPreviousPage' | 'totalCount' | 'perPage'>, readonly edges: ReadonlyArray<{ readonly node: (
+        Pick<Mdx, 'excerpt'>
+        & { readonly meta: Pick<MdxMeta, 'title' | 'slug'> }
+      ) }> } };
 
 type GatsbyImageSharpFixedFragment = Pick<ImageSharpFixed, 'base64' | 'width' | 'height' | 'src' | 'srcSet'>;
 
@@ -3050,5 +3039,16 @@ type GatsbyImageSharpFluid_withWebp_tracedSVGFragment = Pick<ImageSharpFluid, 't
 type GatsbyImageSharpFluid_noBase64Fragment = Pick<ImageSharpFluid, 'aspectRatio' | 'src' | 'srcSet' | 'sizes'>;
 
 type GatsbyImageSharpFluid_withWebp_noBase64Fragment = Pick<ImageSharpFluid, 'aspectRatio' | 'src' | 'srcSet' | 'srcWebp' | 'srcSetWebp' | 'sizes'>;
+
+type BlogListQueryVariables = Exact<{
+  skip?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars['Int']>;
+}>;
+
+
+type BlogListQuery = { readonly allMdx: { readonly pageInfo: Pick<PageInfo, 'currentPage' | 'pageCount' | 'hasNextPage' | 'hasPreviousPage' | 'totalCount' | 'perPage'>, readonly edges: ReadonlyArray<{ readonly node: (
+        Pick<Mdx, 'excerpt'>
+        & { readonly meta: Pick<MdxMeta, 'title' | 'slug'> }
+      ) }> } };
 
 }

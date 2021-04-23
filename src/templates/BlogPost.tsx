@@ -19,13 +19,13 @@ export default function BlogPost({mdx}: GatsbyTypes.BlogPostQuery) {
     return (
         <Card component="article">
             <CardHeader
-                title={mdx?.frontmatter?.title}
+                title={mdx?.meta.title}
                 titleTypographyProps={{variant: 'h1'}}
-                subheader={mdx?.frontmatter?.date && (new Date(mdx.frontmatter.date)).toLocaleDateString()}
+                subheader={mdx?.meta.date && (new Date(mdx.meta.date)).toLocaleDateString()}
             />
             <CardContent>
                 <MDXProvider components={mdxComponents}>
-                    <MDXRenderer>{mdx?.body ?? ''}</MDXRenderer>
+                    <MDXRenderer>{JSON.stringify(mdx?.body ?? '')}</MDXRenderer>
                 </MDXProvider>
             </CardContent>
         </Card>
@@ -36,7 +36,7 @@ export const pageQuery = graphql`
   query BlogPost($id: String) {
     mdx(id: { eq: $id }) {
       body
-      frontmatter {
+      meta {
         title
         date
       }
