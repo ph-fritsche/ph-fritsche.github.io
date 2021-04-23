@@ -53,6 +53,7 @@ function getBackgroundImage(hue: number) {
                 hsla(${rotateHue(hue, 120)}, 100%, 7%, 100%),
                 hsla(${rotateHue(hue, 120)}, 100%, 0%, 0%) 90%
             )
+            !important
         `,
     }
 }
