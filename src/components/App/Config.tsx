@@ -42,7 +42,7 @@ function useConfigProvider() {
 
     return useMemo(() => ({
         configReducer,
-        configRef,
+        configRef: configRef.current,
     }), [configReducer])
 }
 
@@ -75,19 +75,22 @@ export function useDarkModeSwitch() {
 
     useEffect(() => {
         const ref = context.configRef
+        const [state, setState] = context.configReducer
 
-        ++ref.current.darkModeUsed
+        ++ref.darkModeUsed
 
-        if (ref.current.darkModeUsed === 1) {
-            context.configReducer[1]({darkModeSwitch: true})
+        if (ref.darkModeUsed >= 1 && state.darkModeSwitch === false) {
+            setState({darkModeSwitch: true})
         }
 
         return () => {
-            --ref.current.darkModeUsed
+            --ref.darkModeUsed
 
-            if (ref.current.darkModeUsed === 0) {
-                context.configReducer[1]({darkModeSwitch: false})
-            }
+            setTimeout(() => {
+                if (ref.darkModeUsed <= 0 && state.darkModeSwitch === true) {
+                    setState({darkModeSwitch: false})
+                }
+            }, 10)
         }
     }, [context.configRef, context.configReducer])
 }
