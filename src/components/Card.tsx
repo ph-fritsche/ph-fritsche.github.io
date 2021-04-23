@@ -4,7 +4,9 @@ import { Card as MuiCard, makeStyles } from '@material-ui/core'
 export default function Card({
     component: Component = 'div',
     children,
-}: ComponentPropsWithoutRef<typeof MuiCard>) {
+}: ComponentPropsWithoutRef<typeof MuiCard> & {
+    component?: React.ElementType
+}) {
     const classes = useStyles({Component})
 
     return (
