@@ -3042,7 +3042,7 @@ type BlogPostQueryVariables = Exact<{
 
 type BlogPostQuery = { readonly mdx: Maybe<(
     Pick<Mdx, 'body'>
-    & { readonly meta: Pick<MdxMeta, 'title' | 'date'> }
+    & { readonly meta: Pick<MdxMeta, 'title' | 'date' | 'tags'> }
   )> };
 
 type BlogListQueryVariables = Exact<{
@@ -3052,9 +3052,9 @@ type BlogListQueryVariables = Exact<{
 }>;
 
 
-type BlogListQuery = { readonly allMdx: { readonly pageInfo: Pick<PageInfo, 'currentPage' | 'pageCount' | 'hasNextPage' | 'hasPreviousPage' | 'totalCount' | 'perPage'>, readonly edges: ReadonlyArray<{ readonly node: (
+type BlogListQuery = { readonly tags: { readonly group: ReadonlyArray<Pick<MdxGroupConnection, 'fieldValue'>> }, readonly list: { readonly pageInfo: Pick<PageInfo, 'currentPage' | 'pageCount'>, readonly edges: ReadonlyArray<{ readonly node: (
         Pick<Mdx, 'excerpt'>
-        & { readonly meta: Pick<MdxMeta, 'title' | 'slug'> }
+        & { readonly meta: Pick<MdxMeta, 'title' | 'slug' | 'tags'> }
       ) }> } };
 
 type PagesQueryQueryVariables = Exact<{ [key: string]: never; }>;

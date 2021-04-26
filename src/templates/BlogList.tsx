@@ -1,46 +1,92 @@
 import React from 'react'
 import { graphql, navigate, PageProps } from 'gatsby'
 import { useDarkModeSwitch } from '~src/components/App/Config'
-import { CardActionArea, CardContent, CardHeader, makeStyles, Pagination } from '@material-ui/core'
+import { Button, CardActionArea, CardContent, CardHeader, makeStyles, Pagination, Typography } from '@material-ui/core'
 import Card from '~src/components/Card'
 import Panel from '~src/components/Panel'
 import { getLinkProps } from '~src/components/Link'
 
-export interface blogPostFrontmatter {
-    title?: string
-    tags?: string[],
-    date?: string,
-}
-
-export default function BlogList({location, data}: PageProps<GatsbyTypes.BlogListQuery>) {
+export default function BlogList({
+    location,
+    pageContext,
+    data: {tags, list},
+}: PageProps<
+    GatsbyTypes.BlogListQuery,
+    {
+        filter: GatsbyTypes.MdxFilterInput
+    }
+>) {
     useDarkModeSwitch()
 
     const classes = useStyles()
 
+    const tag = pageContext.filter.meta?.tags?.eq
+
     return (
         <div>
+            { tag
+                ? (
+                    <Typography
+                        variant="h2"
+                        className={`${classes.header} ${classes.primaryOnBackground}`}
+                    >
+                        #{tag}
+                    </Typography>
+                )
+                : null && <div className={classes.tags}>{
+                    tags.group.map(g => (
+                        <Button
+                            key={g.fieldValue}
+                            size="small"
+                            onClick={() => {
+                                navigate(`/blog/tag/${g.fieldValue}`)
+                            }}
+                        >
+                            #{g.fieldValue}
+                        </Button>
+                    ))
+                }</div>
+            }
             <Panel>
-                {data.allMdx.edges.map(({ node }) => (
+                {list.edges.map(({ node }) => (
                     <Card key={node.meta.slug}>
                         <CardActionArea {...getLinkProps(`/blog/post/${node.meta.slug}`)}>
                             <CardHeader
                                 title={node.meta.title}
                             />
                             <CardContent>
+                                <div>
+                                    {node.meta.tags.map(t => (
+                                        <Button
+                                            key={t}
+                                            size="small"
+                                            color="primary"
+                                            onClickCapture={(e) => {
+                                                navigate(`/blog/tag/${t}`)
+                                                e.preventDefault()
+                                                e.stopPropagation()
+                                            }}
+                                            href={`/blog/tag/${t}`}
+                                            tabIndex="-1"
+                                        >
+                                            #{t}
+                                        </Button>
+                                    ))}
+                                </div>
                                 {node.excerpt}
                             </CardContent>
                         </CardActionArea>
                     </Card>
                 ))}
             </Panel>
-            { data.allMdx.pageInfo.pageCount > 0 && (
+            { list.pageInfo.pageCount > 0 && (
                 <div className={classes.paginationContainer}>
                     <Pagination
                         variant="outlined"
                         color="primary"
                         className={classes.pagination}
-                        count={data.allMdx.pageInfo.pageCount}
-                        page={data.allMdx.pageInfo.currentPage}
+                        count={list.pageInfo.pageCount}
+                        page={list.pageInfo.currentPage}
                         onChange={(e, i) => {
                             const path = location.pathname.split('/').filter(f => f && !f.match(/page\d+/))
                             navigate('/' + path.concat(i > 1 ? [`page${i}`] : []).join('/'))
@@ -53,6 +99,18 @@ export default function BlogList({location, data}: PageProps<GatsbyTypes.BlogLis
 }
 
 const useStyles = makeStyles(theme => ({
+    primaryOnBackground: {
+        color: theme.palette.primary.light,
+    },
+    header: {
+        marginBottom: '8px !important',
+    },
+    tags: {
+        marginBottom: '8px',
+        '& button': {
+            color: `${theme.palette.primary.light} !important`,
+        },
+    },
     paginationContainer: {
         display: 'flex',
         justifyContent: 'center',
@@ -67,7 +125,12 @@ const useStyles = makeStyles(theme => ({
 
 export const pageQuery = graphql`
   query BlogList($filter: MdxFilterInput, $skip: Int = 0, $limit: Int = 10) {
-    allMdx(
+    tags: allMdx {
+        group(field: meta___tags) {
+            fieldValue
+        }
+    }
+    list: allMdx(
         filter: $filter
         sort: {fields: meta___date, order: DESC}
         limit: $limit
@@ -76,16 +139,13 @@ export const pageQuery = graphql`
         pageInfo {
             currentPage
             pageCount
-            hasNextPage
-            hasPreviousPage
-            totalCount
-            perPage
         }
         edges {
             node {
                 meta {
                     title
                     slug
+                    tags
                 }
                 excerpt(pruneLength: 180)
             }
