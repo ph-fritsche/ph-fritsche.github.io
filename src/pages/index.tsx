@@ -4,7 +4,6 @@ import Quote from '~src/components/Quote'
 import me from '~content/me'
 import { rand } from '~src/utils'
 import { Email } from '@material-ui/icons'
-import Suspended from '~src/components/Suspended'
 
 export default function Home() {
     const classes = useStyles()
@@ -21,32 +20,30 @@ export default function Home() {
                     <Quote>{me.quotes[rand(0, me.quotes.length -1)]}</Quote>
                 </Grid>
                 <Grid item className={classes.actions}>
-                    <Suspended>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            startIcon={<img
-                                src="https://github.githubassets.com/favicons/favicon.svg"
-                                className={classes.icon}
-                                alt=""
-                            />}
-                            href={me.github}
-                            target="_blank"
-                            className={classes.actionsButton}
-                        >
-              Github profile
-                        </Button>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            startIcon={<Email/>}
-                            href={`mailto:${me.email}`}
-                            target="_blank"
-                            className={classes.actionsButton}
-                        >
-              Email me
-                        </Button>
-                    </Suspended>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        startIcon={<img
+                            src="https://github.githubassets.com/favicons/favicon.svg"
+                            className={classes.icon}
+                            alt=""
+                        />}
+                        href={me.github}
+                        target="_blank"
+                        className={classes.actionsButton}
+                    >
+                        Github profile
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        startIcon={<Email/>}
+                        href={`mailto:${me.email}`}
+                        target="_blank"
+                        className={classes.actionsButton}
+                    >
+                        Email me
+                    </Button>
                 </Grid>
             </Grid>
         </div>

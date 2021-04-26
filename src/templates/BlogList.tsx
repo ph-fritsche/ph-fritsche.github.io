@@ -4,7 +4,6 @@ import { useDarkModeSwitch } from '~src/components/App/Config'
 import { CardActionArea, CardContent, CardHeader } from '@material-ui/core'
 import Card from '~src/components/Card'
 import Panel from '~src/components/Panel'
-import Suspended from '~src/components/Suspended'
 import { getLinkProps } from '~src/components/Link'
 
 export interface blogPostFrontmatter {
@@ -20,18 +19,15 @@ export default function BlogList({data}: PageProps<GatsbyTypes.BlogListQuery>) {
         <Panel>
             {data.allMdx.edges.map(({ node }) => (
                 <Card key={node.meta.slug}>
-                    <Suspended>
-                        <CardActionArea {...getLinkProps(`/blog/post/${node.meta.slug}`)}>
-                            <CardHeader
-                                title={node.meta.title}
-                            />
-                            <CardContent>
-                                {node.excerpt}
-                            </CardContent>
-                        </CardActionArea>
-                    </Suspended>
+                    <CardActionArea {...getLinkProps(`/blog/post/${node.meta.slug}`)}>
+                        <CardHeader
+                            title={node.meta.title}
+                        />
+                        <CardContent>
+                            {node.excerpt}
+                        </CardContent>
+                    </CardActionArea>
                 </Card>
-
             ))}
         </Panel>
     )

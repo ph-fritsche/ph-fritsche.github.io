@@ -5,7 +5,6 @@ import projects from '~content/projects'
 import { useDarkModeSwitch } from '~src/components/App/Config'
 import Card from '~src/components/Card'
 import Panel from '~src/components/Panel'
-import Suspended from '~src/components/Suspended'
 import { shuffle } from '~src/utils'
 
 export default function Projects() {
@@ -39,11 +38,9 @@ export default function Projects() {
                         {p.description}
                     </CardContent>
                     <CardActions>
-                        <Suspended>
-                            <Button href={String(p.repo)} target="_blank" startIcon={<OpenInNew/>}>
-                View on { p.repo.host }
-                            </Button>
-                        </Suspended>
+                        <Button href={String(p.repo)} target="_blank" startIcon={<OpenInNew/>}>
+                            View on { p.repo.host }
+                        </Button>
                     </CardActions>
                 </Card>
             ))}
