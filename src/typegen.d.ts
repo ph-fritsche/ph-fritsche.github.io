@@ -3043,11 +3043,6 @@ type SitePluginSortInput = {
   readonly order: Maybe<ReadonlyArray<Maybe<SortOrderEnum>>>;
 };
 
-type PagesQueryQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-type PagesQueryQuery = { readonly allSitePage: { readonly nodes: ReadonlyArray<Pick<SitePage, 'path'>> } };
-
 type BlogPostQueryVariables = Exact<{
   id: Maybe<Scalars['String']>;
 }>;
@@ -3069,6 +3064,11 @@ type BlogListQuery = { readonly allMdx: { readonly pageInfo: Pick<PageInfo, 'cur
         Pick<Mdx, 'excerpt'>
         & { readonly meta: Pick<MdxMeta, 'title' | 'slug'> }
       ) }> } };
+
+type PagesQueryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+type PagesQueryQuery = { readonly allSitePage: { readonly nodes: ReadonlyArray<Pick<SitePage, 'path'>> } };
 
 type Unnamed_1_QueryVariables = Exact<{ [key: string]: never; }>;
 
