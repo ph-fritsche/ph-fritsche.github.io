@@ -60,15 +60,11 @@ export const createPages: GatsbyNode['createPages'] = async ({
                 context: {
                     filter: {
                         fileAbsolutePath: { regex: '//content/blog//' },
-                        meta: tag
-                            ? {
-                                tags: {
-                                    elemMatch: {
-                                        eq: tag,
-                                    },
-                                },
-                            }
-                            : {},
+                        meta: {
+                            tags: tag
+                                ? { eq: tag }
+                                : {},
+                        },
                     },
                     skip: i * length,
                     length,

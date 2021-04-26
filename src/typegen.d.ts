@@ -323,10 +323,6 @@ type SitePageContextFilterMeta = {
 };
 
 type SitePageContextFilterMetaTags = {
-  readonly elemMatch: Maybe<SitePageContextFilterMetaTagsElemMatch>;
-};
-
-type SitePageContextFilterMetaTagsElemMatch = {
   readonly eq: Maybe<Scalars['String']>;
 };
 
@@ -2054,10 +2050,6 @@ type SitePageContextFilterMetaInput = {
 };
 
 type SitePageContextFilterMetaTagsInput = {
-  readonly elemMatch: Maybe<SitePageContextFilterMetaTagsElemMatchInput>;
-};
-
-type SitePageContextFilterMetaTagsElemMatchInput = {
   readonly eq: Maybe<Scalars['String']>;
 };
 
