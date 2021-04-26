@@ -46,7 +46,6 @@ export const createPages: GatsbyNode['createPages'] = async ({
             context: { id: node.id },
         })
     })
-    console.log(postTagCount)
 
     const length = 10
     Object.entries(postTagCount).forEach(([tag, count]) => {
