@@ -5,17 +5,11 @@ export const createPages: GatsbyNode['createPages'] = async ({
     graphql,
     actions,
 }) => {
-    const blogPosts = await graphql< {
+    const blogPosts = await graphql<{
         allMdx: {
-            edges: (GatsbyTypes.MdxEdge & {
-                node: {
-                    parent: {
-                        name: GatsbyTypes.Scalars['String']
-                    }
-                }
-            })[]
-                }
-                }>(`
+            edges: GatsbyTypes.MdxEdge[]
+        }
+    }>(`
         query BlogMdx {
             allMdx(
                 filter: {fileAbsolutePath: {regex: "//content/blog//"}}
@@ -23,17 +17,12 @@ export const createPages: GatsbyNode['createPages'] = async ({
                 edges {
                     node {
                         id
-                        frontmatter {
+                        meta {
                             title
                             date
                             tags
+                            slug
                         }
-                        parent {
-                            ... on File {
-                                name
-                            }
-                        }
-                        body
                     }
                 }
             }
@@ -44,29 +33,48 @@ export const createPages: GatsbyNode['createPages'] = async ({
         throw blogPosts.errors
     }
 
-    const tags = new Set<string>()
-    blogPosts.data?.allMdx.edges.forEach(e => {
-        e.node.frontmatter?.tags?.forEach((t: string) => tags.add(t))
-    })
+    const postTagCount: Record<string, number> = {
+    }
 
-    // tags.forEach(t => {
-    //     actions.createNode({
-    //         id: createNodeId(`BlogTag ${t}`),
-    //         internal: {
-    //             type: 'String',
-    //             mediaType: 'text/plain',
-    //             description: 'Tag',
-    //             content: t,
-    //             contentDigest: createContentDigest(t),
-    //         },
-    //     })
-    // })
+    blogPosts.data?.allMdx.edges.forEach(({node}) => {
+        postTagCount[''] = (postTagCount[''] ?? 0) + 1
+        node.meta.tags.forEach(t => { postTagCount[t] = (postTagCount[t] ?? 0) + 1 })
 
-    blogPosts.data?.allMdx.edges.forEach(e => {
         actions.createPage({
-            path: `/blog/${e.node.parent.name}`,
+            path: `/blog/post/${node.meta.slug}`,
             component: path.resolve('./src/templates/BlogPost.tsx'),
-            context: { id: e.node.id },
+            context: { id: node.id },
         })
+    })
+    console.log(postTagCount)
+
+    const length = 10
+    Object.entries(postTagCount).forEach(([tag, count]) => {
+        for (
+            let i = 0;
+            i < Math.ceil(count / length);
+            i++
+        ) {
+            actions.createPage({
+                path: `/blog${tag ? `/tag/${tag}` : ``}${i > 0 ? `/page${i+1}` : ''}`,
+                component: path.resolve('./src/templates/BlogList.tsx'),
+                context: {
+                    filter: {
+                        fileAbsolutePath: { regex: '//content/blog//' },
+                        meta: tag
+                            ? {
+                                tags: {
+                                    elemMatch: {
+                                        eq: tag,
+                                    },
+                                },
+                            }
+                            : {},
+                    },
+                    skip: i * length,
+                    length,
+                },
+            })
+        }
     })
 }

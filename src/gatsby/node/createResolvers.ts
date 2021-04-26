@@ -75,11 +75,11 @@ export const createResolvers: GatsbyNode['createResolvers'] = async ({
                     const file = context.nodeModel.getNodeById({
                         id: source.parent,
                     }) as GatsbyTypes.File
+                    const name = [file.relativeDirectory, file.name].filter(f => f && f !== 'index').join('/')
 
                     const title = source.frontmatter?.title
-                        || capitalize(file.name.replace(/-/g, ' ').replace(/_/g, '-'))
-
-                    const slug = file.name.replace('/', '')
+                        || capitalize(name.replace(/-/g, ' ').replace(/_/g, '-'))
+                    const slug = name.replace(/\/$/, '')
 
                     return {
                         date,

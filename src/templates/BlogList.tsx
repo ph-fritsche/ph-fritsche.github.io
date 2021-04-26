@@ -1,5 +1,5 @@
 import React from 'react'
-import { graphql } from 'gatsby'
+import { graphql, PageProps } from 'gatsby'
 import { useDarkModeSwitch } from '~src/components/App/Config'
 import { CardActionArea, CardContent, CardHeader } from '@material-ui/core'
 import Card from '~src/components/Card'
@@ -13,15 +13,15 @@ export interface blogPostFrontmatter {
     date?: string,
 }
 
-export default function BlogList({allMdx}: GatsbyTypes.BlogListQuery) {
+export default function BlogList({data}: PageProps<GatsbyTypes.BlogListQuery>) {
     useDarkModeSwitch()
 
     return (
         <Panel>
-            {allMdx.edges.map(({ node }) => (
+            {data.allMdx.edges.map(({ node }) => (
                 <Card key={node.meta.slug}>
                     <Suspended>
-                        <CardActionArea {...getLinkProps(`/blog/${node.meta.slug}`)}>
+                        <CardActionArea {...getLinkProps(`/blog/post/${node.meta.slug}`)}>
                             <CardHeader
                                 title={node.meta.title}
                             />
@@ -38,11 +38,9 @@ export default function BlogList({allMdx}: GatsbyTypes.BlogListQuery) {
 }
 
 export const pageQuery = graphql`
-  query BlogList($skip: Int = 0, $limit: Int = 10) {
+  query BlogList($filter: MdxFilterInput, $skip: Int = 0, $limit: Int = 10) {
     allMdx(
-        filter: {
-            fileAbsolutePath: {regex: "//content/blog//"}
-        }
+        filter: $filter
         sort: {fields: meta___date, order: DESC}
         limit: $limit
         skip: $skip
