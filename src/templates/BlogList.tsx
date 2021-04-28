@@ -64,24 +64,24 @@ export default function BlogList({
                             title={node.meta.title}
                         />
                         <CardContent>
-                            <div>
-                                {node.meta.tags.map(t => (
-                                    <Button
-                                        key={t}
-                                        size="small"
-                                        color="primary"
-                                        onClickCapture={(e) => {
-                                            navigate(`/blog/tag/${t}`)
-                                            e.preventDefault()
-                                            e.stopPropagation()
-                                        }}
-                                        href={`/blog/tag/${t}`}
-                                        tabIndex="-1"
-                                    >
-                                        #{t}
-                                    </Button>
-                                ))}
-                            </div>
+                            {node.meta.tags.filter(t => t !== tag).map(t => (
+                                <Button
+                                    key={t}
+                                    size="small"
+                                    color="primary"
+                                    onClickCapture={(e) => {
+                                        navigate(`/blog/tag/${t}`)
+                                        e.preventDefault()
+                                        e.stopPropagation()
+                                    }}
+                                    href={`/blog/tag/${t}`}
+                                    tabIndex="-1"
+                                >
+                                    #{t}
+                                </Button>
+                            ))}
+                        </CardContent>
+                        <CardContent>
                             {node.excerpt}
                         </CardContent>
                     </Card>
