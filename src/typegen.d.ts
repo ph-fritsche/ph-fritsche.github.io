@@ -261,8 +261,7 @@ type Directory_ctimeArgs = {
 type Site = Node & {
   readonly buildTime: Maybe<Scalars['Date']>;
   readonly siteMetadata: Maybe<SiteSiteMetadata>;
-  readonly port: Maybe<Scalars['Int']>;
-  readonly host: Maybe<Scalars['String']>;
+  readonly flags: Maybe<SiteFlags>;
   readonly polyfill: Maybe<Scalars['Boolean']>;
   readonly pathPrefix: Maybe<Scalars['String']>;
   readonly id: Scalars['ID'];
@@ -277,6 +276,11 @@ type Site_buildTimeArgs = {
   fromNow: Maybe<Scalars['Boolean']>;
   difference: Maybe<Scalars['String']>;
   locale: Maybe<Scalars['String']>;
+};
+
+type SiteFlags = {
+  readonly DEV_SSR: Maybe<Scalars['Boolean']>;
+  readonly FAST_DEV: Maybe<Scalars['Boolean']>;
 };
 
 type SiteSiteMetadata = {
@@ -700,10 +704,6 @@ type SitePluginPluginOptions = {
   readonly mediaTypes: Maybe<ReadonlyArray<Maybe<Scalars['String']>>>;
   readonly root: Maybe<Scalars['String']>;
   readonly outputPath: Maybe<Scalars['String']>;
-  readonly sourceMap: Maybe<Scalars['Boolean']>;
-  readonly autoLabel: Maybe<Scalars['String']>;
-  readonly labelFormat: Maybe<Scalars['String']>;
-  readonly cssPropOptimization: Maybe<Scalars['Boolean']>;
   readonly projectRoot: Maybe<Scalars['String']>;
   readonly configDir: Maybe<Scalars['String']>;
   readonly babel: Maybe<Scalars['Boolean']>;
@@ -867,8 +867,7 @@ type Query_allDirectoryArgs = {
 type Query_siteArgs = {
   buildTime: Maybe<DateQueryOperatorInput>;
   siteMetadata: Maybe<SiteSiteMetadataFilterInput>;
-  port: Maybe<IntQueryOperatorInput>;
-  host: Maybe<StringQueryOperatorInput>;
+  flags: Maybe<SiteFlagsFilterInput>;
   polyfill: Maybe<BooleanQueryOperatorInput>;
   pathPrefix: Maybe<StringQueryOperatorInput>;
   id: Maybe<StringQueryOperatorInput>;
@@ -1886,6 +1885,11 @@ type SiteSiteMetadataFilterInput = {
   readonly author: Maybe<StringQueryOperatorInput>;
 };
 
+type SiteFlagsFilterInput = {
+  readonly DEV_SSR: Maybe<BooleanQueryOperatorInput>;
+  readonly FAST_DEV: Maybe<BooleanQueryOperatorInput>;
+};
+
 type SiteConnection = {
   readonly totalCount: Scalars['Int'];
   readonly edges: ReadonlyArray<SiteEdge>;
@@ -1918,8 +1922,8 @@ type SiteFieldsEnum =
   | 'siteMetadata.title'
   | 'siteMetadata.description'
   | 'siteMetadata.author'
-  | 'port'
-  | 'host'
+  | 'flags.DEV_SSR'
+  | 'flags.FAST_DEV'
   | 'polyfill'
   | 'pathPrefix'
   | 'id'
@@ -2021,8 +2025,7 @@ type SiteGroupConnection = {
 type SiteFilterInput = {
   readonly buildTime: Maybe<DateQueryOperatorInput>;
   readonly siteMetadata: Maybe<SiteSiteMetadataFilterInput>;
-  readonly port: Maybe<IntQueryOperatorInput>;
-  readonly host: Maybe<StringQueryOperatorInput>;
+  readonly flags: Maybe<SiteFlagsFilterInput>;
   readonly polyfill: Maybe<BooleanQueryOperatorInput>;
   readonly pathPrefix: Maybe<StringQueryOperatorInput>;
   readonly id: Maybe<StringQueryOperatorInput>;
@@ -2093,10 +2096,6 @@ type SitePluginPluginOptionsFilterInput = {
   readonly mediaTypes: Maybe<StringQueryOperatorInput>;
   readonly root: Maybe<StringQueryOperatorInput>;
   readonly outputPath: Maybe<StringQueryOperatorInput>;
-  readonly sourceMap: Maybe<BooleanQueryOperatorInput>;
-  readonly autoLabel: Maybe<StringQueryOperatorInput>;
-  readonly labelFormat: Maybe<StringQueryOperatorInput>;
-  readonly cssPropOptimization: Maybe<BooleanQueryOperatorInput>;
   readonly projectRoot: Maybe<StringQueryOperatorInput>;
   readonly configDir: Maybe<StringQueryOperatorInput>;
   readonly babel: Maybe<BooleanQueryOperatorInput>;
@@ -2334,10 +2333,6 @@ type SitePageFieldsEnum =
   | 'pluginCreator.pluginOptions.mediaTypes'
   | 'pluginCreator.pluginOptions.root'
   | 'pluginCreator.pluginOptions.outputPath'
-  | 'pluginCreator.pluginOptions.sourceMap'
-  | 'pluginCreator.pluginOptions.autoLabel'
-  | 'pluginCreator.pluginOptions.labelFormat'
-  | 'pluginCreator.pluginOptions.cssPropOptimization'
   | 'pluginCreator.pluginOptions.projectRoot'
   | 'pluginCreator.pluginOptions.configDir'
   | 'pluginCreator.pluginOptions.babel'
@@ -2989,10 +2984,6 @@ type SitePluginFieldsEnum =
   | 'pluginOptions.mediaTypes'
   | 'pluginOptions.root'
   | 'pluginOptions.outputPath'
-  | 'pluginOptions.sourceMap'
-  | 'pluginOptions.autoLabel'
-  | 'pluginOptions.labelFormat'
-  | 'pluginOptions.cssPropOptimization'
   | 'pluginOptions.projectRoot'
   | 'pluginOptions.configDir'
   | 'pluginOptions.babel'
@@ -3035,15 +3026,18 @@ type SitePluginSortInput = {
   readonly order: Maybe<ReadonlyArray<Maybe<SortOrderEnum>>>;
 };
 
-type BlogPostQueryVariables = Exact<{
-  id: Maybe<Scalars['String']>;
-}>;
+type Unnamed_1_QueryVariables = Exact<{ [key: string]: never; }>;
 
 
-type BlogPostQuery = { readonly mdx: Maybe<(
-    Pick<Mdx, 'body'>
-    & { readonly meta: Pick<MdxMeta, 'title' | 'date' | 'tags'> }
-  )> };
+type Unnamed_1_Query = { readonly site: Maybe<{ readonly siteMetadata: Maybe<Pick<SiteSiteMetadata, 'title' | 'description' | 'author'>> }> };
+
+type BlogQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+type BlogQuery = { readonly allMdx: { readonly pageInfo: Pick<PageInfo, 'currentPage' | 'pageCount' | 'hasNextPage' | 'hasPreviousPage' | 'totalCount' | 'perPage'>, readonly edges: ReadonlyArray<{ readonly node: (
+        Pick<Mdx, 'excerpt'>
+        & { readonly meta: Pick<MdxMeta, 'title' | 'slug'> }
+      ) }> } };
 
 type BlogListQueryVariables = Exact<{
   filter: Maybe<MdxFilterInput>;
@@ -3057,23 +3051,15 @@ type BlogListQuery = { readonly tags: { readonly group: ReadonlyArray<Pick<MdxGr
         & { readonly meta: Pick<MdxMeta, 'title' | 'slug' | 'tags'> }
       ) }> } };
 
-type PagesQueryQueryVariables = Exact<{ [key: string]: never; }>;
+type BlogPostQueryVariables = Exact<{
+  id: Maybe<Scalars['String']>;
+}>;
 
 
-type PagesQueryQuery = { readonly allSitePage: { readonly nodes: ReadonlyArray<Pick<SitePage, 'path'>> } };
-
-type Unnamed_1_QueryVariables = Exact<{ [key: string]: never; }>;
-
-
-type Unnamed_1_Query = { readonly site: Maybe<{ readonly siteMetadata: Maybe<Pick<SiteSiteMetadata, 'title' | 'description' | 'author'>> }> };
-
-type BlogQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-type BlogQuery = { readonly allMdx: { readonly pageInfo: Pick<PageInfo, 'currentPage' | 'pageCount' | 'hasNextPage' | 'hasPreviousPage' | 'totalCount' | 'perPage'>, readonly edges: ReadonlyArray<{ readonly node: (
-        Pick<Mdx, 'excerpt'>
-        & { readonly meta: Pick<MdxMeta, 'title' | 'slug'> }
-      ) }> } };
+type BlogPostQuery = { readonly mdx: Maybe<(
+    Pick<Mdx, 'body'>
+    & { readonly meta: Pick<MdxMeta, 'title' | 'date' | 'tags'> }
+  )> };
 
 type GatsbyImageSharpFixedFragment = Pick<ImageSharpFixed, 'base64' | 'width' | 'height' | 'src' | 'srcSet'>;
 
