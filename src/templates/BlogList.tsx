@@ -5,6 +5,7 @@ import { Button, CardActionArea, CardContent, CardHeader, makeStyles, Pagination
 import Card from '~src/components/Card'
 import Panel from '~src/components/Panel'
 import { getLinkProps } from '~src/components/Link'
+import type { BaseCSSProperties } from '@material-ui/styles'
 
 export default function BlogList({
     location,
@@ -49,33 +50,38 @@ export default function BlogList({
             }
             <Panel>
                 {list.edges.map(({ node }) => (
-                    <Card key={node.meta.slug}>
-                        <CardActionArea {...getLinkProps(`/blog/post/${node.meta.slug}`)}>
-                            <CardHeader
-                                title={node.meta.title}
-                            />
-                            <CardContent>
-                                <div>
-                                    {node.meta.tags.map(t => (
-                                        <Button
-                                            key={t}
-                                            size="small"
-                                            color="primary"
-                                            onClickCapture={(e) => {
-                                                navigate(`/blog/tag/${t}`)
-                                                e.preventDefault()
-                                                e.stopPropagation()
-                                            }}
-                                            href={`/blog/tag/${t}`}
-                                            tabIndex="-1"
-                                        >
-                                            #{t}
-                                        </Button>
-                                    ))}
-                                </div>
-                                {node.excerpt}
-                            </CardContent>
-                        </CardActionArea>
+                    <Card
+                        key={node.meta.slug}
+                        className={classes.card}
+                    >
+                        <CardActionArea
+                            {...getLinkProps(`/blog/post/${node.meta.slug}`)}
+                            className={classes.cardActionArea}
+                        />
+                        <CardHeader
+                            title={node.meta.title}
+                        />
+                        <CardContent>
+                            <div>
+                                {node.meta.tags.map(t => (
+                                    <Button
+                                        key={t}
+                                        size="small"
+                                        color="primary"
+                                        onClickCapture={(e) => {
+                                            navigate(`/blog/tag/${t}`)
+                                            e.preventDefault()
+                                            e.stopPropagation()
+                                        }}
+                                        href={`/blog/tag/${t}`}
+                                        tabIndex="-1"
+                                    >
+                                        #{t}
+                                    </Button>
+                                ))}
+                            </div>
+                            {node.excerpt}
+                        </CardContent>
                     </Card>
                 ))}
             </Panel>
@@ -110,6 +116,14 @@ const useStyles = makeStyles(theme => ({
         '& button': {
             color: `${theme.palette.primary.light} !important`,
         },
+    },
+    card: {
+        position: 'relative',
+    },
+    cardActionArea: {
+        position: 'absolute !important' as BaseCSSProperties['position'],
+        height: '100%',
+        width: '100%',
     },
     paginationContainer: {
         display: 'flex',

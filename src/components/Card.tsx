@@ -4,6 +4,7 @@ import { Card as MuiCard, makeStyles } from '@material-ui/core'
 export default function Card({
     component: Component = 'div',
     children,
+    ...otherProps
 }: ComponentPropsWithoutRef<typeof MuiCard> & {
     component?: React.ElementType
 }) {
@@ -12,8 +13,10 @@ export default function Card({
     return (
         <Component className={classes.cardContainer}>
             <MuiCard
+                {...otherProps}
                 classes={{
-                    root: classes.card,
+                    ...otherProps.classes,
+                    root: [otherProps.classes?.root, classes.card].filter(Boolean).join(' '),
                 }}
             >
                 {children}
