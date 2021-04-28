@@ -8,7 +8,23 @@ export const siteMetadata = {
     author: `@ph_fritsche`,
 }
 
+export const flags = {
+    DEV_SSR: true,
+    FAST_DEV: true,
+}
+
 export const plugins = [
+    {
+        resolve: `${rootDir}/src/gatsby/wrapper`,
+    },
+    {
+        resolve: 'gatsby-plugin-material-ui',
+        options: {
+            // stylesProvider: {
+            //     injectFirst: true,
+            // },
+        },
+    },
     `gatsby-plugin-react-helmet`,
     `gatsby-plugin-image`,
     {
@@ -47,8 +63,6 @@ export const plugins = [
             outputPath: `${rootDir}/src/typegen.d.ts`,
         },
     },
-    // `gatsby-plugin-material-ui`,
-    `gatsby-plugin-emotion`,
     // this (optional) plugin enables Progressive Web App + Offline functionality
     // To learn more, visit: https://gatsby.dev/offline
     // `gatsby-plugin-offline`,
