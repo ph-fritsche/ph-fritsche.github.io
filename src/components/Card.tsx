@@ -32,7 +32,7 @@ const useStyles = makeStyles({
         breakInside: ({Component}: {Component: React.ElementType}) => Component !== 'article' ? 'avoid' : 'avoid',
     },
     card: {
-        '& > *, > MuiCardActionArea-root > *': {
+        '& > MuiCardActionArea-root, > MuiCardActionArea-root > *': {
             paddingTop: '0 !important',
             paddingBottom: '0 !important',
             marginTop: '8px',
