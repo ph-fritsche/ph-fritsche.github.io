@@ -1,9 +1,10 @@
 {
-  "name": "gatsby-starter-default",
+  "name": "ph-fritsche.github.io",
   "private": true,
-  "description": "A simple starter to get up and developing quickly with Gatsby",
-  "version": "0.1.0",
-  "author": "Kyle Mathews <mathews.kyle@gmail.com>",
+  "description": "github.io page",
+  "version": "0.0.0-semantic-release",
+  "author": "Philipp Fritsche <ph.fritsche@gmail.com>",
+  "repository": "https://github.com/ph-fritsche/ph-fritsche.github.io",
   "dependencies": {
     "@emotion/react": "^11.1.5",
     "@emotion/styled": "^11.1.5",
@@ -52,7 +53,6 @@
   "keywords": [
     "gatsby"
   ],
-  "license": "0BSD",
   "scripts": {
     "build": "gatsby build",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
@@ -61,12 +61,5 @@
     "test": "jest",
     "dev": "jest --coverage false --watch",
     "devserve": "gatsby develop"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/gatsbyjs/gatsby-starter-default"
-  },
-  "bugs": {
-    "url": "https://github.com/gatsbyjs/gatsby/issues"
   }
 }
