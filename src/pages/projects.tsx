@@ -5,6 +5,7 @@ import projects from '~content/projects'
 import { useDarkModeSwitch } from '~src/components/App/Config'
 import Card from '~src/components/Card'
 import Panel from '~src/components/Panel'
+import Seo from '~src/components/Seo'
 import { shuffle } from '~src/utils'
 
 export default function Projects() {
@@ -16,7 +17,8 @@ export default function Projects() {
         return shuffle(projects)
     }, [])
 
-    return (<>
+    return <>
+        <Seo title="Projects"/>
         <Typography>Some open source projects I am very proud of contributing to:</Typography>
         <Panel columns={3}>
             { shuffledProjects.map(p => (
@@ -45,7 +47,7 @@ export default function Projects() {
                 </Card>
             ))}
         </Panel>
-    </>)
+    </>
 }
 
 const useStyles = makeStyles(({

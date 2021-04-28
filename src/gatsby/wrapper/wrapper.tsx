@@ -1,7 +1,7 @@
 import type { WrapPageElementBrowserArgs, WrapPageElementNodeArgs, WrapRootElementNodeArgs } from 'gatsby'
 import React from 'react'
+import Container from '~src/components/App/Container'
 import App from '../../components/App'
-import Page from '../../components/Page'
 
 export const wrapRootElement = ({
     element,
@@ -19,9 +19,8 @@ export const wrapRootElement = ({
 
 export const wrapPageElement = ({
     element,
-    props,
 }: WrapPageElementBrowserArgs | WrapPageElementNodeArgs) => (
-    <Page {...props}>
+    <Container>
         {element}
-    </Page>
+    </Container>
 )

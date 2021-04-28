@@ -53,8 +53,7 @@ export default function Seo({
             htmlAttributes={{
                 lang,
             }}
-            title={title}
-            titleTemplate={defaultTitle ? `%s | ${defaultTitle}` : undefined}
+            title={title ? `${title} | ${defaultTitle}` : defaultTitle}
             meta={[
                 {
                     name: `description`,

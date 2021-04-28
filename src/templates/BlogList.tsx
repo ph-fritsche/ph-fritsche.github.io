@@ -6,6 +6,7 @@ import Card from '~src/components/Card'
 import Panel from '~src/components/Panel'
 import { getLinkProps } from '~src/components/Link'
 import type { BaseCSSProperties } from '@material-ui/styles'
+import Seo from '~src/components/Seo'
 
 export default function BlogList({
     location,
@@ -23,7 +24,8 @@ export default function BlogList({
 
     const tag = pageContext.filter.meta?.tags?.eq
 
-    return (
+    return <>
+        <Seo title={tag ? `#${tag}` : `Blog`}/>
         <div>
             { tag
                 ? (
@@ -101,7 +103,7 @@ export default function BlogList({
                 </div>
             )}
         </div>
-    )
+    </>
 }
 
 const useStyles = makeStyles(theme => ({

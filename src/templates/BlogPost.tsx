@@ -7,11 +7,13 @@ import * as mdxComponents from './mdxComponents'
 import { Button, CardActions, CardContent, CardHeader, Typography } from '@material-ui/core'
 import Card from '~src/components/Card'
 import { getLinkProps } from '~src/components/Link'
+import Seo from '~src/components/Seo'
 
 export default function BlogPost({data}: PageProps<GatsbyTypes.BlogPostQuery>) {
     useDarkModeSwitch()
 
-    return (
+    return <>
+        <Seo title={data.mdx?.meta.title}/>
         <Card component="article">
             <CardContent>
                 <Typography variant="subtitle2">{data.mdx?.meta.date && (new Date(data.mdx.meta.date)).toLocaleDateString()}</Typography>
@@ -41,7 +43,7 @@ export default function BlogPost({data}: PageProps<GatsbyTypes.BlogPostQuery>) {
                 }
             </CardContent>
         </Card>
-    )
+    </>
 }
 
 export const pageQuery = graphql`

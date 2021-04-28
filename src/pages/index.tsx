@@ -4,11 +4,13 @@ import Quote from '~src/components/Quote'
 import me from '~content/me'
 import { rand } from '~src/utils'
 import { Email } from '@material-ui/icons'
+import Seo from '~src/components/Seo'
 
 export default function Home() {
     const classes = useStyles()
 
-    return (
+    return <>
+        <Seo/>
         <div>
             <Grid container className={classes.root} direction="row-reverse">
                 <Grid item sm={4} className={`${classes.gridItem} ${classes.avatarContainer}`}>
@@ -47,7 +49,7 @@ export default function Home() {
                 </Grid>
             </Grid>
         </div>
-    )
+    </>
 }
 
 const useStyles = makeStyles(theme => ({
