@@ -22,7 +22,10 @@ export default function AppBar({
         return () => observer.disconnect()
     }, [])
 
-    const [config, setConfig] = useConfig()
+    const {
+        settings: [config, setConfig],
+        state: [configState],
+    } = useConfig()
 
     return (<>
         <div
@@ -55,7 +58,7 @@ export default function AppBar({
                     </ul>
                 </nav>
                 <div className={classes.options}>
-                    {config.darkModeSwitch && (
+                    {configState.darkModeSwitch && (
                         <IconButton
                             size="small"
                             onClick={() => setConfig({darkMode: !config.darkMode})}

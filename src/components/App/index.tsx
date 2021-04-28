@@ -11,11 +11,26 @@ import useBackground from './background'
 export default function App({
     children,
 }: React.PropsWithChildren<unknown>) {
-    return (
+    return <div key="App">
+        <Helmet>
+            <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
+            <link
+                rel="preconnect"
+                href="https://fonts.gstatic.com"
+            />
+            <link
+                href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap"
+                rel="stylesheet"
+            />
+            <link
+                href="https://fonts.googleapis.com/css2?family=Alegreya+Sans&display=swap"
+                rel="stylesheet"
+            />
+        </Helmet>
         <ConfigProvider>
             <AppInConfig>{children}</AppInConfig>
         </ConfigProvider>
-    )
+    </div>
 }
 
 function AppInConfig({
@@ -41,11 +56,6 @@ function AppInTheme({
     return (
         <div className={classes.app}>
             <Helmet
-                link={[
-                    { rel: 'preconnect', href: 'https://fonts.gstatic.com' },
-                    { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Alegreya+Sans&display=swap' },
-                    { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Roboto&display=swap' },
-                ]}
                 bodyAttributes={{
                     class: `${classes.body} ${bgClass}`,
                 }}

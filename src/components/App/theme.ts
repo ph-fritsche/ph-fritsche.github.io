@@ -5,12 +5,12 @@ import { colorPrimary } from '../../config'; // ts paths don't work for the cjs 
 import { useConfig } from './Config';
 
 export default function useTheme() {
-    const [config] = useConfig()
+    const [config] = useConfig().settings
     return useMemo(() => createTheme(config), [config])
 }
 
 function createTheme(
-    config: ReturnType<typeof useConfig>[0],
+    config: ReturnType<typeof useConfig>['settings'][0],
 ) {
     const colorPrimaryDark = darken(colorPrimary, .5)
 

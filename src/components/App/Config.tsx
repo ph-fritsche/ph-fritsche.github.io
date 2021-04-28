@@ -9,25 +9,36 @@ function getLocalStorage() {
     }
 }
 
-function getFromStore(): ReturnType<typeof createConfig> {
+function getFromStore(): ReturnType<typeof createSettings> {
     const stored = getLocalStorage()?.getItem(key)
     return stored
         ? JSON.parse(stored)
-        : createConfig()
+        : createSettings()
 }
 
-function createConfig() {
+function createSettings() {
     return {
         darkMode: false,
+    }
+}
+
+function createState() {
+    return {
         darkModeSwitch: false,
     }
 }
 
+function createRef() {
+    return {
+        darkModeUsed: 0,
+    }
+}
+
 function useConfigProvider() {
-    const configReducer = useReducer(
+    const settings = useReducer(
         (
-            oldConfig: ReturnType<typeof createConfig>,
-            newConfig: Partial<ReturnType<typeof createConfig>>,
+            oldConfig: ReturnType<typeof createSettings>,
+            newConfig: Partial<ReturnType<typeof createSettings>>,
         ) => {
             const mergedConfig = { ...oldConfig, ...newConfig }
             getLocalStorage()?.setItem(key, JSON.stringify(mergedConfig))
@@ -36,14 +47,23 @@ function useConfigProvider() {
         getFromStore(),
     )
 
-    const configRef = useRef({
-        darkModeUsed: 0,
-    })
+    const state = useReducer(
+        (
+            oldConfig: ReturnType<typeof createState>,
+            newConfig: Partial<ReturnType<typeof createState>>,
+        ) => {
+            return { ...oldConfig, ...newConfig }
+        },
+        createState(),
+    )
+
+    const ref = useRef(createRef())
 
     return useMemo(() => ({
-        configReducer,
-        configRef: configRef.current,
-    }), [configReducer])
+        settings,
+        state,
+        ref: ref.current,
+    }), [settings, state])
 }
 
 export function ConfigProvider({
@@ -56,27 +76,24 @@ export function ConfigProvider({
     )
 }
 
-function useConfigContext() {
+export function useConfig() {
     const context = React.useContext(ConfigContext)
 
     if (!context) {
-        throw new Error('Config can only be used inside a ConfigProvider')
+        return {
+            settings: [createSettings(), () => { return }] as const,
+            state: [createState(), () => { return }] as const,
+            ref: createRef(),
+        }
     }
 
     return context
 }
 
-export function useConfig() {
-    return useConfigContext().configReducer
-}
-
 export function useDarkModeSwitch() {
-    const context = useConfigContext()
+    const {state: [state, setState], ref} = useConfig()
 
     useEffect(() => {
-        const ref = context.configRef
-        const [state, setState] = context.configReducer
-
         ++ref.darkModeUsed
 
         if (ref.darkModeUsed >= 1 && state.darkModeSwitch === false) {
@@ -92,5 +109,5 @@ export function useDarkModeSwitch() {
                 }
             }, 10)
         }
-    }, [context.configRef, context.configReducer])
+    }, [state, setState, ref])
 }
