@@ -4,9 +4,7 @@ import Seo from './Seo'
 
 export default function Page({
     children,
-}: {
-    children: React.ReactNode,
-}) {
+}: React.PropsWithChildren<unknown>) {
     const title = isComponentNode(children)
         ? children.type.title ?? children.type.name
         : ''
