@@ -1,5 +1,5 @@
 import React from 'react'
-import { graphql, navigate, PageProps } from 'gatsby'
+import { graphql, PageProps } from 'gatsby'
 import { useDarkModeSwitch } from '~src/components/App/Config'
 import { Button, CardActionArea, CardContent, CardHeader, makeStyles, Pagination, Typography } from '@material-ui/core'
 import Card from '~src/components/Card'
@@ -7,11 +7,12 @@ import Panel from '~src/components/Panel'
 import { getLinkProps } from '~src/components/Link'
 import type { BaseCSSProperties } from '@material-ui/styles'
 import Seo from '~src/components/Seo'
+import { useSwipeable } from '~src/components/Swipeable'
 
 export default function BlogList({
-    location,
-    pageContext,
     data: {tags, list},
+    navigate,
+    pageContext,
 }: PageProps<
     GatsbyTypes.BlogListQuery,
     {
@@ -23,6 +24,25 @@ export default function BlogList({
     const classes = useStyles()
 
     const tag = pageContext.filter.meta?.tags?.eq
+    const tagsNames = [undefined, ...tags.group.map(g => g.fieldValue)]
+    const tagsIndex = tagsNames.indexOf(tag)
+
+    function makeBlogPath(tag?: string, page?: number) {
+        return `/blog${tag ? `/tag/${tag}`: ''}${page && page > 1 ? `/page${page}` : ''}`
+    }
+
+    useSwipeable({
+        right: () => navigate(tagsIndex > 0 ? makeBlogPath(tagsNames[tagsIndex - 1], 0) : '/projects'),
+        left: tagsIndex < tagsNames.length -1
+            ? () => navigate(makeBlogPath(tagsNames[tagsIndex + 1]))
+            : undefined,
+        down: list.pageInfo.currentPage > 1
+            ? () => navigate(makeBlogPath(tag, list.pageInfo.currentPage - 1))
+            : undefined,
+        up: list.pageInfo.pageCount > list.pageInfo.currentPage
+            ? () => navigate(makeBlogPath(tag, list.pageInfo.currentPage + 1))
+            : undefined,
+    }, [tag, tagsIndex])
 
     return <>
         <Seo title={tag ? `#${tag}` : `Blog`}/>
@@ -95,10 +115,7 @@ export default function BlogList({
                         className={classes.pagination}
                         count={list.pageInfo.pageCount}
                         page={list.pageInfo.currentPage}
-                        onChange={(e, i) => {
-                            const path = location.pathname.split('/').filter(f => f && !f.match(/page\d+/))
-                            navigate('/' + path.concat(i > 1 ? [`page${i}`] : []).join('/'))
-                        }}
+                        onChange={(e, i) => navigate(makeBlogPath(tag, i))}
                     />
                 </div>
             )}

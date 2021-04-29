@@ -8,9 +8,15 @@ import { Button, CardActions, CardContent, CardHeader, Typography } from '@mater
 import Card from '~src/components/Card'
 import { getLinkProps } from '~src/components/Link'
 import Seo from '~src/components/Seo'
+import { useSwipeable } from '~src/components/Swipeable'
 
-export default function BlogPost({data}: PageProps<GatsbyTypes.BlogPostQuery>) {
+export default function BlogPost({data, location, navigate}: PageProps<GatsbyTypes.BlogPostQuery>) {
     useDarkModeSwitch()
+
+    useSwipeable({
+        up: () => navigate('/blog'),
+        down: () => navigate('/blog'),
+    }, [location.pathname])
 
     return <>
         <Seo title={data.mdx?.meta.title}/>

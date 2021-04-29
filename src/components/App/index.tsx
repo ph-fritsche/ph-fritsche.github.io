@@ -7,6 +7,7 @@ import Footer from './Footer'
 import { ConfigProvider } from './Config'
 import useTheme from './theme'
 import useBackground from './background'
+import { Swipeable } from '../Swipeable'
 
 export default function App({
     children,
@@ -54,18 +55,20 @@ function AppInTheme({
     const bgClass = useBackground()
 
     return (
-        <div className={classes.app}>
-            <Helmet
-                bodyAttributes={{
-                    class: `${classes.body} ${bgClass}`,
-                }}
-            />
-            <AppBar className={bgClass}/>
-            <main className={classes.content}>
-                {children}
-            </main>
-            <Footer/>
-        </div>
+        <Swipeable>
+            <div className={classes.app}>
+                <Helmet
+                    bodyAttributes={{
+                        class: `${classes.body} ${bgClass}`,
+                    }}
+                />
+                <AppBar className={bgClass}/>
+                <main className={classes.content}>
+                    {children}
+                </main>
+                <Footer/>
+            </div>
+        </Swipeable>
     )
 }
 

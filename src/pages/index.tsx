@@ -5,9 +5,16 @@ import me from '~content/me'
 import { rand } from '~src/utils'
 import { Email } from '@material-ui/icons'
 import Seo from '~src/components/Seo'
+import { useSwipeable } from '~src/components/Swipeable'
+import { navigate } from 'gatsby'
 
 export default function Home() {
     const classes = useStyles()
+
+    useSwipeable({
+        left: () => navigate('/projects'),
+        up: () => navigate('/projects'),
+    }, [])
 
     return <>
         <Seo/>
