@@ -9,6 +9,7 @@ export default {
     quotes: [
         `Separation of concerns is always underrated.`,
     ],
-    github: 'https://github.com/ph-fritsche',
+    github: 'ph-fritsche',
     email: 'ph.fritsche@gmail.com',
+    twitter: 'ph_fritsche',
 }

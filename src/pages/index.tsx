@@ -1,4 +1,4 @@
-import { Avatar, Button, Grid, makeStyles, Typography } from '@material-ui/core'
+import { Avatar, Button, Grid, Icon, makeStyles, Typography } from '@material-ui/core'
 import React from 'react'
 import Quote from '~src/components/Quote'
 import me from '~content/me'
@@ -7,6 +7,7 @@ import { Email } from '@material-ui/icons'
 import Seo from '~src/components/Seo'
 import { useSwipeable } from '~src/components/Swipeable'
 import { navigate } from 'gatsby'
+import GithubIcon from '~res/images/github'
 
 export default function Home() {
     const classes = useStyles()
@@ -32,12 +33,8 @@ export default function Home() {
                     <Button
                         variant="contained"
                         color="primary"
-                        startIcon={<img
-                            src="https://github.githubassets.com/favicons/favicon.svg"
-                            className={classes.icon}
-                            alt=""
-                        />}
-                        href={me.github}
+                        startIcon={<GithubIcon/>}
+                        href={`https://github.com/${me.github}`}
                         target="_blank"
                         className={classes.actionsButton}
                     >
@@ -84,8 +81,5 @@ const useStyles = makeStyles(theme => ({
     },
     actionsButton: {
         background: `${theme.palette.primary.light} !important`,
-    },
-    icon: {
-        height: '1em',
     },
 }))

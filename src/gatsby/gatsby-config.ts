@@ -1,11 +1,16 @@
 import { colorPrimary } from '../config';
+import me from '../../content/me'
 
 const rootDir = `${__dirname}/../..`
 
 export const siteMetadata = {
     title: `Philipp Fritsche`,
     description: `Coding`,
-    author: `@ph_fritsche`,
+    author: {
+        email: me.email,
+        github: me.github,
+        twitter: me.twitter,
+    },
 }
 
 export const flags = {

@@ -23,27 +23,19 @@ export default function Seo({
   }[],
   title?: string,
 } = {}) {
-    const { site } = useStaticQuery<{
-    site?: {
-      siteMetadata?: {
-        title?: string,
-        description?: string,
-        author?: string,
-      },
-    },
-  }>(
-      graphql`
-      query {
+    const { site } = useStaticQuery<GatsbyTypes.SeoQuery>(graphql`
+      query Seo {
         site {
           siteMetadata {
             title
             description
-            author
+            author {
+              twitter
+            }
           }
         }
       }
-    `,
-  )
+    `)
 
     const metaDescription = description || site?.siteMetadata?.description
     const defaultTitle = site?.siteMetadata?.title
@@ -77,7 +69,7 @@ export default function Seo({
                 },
                 {
                     name: `twitter:creator`,
-                    content: site?.siteMetadata?.author || ``,
+                    content: site?.siteMetadata?.author?.twitter || ``,
                 },
                 {
                     name: `twitter:title`,
