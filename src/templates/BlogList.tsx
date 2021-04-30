@@ -1,5 +1,5 @@
 import React from 'react'
-import { graphql, PageProps } from 'gatsby'
+import { graphql, navigate, PageProps } from 'gatsby'
 import { useDarkModeSwitch } from '~src/components/App/Config'
 import { Button, CardActionArea, CardContent, CardHeader, makeStyles, Pagination, Typography } from '@material-ui/core'
 import Card from '~src/components/Card'
@@ -11,7 +11,6 @@ import { useSwipeable } from '~src/components/Swipeable'
 
 export default function BlogList({
     data: {tags, list},
-    navigate,
     pageContext,
 }: PageProps<
     GatsbyTypes.BlogListQuery,

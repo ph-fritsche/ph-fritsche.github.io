@@ -1,7 +1,7 @@
 import React from 'react'
 import { MDXProvider } from '@mdx-js/react'
 import { MDXRenderer } from 'gatsby-plugin-mdx'
-import { graphql, PageProps } from 'gatsby'
+import { graphql, navigate, PageProps } from 'gatsby'
 import { useDarkModeSwitch } from '~src/components/App/Config'
 import * as mdxComponents from './mdxComponents'
 import { Button, CardActions, CardContent, CardHeader, makeStyles, Typography } from '@material-ui/core'
@@ -11,7 +11,7 @@ import Seo from '~src/components/Seo'
 import { useSwipeable } from '~src/components/Swipeable'
 import TwitterIcon from '~res/images/twitter'
 
-export default function BlogPost({data, location, navigate}: PageProps<GatsbyTypes.BlogPostQuery>) {
+export default function BlogPost({data, location}: PageProps<GatsbyTypes.BlogPostQuery>) {
     useDarkModeSwitch()
 
     const classes = useStyles()
