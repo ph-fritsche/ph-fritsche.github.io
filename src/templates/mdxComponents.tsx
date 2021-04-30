@@ -1,22 +1,31 @@
-// import React from 'react'
-// import { makeStyles, Typography } from "@material-ui/core"
-// import { PropsWithChildren } from "react";
+import React, { ComponentPropsWithRef } from 'react'
+import { Code, Pre } from '~src/components/Code';
 
 export { Link as a } from '~src/components/Link';
 export { Typography as p } from '@material-ui/core'
 
-// export function p({children}: PropsWithChildren<{}>) {
-//     const classes = useStyles()
+export function pre({children, ...others}: ComponentPropsWithRef<'pre'>) {
+    const language = children
+        && typeof children === 'object'
+        && 'props' in children
+        ? getLangFromClassName(children.props.className)
+        : undefined
 
-//     return (
-//         <Typography className={classes.paragraph}>
-//             {children}
-//         </Typography>
-//     )
-// }
+    return <Pre
+        language={language}
+        {...others}
+    >{children}</Pre>
+}
 
-// const useStyles = makeStyles({
-//     paragraph: {
-//         whiteSpace: 'pre-wrap',
-//     },
-// })
+export function code({children, className, ...others}: ComponentPropsWithRef<'code'>) {
+    return <Code
+        language={getLangFromClassName(className)}
+        className={className}
+        {...others}
+    >{children}</Code>
+}
+export { code as inlineCode }
+
+function getLangFromClassName(className?: string) {
+    return className?.match(/language-(\w+)/)?.[1]
+}
