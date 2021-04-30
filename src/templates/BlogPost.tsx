@@ -69,7 +69,6 @@ export default function BlogPost({data, location}: PageProps<GatsbyTypes.BlogPos
                 >
                     Share
                 </Button>
-                <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
             </CardActions>
         </Card>
     </>
