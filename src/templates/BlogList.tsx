@@ -101,7 +101,7 @@ export default function BlogList({
                             ))}
                         </CardContent>
                         <CardContent>
-                            {node.excerpt}
+                            {node.meta.description || node.excerpt}
                         </CardContent>
                     </Card>
                 ))}
@@ -178,6 +178,7 @@ export const pageQuery = graphql`
                     title
                     slug
                     tags
+                    description
                 }
                 excerpt(pruneLength: 180)
             }

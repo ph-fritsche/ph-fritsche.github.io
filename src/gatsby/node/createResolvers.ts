@@ -71,6 +71,7 @@ export const createResolvers: GatsbyNode['createResolvers'] = async ({
                 resolve(source: sourceMdxNode, args: resolverArgs[], context: resolverContext) {
                     const date = source.frontmatter?.date
                     const tags = source.frontmatter?.tags ?? []
+                    const description = source.frontmatter?.description
 
                     const file = context.nodeModel.getNodeById({
                         id: source.parent,
@@ -86,6 +87,7 @@ export const createResolvers: GatsbyNode['createResolvers'] = async ({
                         tags,
                         title,
                         slug,
+                        description,
                     }
                 },
             },

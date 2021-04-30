@@ -4,9 +4,8 @@ import me from '../../content/me'
 const rootDir = `${__dirname}/../..`
 
 export const siteMetadata = {
-    title: `Philipp Fritsche`,
-    description: `Coding`,
     author: {
+        name: me.name,
         email: me.email,
         github: me.github,
         twitter: me.twitter,

@@ -33,7 +33,10 @@ export default function BlogPost({data, location}: PageProps<GatsbyTypes.BlogPos
     }`)
 
     return <>
-        <Seo title={data.mdx?.meta.title}/>
+        <Seo
+            title={data.mdx?.meta.title}
+            description={data.mdx?.meta.description}
+        />
         <Card component="article">
             <CardContent>
                 <Typography variant="subtitle2">{data.mdx?.meta.date && (new Date(data.mdx.meta.date)).toLocaleDateString()}</Typography>
@@ -96,6 +99,7 @@ export const pageQuery = graphql`
                 title
                 date
                 tags
+                description
             }
         }
     }

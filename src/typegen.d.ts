@@ -292,6 +292,7 @@ type SiteSiteMetadata = {
 };
 
 type SiteSiteMetadataAuthor = {
+  readonly name: Maybe<Scalars['String']>;
   readonly email: Maybe<Scalars['String']>;
   readonly github: Maybe<Scalars['String']>;
   readonly twitter: Maybe<Scalars['String']>;
@@ -629,12 +630,14 @@ type MdxMeta = {
   readonly date: Maybe<Scalars['Date']>;
   readonly tags: ReadonlyArray<Scalars['String']>;
   readonly slug: Scalars['String'];
+  readonly description: Maybe<Scalars['String']>;
 };
 
 type MdxFrontmatter = {
   readonly title: Scalars['String'];
   readonly date: Maybe<Scalars['Date']>;
   readonly tags: Maybe<ReadonlyArray<Scalars['String']>>;
+  readonly description: Maybe<Scalars['String']>;
 };
 
 type MdxHeadingMdx = {
@@ -1180,12 +1183,14 @@ type MdxMetaFilterInput = {
   readonly date: Maybe<DateQueryOperatorInput>;
   readonly tags: Maybe<StringQueryOperatorInput>;
   readonly slug: Maybe<StringQueryOperatorInput>;
+  readonly description: Maybe<StringQueryOperatorInput>;
 };
 
 type MdxFrontmatterFilterInput = {
   readonly title: Maybe<StringQueryOperatorInput>;
   readonly date: Maybe<DateQueryOperatorInput>;
   readonly tags: Maybe<StringQueryOperatorInput>;
+  readonly description: Maybe<StringQueryOperatorInput>;
 };
 
 type MdxHeadingMdxFilterListInput = {
@@ -1421,11 +1426,13 @@ type FileFieldsEnum =
   | 'childrenMdx.meta.date'
   | 'childrenMdx.meta.tags'
   | 'childrenMdx.meta.slug'
+  | 'childrenMdx.meta.description'
   | 'childrenMdx.rawBody'
   | 'childrenMdx.fileAbsolutePath'
   | 'childrenMdx.frontmatter.title'
   | 'childrenMdx.frontmatter.date'
   | 'childrenMdx.frontmatter.tags'
+  | 'childrenMdx.frontmatter.description'
   | 'childrenMdx.slug'
   | 'childrenMdx.body'
   | 'childrenMdx.excerpt'
@@ -1481,11 +1488,13 @@ type FileFieldsEnum =
   | 'childMdx.meta.date'
   | 'childMdx.meta.tags'
   | 'childMdx.meta.slug'
+  | 'childMdx.meta.description'
   | 'childMdx.rawBody'
   | 'childMdx.fileAbsolutePath'
   | 'childMdx.frontmatter.title'
   | 'childMdx.frontmatter.date'
   | 'childMdx.frontmatter.tags'
+  | 'childMdx.frontmatter.description'
   | 'childMdx.slug'
   | 'childMdx.body'
   | 'childMdx.excerpt'
@@ -1896,6 +1905,7 @@ type SiteSiteMetadataFilterInput = {
 };
 
 type SiteSiteMetadataAuthorFilterInput = {
+  readonly name: Maybe<StringQueryOperatorInput>;
   readonly email: Maybe<StringQueryOperatorInput>;
   readonly github: Maybe<StringQueryOperatorInput>;
   readonly twitter: Maybe<StringQueryOperatorInput>;
@@ -1937,6 +1947,7 @@ type SiteFieldsEnum =
   | 'buildTime'
   | 'siteMetadata.title'
   | 'siteMetadata.description'
+  | 'siteMetadata.author.name'
   | 'siteMetadata.author.email'
   | 'siteMetadata.author.github'
   | 'siteMetadata.author.twitter'
@@ -2609,11 +2620,13 @@ type MdxFieldsEnum =
   | 'meta.date'
   | 'meta.tags'
   | 'meta.slug'
+  | 'meta.description'
   | 'rawBody'
   | 'fileAbsolutePath'
   | 'frontmatter.title'
   | 'frontmatter.date'
   | 'frontmatter.tags'
+  | 'frontmatter.description'
   | 'slug'
   | 'body'
   | 'excerpt'
@@ -3055,7 +3068,7 @@ type BlogPostQueryVariables = Exact<{
 
 type BlogPostQuery = { readonly site: Maybe<{ readonly siteMetadata: Maybe<{ readonly author: Maybe<Pick<SiteSiteMetadataAuthor, 'twitter'>> }> }>, readonly mdx: Maybe<(
     Pick<Mdx, 'body'>
-    & { readonly meta: Pick<MdxMeta, 'title' | 'date' | 'tags'> }
+    & { readonly meta: Pick<MdxMeta, 'title' | 'date' | 'tags' | 'description'> }
   )> };
 
 type BlogListQueryVariables = Exact<{
@@ -3067,7 +3080,7 @@ type BlogListQueryVariables = Exact<{
 
 type BlogListQuery = { readonly tags: { readonly group: ReadonlyArray<Pick<MdxGroupConnection, 'fieldValue'>> }, readonly list: { readonly pageInfo: Pick<PageInfo, 'currentPage' | 'pageCount'>, readonly edges: ReadonlyArray<{ readonly node: (
         Pick<Mdx, 'excerpt'>
-        & { readonly meta: Pick<MdxMeta, 'title' | 'slug' | 'tags'> }
+        & { readonly meta: Pick<MdxMeta, 'title' | 'slug' | 'tags' | 'description'> }
       ) }> } };
 
 type PagesQueryQueryVariables = Exact<{ [key: string]: never; }>;
@@ -3078,18 +3091,7 @@ type PagesQueryQuery = { readonly allSitePage: { readonly nodes: ReadonlyArray<P
 type SeoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-type SeoQuery = { readonly site: Maybe<{ readonly siteMetadata: Maybe<(
-      Pick<SiteSiteMetadata, 'title' | 'description'>
-      & { readonly author: Maybe<Pick<SiteSiteMetadataAuthor, 'twitter'>> }
-    )> }> };
-
-type BlogQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-type BlogQuery = { readonly allMdx: { readonly pageInfo: Pick<PageInfo, 'currentPage' | 'pageCount' | 'hasNextPage' | 'hasPreviousPage' | 'totalCount' | 'perPage'>, readonly edges: ReadonlyArray<{ readonly node: (
-        Pick<Mdx, 'excerpt'>
-        & { readonly meta: Pick<MdxMeta, 'title' | 'slug'> }
-      ) }> } };
+type SeoQuery = { readonly site: Maybe<{ readonly siteMetadata: Maybe<{ readonly author: Maybe<Pick<SiteSiteMetadataAuthor, 'name' | 'twitter'>> }> }> };
 
 type GatsbyImageSharpFixedFragment = Pick<ImageSharpFixed, 'base64' | 'width' | 'height' | 'src' | 'srcSet'>;
 
@@ -3116,5 +3118,13 @@ type GatsbyImageSharpFluid_withWebp_tracedSVGFragment = Pick<ImageSharpFluid, 't
 type GatsbyImageSharpFluid_noBase64Fragment = Pick<ImageSharpFluid, 'aspectRatio' | 'src' | 'srcSet' | 'sizes'>;
 
 type GatsbyImageSharpFluid_withWebp_noBase64Fragment = Pick<ImageSharpFluid, 'aspectRatio' | 'src' | 'srcSet' | 'srcWebp' | 'srcSetWebp' | 'sizes'>;
+
+type BlogQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+type BlogQuery = { readonly allMdx: { readonly pageInfo: Pick<PageInfo, 'currentPage' | 'pageCount' | 'hasNextPage' | 'hasPreviousPage' | 'totalCount' | 'perPage'>, readonly edges: ReadonlyArray<{ readonly node: (
+        Pick<Mdx, 'excerpt'>
+        & { readonly meta: Pick<MdxMeta, 'title' | 'slug'> }
+      ) }> } };
 
 }

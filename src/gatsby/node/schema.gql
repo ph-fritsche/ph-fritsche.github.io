@@ -9,10 +9,12 @@ type MdxMeta {
     date: Date
     tags: [String!]!
     slug: String!
+    description: String
 }
 
 extend type MdxFrontmatter {
     title: String
     date: Date
     tags: [String!]
+    description: String
 }
