@@ -72,6 +72,7 @@ export const createResolvers: GatsbyNode['createResolvers'] = async ({
                     const date = source.frontmatter?.date
                     const tags = source.frontmatter?.tags ?? []
                     const description = source.frontmatter?.description
+                    const image = source.frontmatter?.image
 
                     const file = context.nodeModel.getNodeById({
                         id: source.parent,
@@ -88,6 +89,7 @@ export const createResolvers: GatsbyNode['createResolvers'] = async ({
                         title,
                         slug,
                         description,
+                        image,
                     }
                 },
             },

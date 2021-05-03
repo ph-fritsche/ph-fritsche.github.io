@@ -10,6 +10,7 @@ type MdxMeta {
     tags: [String!]!
     slug: String!
     description: String
+    image: String
 }
 
 extend type MdxFrontmatter {
@@ -17,4 +18,5 @@ extend type MdxFrontmatter {
     date: Date
     tags: [String!]
     description: String
+    image: String
 }

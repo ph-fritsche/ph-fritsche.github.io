@@ -261,8 +261,6 @@ type Directory_ctimeArgs = {
 type Site = Node & {
   readonly buildTime: Maybe<Scalars['Date']>;
   readonly siteMetadata: Maybe<SiteSiteMetadata>;
-  readonly port: Maybe<Scalars['Int']>;
-  readonly host: Maybe<Scalars['String']>;
   readonly flags: Maybe<SiteFlags>;
   readonly polyfill: Maybe<Scalars['Boolean']>;
   readonly pathPrefix: Maybe<Scalars['String']>;
@@ -631,6 +629,7 @@ type MdxMeta = {
   readonly tags: ReadonlyArray<Scalars['String']>;
   readonly slug: Scalars['String'];
   readonly description: Maybe<Scalars['String']>;
+  readonly image: Maybe<Scalars['String']>;
 };
 
 type MdxFrontmatter = {
@@ -638,6 +637,7 @@ type MdxFrontmatter = {
   readonly date: Maybe<Scalars['Date']>;
   readonly tags: Maybe<ReadonlyArray<Scalars['String']>>;
   readonly description: Maybe<Scalars['String']>;
+  readonly image: Maybe<Scalars['String']>;
 };
 
 type MdxHeadingMdx = {
@@ -878,8 +878,6 @@ type Query_allDirectoryArgs = {
 type Query_siteArgs = {
   buildTime: Maybe<DateQueryOperatorInput>;
   siteMetadata: Maybe<SiteSiteMetadataFilterInput>;
-  port: Maybe<IntQueryOperatorInput>;
-  host: Maybe<StringQueryOperatorInput>;
   flags: Maybe<SiteFlagsFilterInput>;
   polyfill: Maybe<BooleanQueryOperatorInput>;
   pathPrefix: Maybe<StringQueryOperatorInput>;
@@ -1184,6 +1182,7 @@ type MdxMetaFilterInput = {
   readonly tags: Maybe<StringQueryOperatorInput>;
   readonly slug: Maybe<StringQueryOperatorInput>;
   readonly description: Maybe<StringQueryOperatorInput>;
+  readonly image: Maybe<StringQueryOperatorInput>;
 };
 
 type MdxFrontmatterFilterInput = {
@@ -1191,6 +1190,7 @@ type MdxFrontmatterFilterInput = {
   readonly date: Maybe<DateQueryOperatorInput>;
   readonly tags: Maybe<StringQueryOperatorInput>;
   readonly description: Maybe<StringQueryOperatorInput>;
+  readonly image: Maybe<StringQueryOperatorInput>;
 };
 
 type MdxHeadingMdxFilterListInput = {
@@ -1427,12 +1427,14 @@ type FileFieldsEnum =
   | 'childrenMdx.meta.tags'
   | 'childrenMdx.meta.slug'
   | 'childrenMdx.meta.description'
+  | 'childrenMdx.meta.image'
   | 'childrenMdx.rawBody'
   | 'childrenMdx.fileAbsolutePath'
   | 'childrenMdx.frontmatter.title'
   | 'childrenMdx.frontmatter.date'
   | 'childrenMdx.frontmatter.tags'
   | 'childrenMdx.frontmatter.description'
+  | 'childrenMdx.frontmatter.image'
   | 'childrenMdx.slug'
   | 'childrenMdx.body'
   | 'childrenMdx.excerpt'
@@ -1489,12 +1491,14 @@ type FileFieldsEnum =
   | 'childMdx.meta.tags'
   | 'childMdx.meta.slug'
   | 'childMdx.meta.description'
+  | 'childMdx.meta.image'
   | 'childMdx.rawBody'
   | 'childMdx.fileAbsolutePath'
   | 'childMdx.frontmatter.title'
   | 'childMdx.frontmatter.date'
   | 'childMdx.frontmatter.tags'
   | 'childMdx.frontmatter.description'
+  | 'childMdx.frontmatter.image'
   | 'childMdx.slug'
   | 'childMdx.body'
   | 'childMdx.excerpt'
@@ -1951,8 +1955,6 @@ type SiteFieldsEnum =
   | 'siteMetadata.author.email'
   | 'siteMetadata.author.github'
   | 'siteMetadata.author.twitter'
-  | 'port'
-  | 'host'
   | 'flags.DEV_SSR'
   | 'flags.FAST_DEV'
   | 'polyfill'
@@ -2056,8 +2058,6 @@ type SiteGroupConnection = {
 type SiteFilterInput = {
   readonly buildTime: Maybe<DateQueryOperatorInput>;
   readonly siteMetadata: Maybe<SiteSiteMetadataFilterInput>;
-  readonly port: Maybe<IntQueryOperatorInput>;
-  readonly host: Maybe<StringQueryOperatorInput>;
   readonly flags: Maybe<SiteFlagsFilterInput>;
   readonly polyfill: Maybe<BooleanQueryOperatorInput>;
   readonly pathPrefix: Maybe<StringQueryOperatorInput>;
@@ -2621,12 +2621,14 @@ type MdxFieldsEnum =
   | 'meta.tags'
   | 'meta.slug'
   | 'meta.description'
+  | 'meta.image'
   | 'rawBody'
   | 'fileAbsolutePath'
   | 'frontmatter.title'
   | 'frontmatter.date'
   | 'frontmatter.tags'
   | 'frontmatter.description'
+  | 'frontmatter.image'
   | 'slug'
   | 'body'
   | 'excerpt'
@@ -3061,15 +3063,13 @@ type SitePluginSortInput = {
   readonly order: Maybe<ReadonlyArray<Maybe<SortOrderEnum>>>;
 };
 
-type BlogPostQueryVariables = Exact<{
-  id: Maybe<Scalars['String']>;
-}>;
+type BlogQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-type BlogPostQuery = { readonly site: Maybe<{ readonly siteMetadata: Maybe<{ readonly author: Maybe<Pick<SiteSiteMetadataAuthor, 'twitter'>> }> }>, readonly mdx: Maybe<(
-    Pick<Mdx, 'body'>
-    & { readonly meta: Pick<MdxMeta, 'title' | 'date' | 'tags' | 'description'> }
-  )> };
+type BlogQuery = { readonly allMdx: { readonly pageInfo: Pick<PageInfo, 'currentPage' | 'pageCount' | 'hasNextPage' | 'hasPreviousPage' | 'totalCount' | 'perPage'>, readonly edges: ReadonlyArray<{ readonly node: (
+        Pick<Mdx, 'excerpt'>
+        & { readonly meta: Pick<MdxMeta, 'title' | 'slug'> }
+      ) }> } };
 
 type BlogListQueryVariables = Exact<{
   filter: Maybe<MdxFilterInput>;
@@ -3083,23 +3083,20 @@ type BlogListQuery = { readonly tags: { readonly group: ReadonlyArray<Pick<MdxGr
         & { readonly meta: Pick<MdxMeta, 'title' | 'slug' | 'tags' | 'description'> }
       ) }> } };
 
-type PagesQueryQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-type PagesQueryQuery = { readonly allSitePage: { readonly nodes: ReadonlyArray<Pick<SitePage, 'path'>> } };
-
 type SeoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 type SeoQuery = { readonly site: Maybe<{ readonly siteMetadata: Maybe<{ readonly author: Maybe<Pick<SiteSiteMetadataAuthor, 'name' | 'twitter'>> }> }> };
 
-type BlogQueryVariables = Exact<{ [key: string]: never; }>;
+type BlogPostQueryVariables = Exact<{
+  id: Maybe<Scalars['String']>;
+}>;
 
 
-type BlogQuery = { readonly allMdx: { readonly pageInfo: Pick<PageInfo, 'currentPage' | 'pageCount' | 'hasNextPage' | 'hasPreviousPage' | 'totalCount' | 'perPage'>, readonly edges: ReadonlyArray<{ readonly node: (
-        Pick<Mdx, 'excerpt'>
-        & { readonly meta: Pick<MdxMeta, 'title' | 'slug'> }
-      ) }> } };
+type BlogPostQuery = { readonly site: Maybe<{ readonly siteMetadata: Maybe<{ readonly author: Maybe<Pick<SiteSiteMetadataAuthor, 'twitter'>> }> }>, readonly mdx: Maybe<(
+    Pick<Mdx, 'body'>
+    & { readonly meta: Pick<MdxMeta, 'title' | 'date' | 'tags' | 'description' | 'image'> }
+  )> };
 
 type GatsbyImageSharpFixedFragment = Pick<ImageSharpFixed, 'base64' | 'width' | 'height' | 'src' | 'srcSet'>;
 
