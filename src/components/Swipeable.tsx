@@ -172,7 +172,8 @@ export function Swipeable({
 const useStyles = makeStyles(theme => ({
     container: {
         position: 'relative',
-        overflow: 'hidden',
+        overflow: ({ position }: { position: 'fixed' | 'absolute' }) =>
+            position === 'fixed' ? undefined : 'hidden',
     },
     content: {
     },
