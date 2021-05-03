@@ -127,6 +127,7 @@ const useStyles = makeStyles(theme => {
         },
         image: {
             marginBottom: `-${headerHeight.value * 1.1}${headerHeight.unit}`,
+            maxHeight: '400px',
             height: `calc((100vw - 32px) * 0.5)`,
             [theme.breakpoints.down('sm')]: {
                 height: `calc((100vw - 16px) * 0.5)`,
@@ -153,6 +154,7 @@ const useStyles = makeStyles(theme => {
         },
         content: {
             paddingBottom: '1.5em !important',
+            paddingTop: '1.5em !important',
         },
         actions: {
             display: 'flex',
