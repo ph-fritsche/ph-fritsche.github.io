@@ -261,6 +261,8 @@ type Directory_ctimeArgs = {
 type Site = Node & {
   readonly buildTime: Maybe<Scalars['Date']>;
   readonly siteMetadata: Maybe<SiteSiteMetadata>;
+  readonly port: Maybe<Scalars['Int']>;
+  readonly host: Maybe<Scalars['String']>;
   readonly flags: Maybe<SiteFlags>;
   readonly polyfill: Maybe<Scalars['Boolean']>;
   readonly pathPrefix: Maybe<Scalars['String']>;
@@ -331,10 +333,15 @@ type SitePageContextFilterFileAbsolutePath = {
 
 type SitePageContextFilterMeta = {
   readonly tags: Maybe<SitePageContextFilterMetaTags>;
+  readonly date: Maybe<SitePageContextFilterMetaDate>;
 };
 
 type SitePageContextFilterMetaTags = {
   readonly eq: Maybe<Scalars['String']>;
+};
+
+type SitePageContextFilterMetaDate = {
+  readonly lte: Maybe<Scalars['Date']>;
 };
 
 type ImageFormat =
@@ -878,6 +885,8 @@ type Query_allDirectoryArgs = {
 type Query_siteArgs = {
   buildTime: Maybe<DateQueryOperatorInput>;
   siteMetadata: Maybe<SiteSiteMetadataFilterInput>;
+  port: Maybe<IntQueryOperatorInput>;
+  host: Maybe<StringQueryOperatorInput>;
   flags: Maybe<SiteFlagsFilterInput>;
   polyfill: Maybe<BooleanQueryOperatorInput>;
   pathPrefix: Maybe<StringQueryOperatorInput>;
@@ -1955,6 +1964,8 @@ type SiteFieldsEnum =
   | 'siteMetadata.author.email'
   | 'siteMetadata.author.github'
   | 'siteMetadata.author.twitter'
+  | 'port'
+  | 'host'
   | 'flags.DEV_SSR'
   | 'flags.FAST_DEV'
   | 'polyfill'
@@ -2058,6 +2069,8 @@ type SiteGroupConnection = {
 type SiteFilterInput = {
   readonly buildTime: Maybe<DateQueryOperatorInput>;
   readonly siteMetadata: Maybe<SiteSiteMetadataFilterInput>;
+  readonly port: Maybe<IntQueryOperatorInput>;
+  readonly host: Maybe<StringQueryOperatorInput>;
   readonly flags: Maybe<SiteFlagsFilterInput>;
   readonly polyfill: Maybe<BooleanQueryOperatorInput>;
   readonly pathPrefix: Maybe<StringQueryOperatorInput>;
@@ -2083,10 +2096,15 @@ type SitePageContextFilterFileAbsolutePathInput = {
 
 type SitePageContextFilterMetaInput = {
   readonly tags: Maybe<SitePageContextFilterMetaTagsInput>;
+  readonly date: Maybe<SitePageContextFilterMetaDateInput>;
 };
 
 type SitePageContextFilterMetaTagsInput = {
   readonly eq: Maybe<Scalars['String']>;
+};
+
+type SitePageContextFilterMetaDateInput = {
+  readonly lte: Maybe<Scalars['Date']>;
 };
 
 type SitePluginFilterInput = {
@@ -3063,13 +3081,15 @@ type SitePluginSortInput = {
   readonly order: Maybe<ReadonlyArray<Maybe<SortOrderEnum>>>;
 };
 
-type BlogQueryVariables = Exact<{ [key: string]: never; }>;
+type BlogPostQueryVariables = Exact<{
+  id: Maybe<Scalars['String']>;
+}>;
 
 
-type BlogQuery = { readonly allMdx: { readonly pageInfo: Pick<PageInfo, 'currentPage' | 'pageCount' | 'hasNextPage' | 'hasPreviousPage' | 'totalCount' | 'perPage'>, readonly edges: ReadonlyArray<{ readonly node: (
-        Pick<Mdx, 'excerpt'>
-        & { readonly meta: Pick<MdxMeta, 'title' | 'slug'> }
-      ) }> } };
+type BlogPostQuery = { readonly tags: { readonly edges: ReadonlyArray<{ readonly node: Pick<SitePage, 'path'> }> }, readonly site: Maybe<{ readonly siteMetadata: Maybe<{ readonly author: Maybe<Pick<SiteSiteMetadataAuthor, 'twitter'>> }> }>, readonly mdx: Maybe<(
+    Pick<Mdx, 'body'>
+    & { readonly meta: Pick<MdxMeta, 'title' | 'date' | 'tags' | 'description' | 'image'> }
+  )> };
 
 type BlogListQueryVariables = Exact<{
   filter: Maybe<MdxFilterInput>;
@@ -3078,25 +3098,28 @@ type BlogListQueryVariables = Exact<{
 }>;
 
 
-type BlogListQuery = { readonly tags: { readonly group: ReadonlyArray<Pick<MdxGroupConnection, 'fieldValue'>> }, readonly list: { readonly pageInfo: Pick<PageInfo, 'currentPage' | 'pageCount'>, readonly edges: ReadonlyArray<{ readonly node: (
+type BlogListQuery = { readonly tags: { readonly edges: ReadonlyArray<{ readonly node: Pick<SitePage, 'path'> }> }, readonly list: { readonly pageInfo: Pick<PageInfo, 'currentPage' | 'pageCount'>, readonly edges: ReadonlyArray<{ readonly node: (
         Pick<Mdx, 'excerpt'>
         & { readonly meta: Pick<MdxMeta, 'title' | 'slug' | 'tags' | 'description'> }
       ) }> } };
+
+type PagesQueryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+type PagesQueryQuery = { readonly allSitePage: { readonly nodes: ReadonlyArray<Pick<SitePage, 'path'>> } };
 
 type SeoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 type SeoQuery = { readonly site: Maybe<{ readonly siteMetadata: Maybe<{ readonly author: Maybe<Pick<SiteSiteMetadataAuthor, 'name' | 'twitter'>> }> }> };
 
-type BlogPostQueryVariables = Exact<{
-  id: Maybe<Scalars['String']>;
-}>;
+type BlogQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-type BlogPostQuery = { readonly site: Maybe<{ readonly siteMetadata: Maybe<{ readonly author: Maybe<Pick<SiteSiteMetadataAuthor, 'twitter'>> }> }>, readonly mdx: Maybe<(
-    Pick<Mdx, 'body'>
-    & { readonly meta: Pick<MdxMeta, 'title' | 'date' | 'tags' | 'description' | 'image'> }
-  )> };
+type BlogQuery = { readonly allMdx: { readonly pageInfo: Pick<PageInfo, 'currentPage' | 'pageCount' | 'hasNextPage' | 'hasPreviousPage' | 'totalCount' | 'perPage'>, readonly edges: ReadonlyArray<{ readonly node: (
+        Pick<Mdx, 'excerpt'>
+        & { readonly meta: Pick<MdxMeta, 'title' | 'slug'> }
+      ) }> } };
 
 type GatsbyImageSharpFixedFragment = Pick<ImageSharpFixed, 'base64' | 'width' | 'height' | 'src' | 'srcSet'>;
 

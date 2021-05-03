@@ -23,7 +23,7 @@ export default function BlogList({
     const classes = useStyles()
 
     const tag = pageContext.filter.meta?.tags?.eq
-    const tagsNames = [undefined, ...tags.group.map(g => g.fieldValue)]
+    const tagsNames = [undefined, ...tags.edges.map(e => e.node.path.match(/[^/]+$/)?.[0])]
     const tagsIndex = tagsNames.indexOf(tag)
 
     function makeBlogPath(tag?: string, page?: number) {
@@ -56,15 +56,15 @@ export default function BlogList({
                     </Typography>
                 )
                 : null && <div className={classes.tags}>{
-                    tags.group.map(g => (
+                    tagsNames.filter(Boolean).map(t => (
                         <Button
-                            key={g.fieldValue}
+                            key={t}
                             size="small"
                             onClick={() => {
-                                navigate(`/blog/tag/${g.fieldValue}`)
+                                navigate(`/blog/tag/${t}`)
                             }}
                         >
-                            #{g.fieldValue}
+                            #{t}
                         </Button>
                     ))
                 }</div>
@@ -157,9 +157,11 @@ const useStyles = makeStyles(theme => ({
 
 export const pageQuery = graphql`
   query BlogList($filter: MdxFilterInput, $skip: Int = 0, $limit: Int = 10) {
-    tags: allMdx {
-        group(field: meta___tags) {
-            fieldValue
+    tags: allSitePage(filter: {path: {regex: "//blog/tag/\\w+$/"}}) {
+        edges {
+            node {
+                path
+            }
         }
     }
     list: allMdx(

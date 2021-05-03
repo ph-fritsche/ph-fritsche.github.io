@@ -37,8 +37,10 @@ export const createPages: GatsbyNode['createPages'] = async ({
     }
 
     blogPosts.data?.allMdx.edges.forEach(({node}) => {
-        postTagCount[''] = (postTagCount[''] ?? 0) + 1
-        node.meta.tags.forEach(t => { postTagCount[t] = (postTagCount[t] ?? 0) + 1 })
+        if (node.meta.date && new Date(node.meta.date) <= new Date()) {
+            postTagCount[''] = (postTagCount[''] ?? 0) + 1
+            node.meta.tags.forEach(t => { postTagCount[t] = (postTagCount[t] ?? 0) + 1 })
+        }
 
         actions.createPage({
             path: `/blog/post/${node.meta.slug}`,
@@ -46,6 +48,8 @@ export const createPages: GatsbyNode['createPages'] = async ({
             context: { id: node.id },
         })
     })
+
+    const dateStr = (new Date()).toISOString()
 
     const length = 10
     Object.entries(postTagCount).forEach(([tag, count]) => {
@@ -64,6 +68,7 @@ export const createPages: GatsbyNode['createPages'] = async ({
                             tags: tag
                                 ? { eq: tag }
                                 : {},
+                            date: { lte: dateStr },
                         },
                     },
                     skip: i * length,

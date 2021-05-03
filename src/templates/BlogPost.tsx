@@ -33,6 +33,11 @@ export default function BlogPost({data, location}: PageProps<GatsbyTypes.BlogPos
             .join('&')
     }`)
 
+    const dateStr = data.mdx?.meta.date && (new Date(data.mdx.meta.date)).toLocaleDateString()
+    const isDraft = !data.mdx?.meta.date || (new Date(data.mdx?.meta.date) > new Date())
+
+    const tagsNames = data.tags.edges.map(e => e.node.path.match(/[^/]+$/)?.[0])
+
     return <>
         <Seo
             title={data.mdx?.meta.title}
@@ -40,7 +45,13 @@ export default function BlogPost({data, location}: PageProps<GatsbyTypes.BlogPos
         />
         <Card component="article">
             <CardContent>
-                <Typography variant="subtitle2">{data.mdx?.meta.date && (new Date(data.mdx.meta.date)).toLocaleDateString()}</Typography>
+                <Typography
+                    variant="subtitle2"
+                    className={isDraft ? classes.draft : undefined}
+                >
+                    {dateStr}
+                    {isDraft && <span>DRAFT</span>}
+                </Typography>
             </CardContent>
             <CardActions>
                 {data.mdx?.meta.tags.map(t => (
@@ -48,6 +59,7 @@ export default function BlogPost({data, location}: PageProps<GatsbyTypes.BlogPos
                         key={t}
                         size="small"
                         {...getLinkProps(`/blog/tag/${t}`)}
+                        disabled={!tagsNames.includes(t)}
                     >
                         #{t}
                     </Button>
@@ -107,6 +119,12 @@ const useStyles = makeStyles(theme => {
     const headerHeight = getCssValue(theme.typography.h1.fontSize ?? '2em')
 
     return {
+        draft: {
+            color: theme.palette.warning.main,
+            '& span': {
+                margin: '2em',
+            },
+        },
         image: {
             marginBottom: `-${headerHeight.value * 1.1}${headerHeight.unit}`,
             height: `calc((100vw - 32px) * 0.5)`,
@@ -145,6 +163,13 @@ const useStyles = makeStyles(theme => {
 
 export const pageQuery = graphql`
     query BlogPost($id: String) {
+        tags: allSitePage(filter: {path: {regex: "//blog/tag/\\w+$/"}}) {
+            edges {
+                node {
+                    path
+                }
+            }
+        }
         site {
           siteMetadata {
             author {
