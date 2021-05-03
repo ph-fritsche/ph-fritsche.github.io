@@ -1,0 +1,17 @@
+name: Check
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: bahmutov/npm-install@v1
+    - run: yarn lint
+    - run: yarn test
+    - uses: codecov/codecov-action@v1
+      with:
+        file: ./coverage/lcov.info

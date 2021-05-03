@@ -1,0 +1,30 @@
+name: Publish
+
+on:
+  push:
+    branches:
+    - master
+  workflow_dispatch:
+  schedule:
+    - cron: 0 4 * * *
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: master
+    - uses: bahmutov/npm-install@v1
+    - run: yarn build
+    - run: git add -f public
+    - name: Commit build
+      run: >
+        git diff --staged --quiet
+        || (git config user.name "${GITHUB_ACTOR}"
+        && git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+        && git commit -m "build: autoupdate"
+        && echo "buildCommit=$(git rev-parse HEAD)" >>$GITHUB_ENV)
+    - if: env.buildCommit # skip if the build adds nothing new
+      name: Push gh-pages branch
+      run: git push -f origin HEAD:gh-pages
