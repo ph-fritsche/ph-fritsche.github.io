@@ -59,7 +59,7 @@
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
-    "lint": "eslint",
+    "lint": "eslint src test",
     "test": "jest",
     "dev": "jest --coverage false --watch",
     "devserve": "gatsby develop"

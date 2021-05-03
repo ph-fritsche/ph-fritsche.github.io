@@ -1,28 +1,26 @@
-import { createMuiTheme, darken } from '@material-ui/core';
-import createBreakpoints from '@material-ui/core/styles/createBreakpoints';
+import { createMuiTheme, darken, Theme, useTheme as useThemeContext } from '@material-ui/core';
 import { useMemo } from 'react';
 import { colorPrimary } from '../../config'; // ts paths don't work for the cjs module
 import { useConfig } from './Config';
 
 export default function useTheme() {
     const [config] = useConfig().settings
-    return useMemo(() => createTheme(config), [config])
+    const theme = useThemeContext()
+    return useMemo(() => createTheme(config, theme), [config, theme])
 }
 
 function createTheme(
     config: ReturnType<typeof useConfig>['settings'][0],
+    theme: Theme,
 ) {
     const colorPrimaryDark = darken(colorPrimary, .5)
 
-    const breakpoints = createBreakpoints({
-        values: {
-            xs: 400,
-            sm: 600,
-            md: 960,
-            lg: 1280,
-            xl: 1920,
-        },
-    })
+    const { breakpoints } = theme
+    breakpoints.values.xs = 400
+    breakpoints.values.sm = 600
+    breakpoints.values.md = 960
+    breakpoints.values.lg = 1280
+    breakpoints.values.xl = 1920
 
     const themeObject: Parameters<typeof createMuiTheme>[0] = {
         breakpoints,

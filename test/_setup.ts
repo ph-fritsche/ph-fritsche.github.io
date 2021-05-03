@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom'
+import InterSectionObserverMock from './_mocks/InterSectionObserver'
 
 jest.mock('gatsby', () => ({
     ...jest.requireActual('gatsby'),
@@ -6,3 +7,7 @@ jest.mock('gatsby', () => ({
     StaticQuery: jest.fn(),
     useStaticQuery: jest.fn(() => ({})),
 }))
+
+global.IntersectionObserver = InterSectionObserverMock
+
+jest.mock('tiny-warning')

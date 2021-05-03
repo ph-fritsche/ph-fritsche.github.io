@@ -1,4 +1,4 @@
-import { Avatar, Button, Grid, Icon, makeStyles, Typography } from '@material-ui/core'
+import { Avatar, Button, Grid, makeStyles, Typography } from '@material-ui/core'
 import React from 'react'
 import Quote from '~src/components/Quote'
 import me from '~content/me'

@@ -23,10 +23,10 @@ export function getImageProps(url: string) {
 function getImageSrcSet(url: string) {
     const widths = [960, 600, 400]
 
-    const unsplash = url.match(/(?:^|\/\/)unsplash\.com\/photos\/(?<id>[\w\-]+)(?:\/|$)/)
+    const unsplash = url.match(/(?:^|\/\/)unsplash\.com\/photos\/(?<id>[\w-]+)(?:\/|$)/)
     if (unsplash) {
         return Object.fromEntries(widths.map(w =>
-            [w, `https://source.unsplash.com/${unsplash.groups?.id}/${w}x${w/2}`]
+            [w, `https://source.unsplash.com/${unsplash.groups?.id}/${w}x${w/2}`],
         ))
     }
 
