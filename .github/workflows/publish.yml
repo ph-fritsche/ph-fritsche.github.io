@@ -17,7 +17,8 @@ jobs:
         ref: master
     - uses: bahmutov/npm-install@v1
     - run: yarn build
-    - run: git add -f public
+    - run: mv public docs
+    - run: git add -f docs
     - name: Commit build
       run: >
         git diff --staged --quiet
