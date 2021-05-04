@@ -14,7 +14,7 @@ I recently [decided to start a blog](https://ph-fritsche.github.io) which raised
 
 One thing that stuck out right away was the abundance of concrete examples and the lack of documentation on the APIs and their parameters.
 
-See the entry for [GatsbyNode.onCreatePage](https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#onCreatePage).\
+See for example the entry for [GatsbyNode.onCreatePage](https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#onCreatePage).
 It links to an article explaining different use cases in depth, but a listing and explanation which arguments are passed to the `onCreatePage` hook are nowhere to be found.
 
 The same could be said for most blog posts I discovered about gatsby. They provided a lot of examples but little explanation on why the tasks at hand are supposed to be tackled this way in a Gatsby environment or how one could build upon the example.
@@ -23,9 +23,11 @@ The same could be said for most blog posts I discovered about gatsby. They provi
 
 The lack of API documentation gets a little bit less pressing if your IDE hints you in the right direction when you're working with an API.
 
-So the great news is: Beside the [support for Typescript](https://www.gatsbyjs.com/docs/how-to/custom-configuration/typescript/) for page components there is also a way to tranform (almost) all API hooks into Typescript.
-The cleanest ans easiest way I found was per[`gatsby-plugin-ts-config`](https://www.npmjs.com/package/gatsby-plugin-ts-config).
-It allows to reduce the contents of `gatsby-config.js` in the project root to a bare minimum and select another directory for the rest of the configuration and writing them in Typescript.
+So the great news is: Beside the [support for Typescript](https://www.gatsbyjs.com/docs/how-to/custom-configuration/typescript/) for page components there is also a way to tranform (almost) all configuration into Typescript.  
+The cleanest and easiest way I found was per[`gatsby-plugin-ts-config`](https://www.npmjs.com/package/gatsby-plugin-ts-config).
+It allows to reduce the contents of `gatsby-config.js` in the project root to a bare minimum and select another directory for the rest of the configuration files as well as writing them in Typescript.
+
+Since `gatsby` exports the types being used for the API hooks, this makes writing them a lot less error-prone.
 
 ```js
 // gatsby-config.js
@@ -43,7 +45,8 @@ module.exports = generateConfig({
 
 ## Import paths
 
-One limitation I could not (cleanly) work around was the support for `compilerOptions.paths`. You can use [`ts-node`](https://www.npmjs.com/package/ts-node) and pass options to it.
+One limitation I could not (cleanly) work around was the support for `compilerOptions.paths`.  
+You can use [`ts-node`](https://www.npmjs.com/package/ts-node) and pass options to it.
 
 ```js
 // gatsby-config.js
@@ -75,7 +78,7 @@ import Foo from '~src/component/Foo'
 
 ## Typegen
 
-There are multiple plugins for type generation of graphql results and parameters.
+There are multiple plugins for type generation of graphql results and parameters.  
 The one I found working well with Gatsby v3 although it says it would require Gatsby v2 is [`gatsby-plugin-typegen`](https://www.npmjs.com/package/gatsby-plugin-typegen).
 
 Exporting to a declaration file allows you to use the types across your source files.
@@ -121,6 +124,8 @@ export default function Foo() {
 This also works well with `pageQuery` for templates.
 ```ts
 // src/templates/bar.ts
+import { graphql, PageProps } from 'gatsby'
+
 export default function Bar(props: PageProps<GatsbyTypes.BarQuery>) {
     props.data.someList.edges // Array<{title?: string}>
 }
