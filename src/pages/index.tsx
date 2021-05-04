@@ -81,5 +81,6 @@ const useStyles = makeStyles(theme => ({
     },
     actionsButton: {
         background: `${theme.palette.primary.light} !important`,
+        color: `${theme.palette.getContrastText(theme.palette.primary.light)} !important`,
     },
 }))

@@ -13,7 +13,7 @@ function createTheme(
     config: ReturnType<typeof useConfig>['settings'][0],
     theme: Theme,
 ) {
-    const colorPrimaryDark = darken(colorPrimary, .5)
+    const colorPrimaryDark = darken(colorPrimary, .6)
 
     const { breakpoints } = theme
     breakpoints.values.xs = 400
