@@ -1,0 +1,144 @@
+---
+title: Gatsby enhanced
+tags:
+    - gatsby
+    - blog
+image: https://unsplash.com/photos/M6xNMyYi4H8
+---
+
+I recently [decided to start a blog](https://ph-fritsche.github.io) which raised the question what platform to use for this venture. And what kind of developer would I be if I didn't see this as a golden opportunity to learn some new things along the way. I pondered trying out [Gatsby](https://www.gatsbyjs.com/) for a while now and this was my chance to experience all the gloriousness and dreadfulness of just another ecosystem first hand.
+
+> A programmer is someone who - when left unattended - lightheartedly spends a couple of days to automate a 30sec task he will use once.
+
+## The docs
+
+One thing that stuck out right away was the abundance of concrete examples and the lack of documentation on the APIs and their parameters.
+
+See the entry for [GatsbyNode.onCreatePage](https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#onCreatePage).\
+It links to an article explaining different use cases in depth, but a listing and explanation which arguments are passed to the `onCreatePage` hook are nowhere to be found.
+
+The same could be said for most blog posts I discovered about gatsby. They provided a lot of examples but little explanation on why the tasks at hand are supposed to be tackled this way in a Gatsby environment or how one could build upon the example.
+
+## Typescript support
+
+The lack of API documentation gets a little bit less pressing if your IDE hints you in the right direction when you're working with an API.
+
+So the great news is: Beside the [support for Typescript](https://www.gatsbyjs.com/docs/how-to/custom-configuration/typescript/) for page components there is also a way to tranform (almost) all API hooks into Typescript.
+The cleanest ans easiest way I found was per[`gatsby-plugin-ts-config`](https://www.npmjs.com/package/gatsby-plugin-ts-config).
+It allows to reduce the contents of `gatsby-config.js` in the project root to a bare minimum and select another directory for the rest of the configuration and writing them in Typescript.
+
+```js
+// gatsby-config.js
+const { generateConfig } = require('gatsby-plugin-ts-config');
+
+module.exports = generateConfig({
+    projectRoot: __dirname,
+
+    // This could by any directory,
+    // but since there is a lot of the logic how the site is generated,
+    // I chose to place it with the source.
+    configDir: `${__dirname}/src/gatsby`,
+});
+```
+
+## Import paths
+
+One limitation I could not (cleanly) work around was the support for `compilerOptions.paths`. You can use [`ts-node`](https://www.npmjs.com/package/ts-node) and pass options to it.
+
+```js
+// gatsby-config.js
+module.exports = generateConfig({
+    babel: false,
+    tsNode: require(`./tsconfig.json`),
+})
+```
+
+But sadly this does not work with the same configuration that is required for `gatsby build` to support them too.
+So for the moment I decided to give up on paths in config files.
+
+If you set `compilerOptions.baseUrl` the `compilerOptions.paths` work fine with Gatsby.
+
+```json
+{
+    compilerOptions: {
+        "baseUrl": ".",
+        "paths": {
+            "~src/*": ["./src/*"],
+        },
+    }
+}
+```
+
+```ts
+import Foo from '~src/component/Foo'
+```
+
+## Typegen
+
+There are multiple plugins for type generation of graphql results and parameters.
+The one I found working well with Gatsby v3 although it says it would require Gatsby v2 is [`gatsby-plugin-typegen`](https://www.npmjs.com/package/gatsby-plugin-typegen).
+
+Exporting to a declaration file allows you to use the types across your source files.
+
+```ts
+// src/gatsby/gatsby-config.ts
+export const plugins = [
+    {
+        resolve: `gatsby-plugin-typegen`,
+        options: {
+            outputPath: `${rootDir}/src/typegen.d.ts`,
+        },
+    },
+}
+```
+
+There are problems with static queries in `src/pages` but the following solution works fine and keeps the components clean:
+```ts
+// src/query/foo.ts
+import { graphql, useStaticQuery } from 'gatsby'
+
+export const useFooQuery = () => useStaticQuery<GatsbyTypes.FooQuery>(graphql`
+    query Foo {
+        site {
+          siteMetadata {
+              title
+          }
+        }
+    }
+`)
+```
+```ts
+// src/pages/foo.ts
+import { useFooQuery } from '~src/query/foo'
+
+export default function Foo() {
+    const query = useFooQuery()
+
+    query.site?.siteMetadata?.title // string | undefined
+}
+```
+
+This also works well with `pageQuery` for templates.
+```ts
+// src/templates/bar.ts
+export default function Bar(props: PageProps<GatsbyTypes.BarQuery>) {
+    props.data.someList.edges // Array<{title?: string}>
+}
+
+export const pageQuery = graphql`
+    query Bar($filter: SitePageFilterInput) {
+        someList: allSitePage(filter: $filter) {
+            edges {
+                node {
+                    title
+                }
+            }
+        }
+    }
+`
+```
+
+## Caveat
+
+Changes to the configuration are not picked up properly and require `gatsby develop` to be restarted.
+But that's a price I'm willing to pay for not guessing or handcrafting the props structure and types.
