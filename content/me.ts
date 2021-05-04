@@ -1,6 +1,5 @@
 export default {
     name: 'Philipp Fritsche',
-    avatar: undefined,
     description: `
         Open source enthusiast.
         Enjoying to dig through codebases and develop APIs.

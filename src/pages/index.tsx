@@ -8,6 +8,7 @@ import Seo from '~src/components/Seo'
 import { useSwipeable } from '~src/components/Swipeable'
 import { navigate } from 'gatsby'
 import GithubIcon from '~res/images/github'
+import Me from '~content/me.jpg'
 
 export default function Home() {
     const classes = useStyles()
@@ -22,7 +23,7 @@ export default function Home() {
         <div>
             <Grid container className={classes.root} direction="row-reverse">
                 <Grid item sm={4} className={`${classes.gridItem} ${classes.avatarContainer}`}>
-                    <Avatar className={classes.avatar} src={me.avatar}></Avatar>
+                    <Avatar className={classes.avatar} src={Me}/>
                     <Typography variant="h6">{me.name}</Typography>
                 </Grid>
                 <Grid item sm={8} className={classes.gridItem}>
