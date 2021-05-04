@@ -27,7 +27,7 @@ export default function Home() {
                 </Grid>
                 <Grid item sm={8} className={classes.gridItem}>
                     <Typography variant="body1">{me.description}</Typography>
-                    <Quote>{me.quotes[rand(0, me.quotes.length -1)]}</Quote>
+                    <Quote bg="dark">{me.quotes[rand(0, me.quotes.length -1)]}</Quote>
                 </Grid>
                 <Grid item className={classes.actions}>
                     <Button

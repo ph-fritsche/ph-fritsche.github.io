@@ -1,8 +1,9 @@
 import React, { ComponentPropsWithRef } from 'react'
-import { Code, Pre } from '~src/components/Code';
+import { Code, Pre } from '~src/components/Code'
 
-export { Link as a } from '~src/components/Link';
+export { Link as a } from '~src/components/Link'
 export { Typography as p } from '@material-ui/core'
+export { default as blockquote } from '~src/components/Quote'
 
 export function pre({children, ...others}: ComponentPropsWithRef<'pre'>) {
     const language = children
