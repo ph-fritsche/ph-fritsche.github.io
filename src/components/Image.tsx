@@ -20,17 +20,30 @@ export function getImageProps(url: string) {
     }
 }
 
+const match = {
+    unsplash: (s: string) => s.match(/(?:^|\/\/)unsplash\.com\/photos\/(?<id>[\w-]+)(?:\/|$)/)?.groups,
+}
+
 function getImageSrcSet(url: string) {
     const widths = [960, 600, 400]
 
-    const unsplash = url.match(/(?:^|\/\/)unsplash\.com\/photos\/(?<id>[\w-]+)(?:\/|$)/)
+    const unsplash = match.unsplash(url)
     if (unsplash) {
         return Object.fromEntries(widths.map(w =>
-            [w, `https://source.unsplash.com/${unsplash.groups?.id}/${w}x${w/2}`],
+            [w, `https://source.unsplash.com/${unsplash.id}/${w}x${w/2}`],
         ))
     }
 
     return {
         '': url,
     }
+}
+
+export function getImageOg(url: string) {
+    const unsplash = match.unsplash(url)
+    if (unsplash) {
+        return `https://source.unsplash.com/${unsplash.id}/1200x630`
+    }
+
+    return url
 }

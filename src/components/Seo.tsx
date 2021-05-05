@@ -8,12 +8,14 @@
 import * as React from 'react'
 import { Helmet } from 'react-helmet'
 import { useStaticQuery, graphql } from 'gatsby'
+import { getImageOg } from './Image'
 
 export default function Seo({
     description,
     lang = 'en',
     meta = [],
     title,
+    image,
 }: {
     description?: string,
     lang?: string,
@@ -22,6 +24,7 @@ export default function Seo({
         content: string,
     }[],
     title?: string,
+    image?: string,
 } = {}) {
     const { site } = useStaticQuery<GatsbyTypes.SeoQuery>(graphql`
       query Seo {
@@ -62,6 +65,10 @@ export default function Seo({
                 {
                     property: `og:type`,
                     content: `website`,
+                },
+                {
+                    property: `og:image`,
+                    content: image && getImageOg(image),
                 },
                 {
                     name: `twitter:card`,
