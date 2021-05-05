@@ -4,6 +4,10 @@ tags:
     - gatsby
     - blog
 image: https://unsplash.com/photos/M6xNMyYi4H8
+description: >
+    Save yourself the time and trouble of configuring per trial and error and set up Gatsby with Typescript.
+    A quick guide to an improved Gatsby configuration.
+date: 2021-05-05
 ---
 
 I recently [decided to start a blog](/blog/post/launching-a-blog) which raised the question what platform to use for this venture. And what kind of developer would I be if I didn't see this as a golden opportunity to learn some new things along the way. I pondered trying out [Gatsby](https://www.gatsbyjs.com/) for a while now and this was my chance to experience all the gloriousness and dreadfulness of just another ecosystem first hand.
@@ -79,7 +83,7 @@ import Foo from '~src/component/Foo'
 ## Typegen
 
 There are multiple plugins for type generation of graphql results and parameters.  
-The one I found working well with Gatsby v3 although it says it would require Gatsby v2 is [`gatsby-plugin-typegen`](https://www.npmjs.com/package/gatsby-plugin-typegen).
+The one I found working well with Gatsby v3 - although it says it would require Gatsby v2 - is [`gatsby-plugin-typegen`](https://www.npmjs.com/package/gatsby-plugin-typegen).
 
 Exporting to a declaration file allows you to use the types across your source files.
 
@@ -95,7 +99,7 @@ export const plugins = [
 }
 ```
 
-There are problems with static queries in `src/pages` but the following solution works fine and keeps the components clean:
+There are problems with static queries in `src/pages`, but the following solution works fine and keeps the components clean:
 ```ts
 // src/query/foo.ts
 import { graphql, useStaticQuery } from 'gatsby'
