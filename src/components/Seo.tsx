@@ -16,6 +16,7 @@ export default function Seo({
     meta = [],
     title,
     image,
+    type = 'website',
 }: {
     description?: string,
     lang?: string,
@@ -25,6 +26,7 @@ export default function Seo({
     }[],
     title?: string,
     image?: string,
+    type?: 'website' | 'article' | 'blog',
 } = {}) {
     const { site } = useStaticQuery<GatsbyTypes.SeoQuery>(graphql`
       query Seo {
@@ -38,6 +40,7 @@ export default function Seo({
         }
       }
     `)
+    const twitterHandle = site?.siteMetadata?.author?.twitter ? `@${site?.siteMetadata?.author?.twitter}` : undefined
 
     return (
         <Helmet
@@ -56,7 +59,7 @@ export default function Seo({
                 },
                 {
                     property: `og:title`,
-                    content: title,
+                    content: title ?? site?.siteMetadata?.author?.name,
                 },
                 {
                     property: `og:description`,
@@ -64,7 +67,7 @@ export default function Seo({
                 },
                 {
                     property: `og:type`,
-                    content: `website`,
+                    content: type,
                 },
                 {
                     property: `og:image`,
@@ -76,7 +79,11 @@ export default function Seo({
                 },
                 {
                     name: `twitter:creator`,
-                    content: site?.siteMetadata?.author?.twitter || ``,
+                    content: twitterHandle,
+                },
+                {
+                    name: `twitter:site`,
+                    content: twitterHandle,
                 },
                 {
                     name: `twitter:title`,

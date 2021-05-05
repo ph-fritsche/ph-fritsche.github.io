@@ -43,6 +43,7 @@ export default function BlogPost({data, location}: PageProps<GatsbyTypes.BlogPos
             title={data.mdx?.meta.title}
             description={data.mdx?.meta.description}
             image={data.mdx?.meta.image}
+            type="article"
         />
         <Card component="article">
             <CardContent>

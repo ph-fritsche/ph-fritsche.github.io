@@ -44,7 +44,10 @@ export default function BlogList({
     }, [tag, tagsIndex])
 
     return <>
-        <Seo title={tag ? `#${tag}` : `Blog`}/>
+        <Seo
+            title={tag ? `#${tag}` : `Blog`}
+            type="blog"
+        />
         <div>
             { tag
                 ? (
