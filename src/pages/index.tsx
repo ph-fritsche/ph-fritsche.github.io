@@ -1,4 +1,4 @@
-import { Avatar, Button, Grid, makeStyles, Typography } from '@material-ui/core'
+import { Avatar, Button, Grid, Typography, useTheme } from '@material-ui/core'
 import React from 'react'
 import Quote from '~src/components/Quote'
 import me from '~content/me'
@@ -11,33 +11,56 @@ import GithubIcon from '~res/images/github'
 import Me from '~content/me.jpg'
 
 export default function Home() {
-    const classes = useStyles()
-
     useSwipeable({
         left: () => navigate('/projects'),
         up: () => navigate('/projects'),
     }, [])
 
+    const theme = useTheme()
+
     return <>
         <Seo/>
         <div>
-            <Grid container className={classes.root} direction="row-reverse">
-                <Grid item sm={4} className={`${classes.gridItem} ${classes.avatarContainer}`}>
-                    <Avatar className={classes.avatar} src={Me}/>
+            <Grid container direction="row-reverse" sx={{
+                marginTop: '10vh',
+                marginBottom: '10vh',
+            }}>
+                <Grid item sm={4} sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}>
+                    <Avatar src={Me} sx={{
+                        width: '180px !important',
+                        height: '180px !important',
+                    }}/>
                     <Typography variant="h6">{me.name}</Typography>
                 </Grid>
-                <Grid item sm={8} className={classes.gridItem}>
+                <Grid item sm={8} sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                }}>
                     <Typography variant="body1">{me.description}</Typography>
                     <Quote bg="dark">{me.quotes[rand(0, me.quotes.length -1)]}</Quote>
                 </Grid>
-                <Grid item className={classes.actions}>
+                <Grid item sx={{
+                    textAlign: 'center',
+                    '& > *': {
+                        margin: '16px !important',
+                    },
+                }}>
                     <Button
                         variant="contained"
                         color="primary"
                         startIcon={<GithubIcon/>}
                         href={`https://github.com/${me.github}`}
                         target="_blank"
-                        className={classes.actionsButton}
+                        sx={{
+                            background: `${theme.palette.primary.light} !important`,
+                            color: `${theme.palette.getContrastText(theme.palette.primary.light)} !important`,
+                        }}
                     >
                         Github profile
                     </Button>
@@ -47,7 +70,10 @@ export default function Home() {
                         startIcon={<Email/>}
                         href={`mailto:${me.email}`}
                         target="_blank"
-                        className={classes.actionsButton}
+                        sx={{
+                            background: `${theme.palette.primary.light} !important`,
+                            color: `${theme.palette.getContrastText(theme.palette.primary.light)} !important`,
+                        }}
                     >
                         Email me
                     </Button>
@@ -56,32 +82,3 @@ export default function Home() {
         </div>
     </>
 }
-
-const useStyles = makeStyles(theme => ({
-    root: {
-        marginTop: '10vh',
-        marginBottom: '10vh',
-    },
-    avatar: {
-        width: '180px !important',
-        height: '180px !important',
-    },
-    gridItem: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-    },
-    avatarContainer: {
-        alignItems: 'center',
-    },
-    actions: {
-        textAlign: 'center',
-        '& > *': {
-            margin: '16px !important',
-        },
-    },
-    actionsButton: {
-        background: `${theme.palette.primary.light} !important`,
-        color: `${theme.palette.getContrastText(theme.palette.primary.light)} !important`,
-    },
-}))

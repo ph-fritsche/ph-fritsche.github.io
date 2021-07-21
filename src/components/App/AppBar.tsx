@@ -1,16 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { alpha, AppBar as MuiAppBar, Button, IconButton, makeStyles } from '@material-ui/core';
+import React, { ComponentProps, useEffect, useRef, useState } from 'react';
+import { alpha, AppBar as MuiAppBar, Box, Button, IconButton, Theme, useTheme } from '@material-ui/core';
 import { SettingsBrightness } from '@material-ui/icons'
 import { getLinkProps } from '~src/components/Link';
 import Container from './Container';
 import { useConfig } from './Config';
 
 export default function AppBar({
-    className,
+    sx: sxProp,
 }: {
-    className: string,
+    sx: ComponentProps<typeof MuiAppBar>['sx']
 }) {
-    const classes = useStyles()
     const anchorEl = useRef<HTMLDivElement>(null)
     const [anchored, setAnchored] = useState(true)
 
@@ -27,6 +26,8 @@ export default function AppBar({
         state: [configState],
     } = useConfig()
 
+    const sx = makeSx(useTheme())
+
     return (<>
         <div
             ref={anchorEl}
@@ -39,41 +40,45 @@ export default function AppBar({
 
         <MuiAppBar
             position="sticky"
-            className={`${classes.appBar} ${className} ${anchored ? classes.appBarAnchored : ''}`}
+            sx={{
+                ...sxProp,
+                ...sx.appBar,
+                ...(anchored ? sx.appBarAnchored : undefined),
+            }}
             elevation={anchored ? 0 : 4}
         >
-            <Container className={classes.appBarContainer}>
+            <Container sx={sx.appBarContainer}>
                 <nav>
-                    <ul className={classes.navList}>
+                    <Box component="ul" sx={sx.navList}>
                         { navigationLinks.map(({name, to}) => (
                             <Button
                                 key={to}
                                 component="li"
                                 {...getLinkProps(to)}
-                                className={classes.appBarButton}
+                                sx={sx.appBarButton}
                             >
                                 {name}
                             </Button>
                         ))}
-                    </ul>
+                    </Box>
                 </nav>
-                <div className={classes.options}>
+                <Box sx={sx.options}>
                     {configState.darkModeSwitch && (
                         <IconButton
                             size="small"
                             onClick={() => setConfig({darkMode: !config.darkMode})}
-                            className={classes[config.darkMode ? 'nightModeOff' : 'nightModeOn']}
+                            sx={config.darkMode ? sx.nightModeOff : sx.nightModeOn}
                         >
                             <SettingsBrightness/>
                         </IconButton>
                     )}
-                </div>
+                </Box>
             </Container>
         </MuiAppBar>
     </>)
 }
 
-const useStyles = makeStyles(theme => ({
+const makeSx = (theme: Theme) => ({
     appBar: {
         minHeight: '5vh',
         color: 'inherit !important',
@@ -113,7 +118,7 @@ const useStyles = makeStyles(theme => ({
         background: '#000 !important',
         color: '#fff !important',
     },
-}))
+} as const)
 
 const navigationLinks = [
     {name: 'Home', to: '/'},

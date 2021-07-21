@@ -1,4 +1,4 @@
-import { createMuiTheme, darken, Theme, useTheme as useThemeContext } from '@material-ui/core';
+import { createTheme as createMuiTheme, darken, Theme, useTheme as useThemeContext } from '@material-ui/core';
 import { useMemo } from 'react';
 import { colorPrimary } from '../../config'; // ts paths don't work for the cjs module
 import { useConfig } from './Config';

@@ -1,11 +1,10 @@
 import React from 'react'
 import { graphql, navigate, PageProps } from 'gatsby'
 import { useDarkModeSwitch } from '~src/components/App/Config'
-import { Button, CardActionArea, CardContent, CardHeader, makeStyles, Pagination, Typography } from '@material-ui/core'
+import { Box, Button, CardActionArea, CardContent, CardHeader, Pagination, Typography, useTheme } from '@material-ui/core'
 import Card from '~src/components/Card'
 import Panel from '~src/components/Panel'
 import { getLinkProps } from '~src/components/Link'
-import type { BaseCSSProperties } from '@material-ui/styles'
 import Seo from '~src/components/Seo'
 import { useSwipeable } from '~src/components/Swipeable'
 
@@ -20,7 +19,7 @@ export default function BlogList({
 >) {
     useDarkModeSwitch()
 
-    const classes = useStyles()
+    const theme = useTheme()
 
     const tag = pageContext.filter.meta?.tags?.eq
     const tagsNames = [undefined, ...tags.edges.map(e => e.node.path.match(/[^/]+$/)?.[0])]
@@ -49,17 +48,24 @@ export default function BlogList({
             type="blog"
         />
         <div>
-            { tag
+            {(tag
                 ? (
-                    <Typography
-                        variant="h2"
-                        className={`${classes.header} ${classes.primaryOnBackground}`}
-                    >
+                    <Typography variant="h2" sx={{
+                        marginBottom: '8px !important',
+                        color: theme.palette.primary.light,
+                    }}>
                         #{tag}
                     </Typography>
                 )
-                : null && <div className={classes.tags}>{
-                    tagsNames.filter(Boolean).map(t => (
+                : null
+            ) && (
+                <Box sx={{
+                    marginBottom: '8px',
+                    '& button': {
+                        color: `${theme.palette.primary.light} !important`,
+                    },
+                }}>
+                    {tagsNames.filter(Boolean).map(t => (
                         <Button
                             key={t}
                             size="small"
@@ -69,18 +75,21 @@ export default function BlogList({
                         >
                             #{t}
                         </Button>
-                    ))
-                }</div>
-            }
+                    ))}
+                </Box>
+            )}
             <Panel>
                 {list.edges.map(({ node }) => (
-                    <Card
-                        key={node.meta.slug}
-                        className={classes.card}
-                    >
+                    <Card key={node.meta.slug} sx={{
+                        position: 'relative',
+                    }}>
                         <CardActionArea
                             {...getLinkProps(`/blog/post/${node.meta.slug}`)}
-                            className={classes.cardActionArea}
+                            sx={{
+                                position: 'absolute',
+                                height: '100%',
+                                width: '100%',
+                            }}
                         />
                         <CardHeader
                             title={node.meta.title}
@@ -110,53 +119,28 @@ export default function BlogList({
                 ))}
             </Panel>
             { list.pageInfo.pageCount > 0 && (
-                <div className={classes.paginationContainer}>
+                <Box sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    marginTop: '8px',
+                }}>
                     <Pagination
                         variant="outlined"
                         color="primary"
-                        className={classes.pagination}
                         count={list.pageInfo.pageCount}
                         page={list.pageInfo.currentPage}
                         onChange={(e, i) => navigate(makeBlogPath(tag, i))}
+                        sx={{
+                            '& button': {
+                                backgroundColor: theme.palette.background.paper,
+                            },
+                        }}
                     />
-                </div>
+                </Box>
             )}
         </div>
     </>
 }
-
-const useStyles = makeStyles(theme => ({
-    primaryOnBackground: {
-        color: theme.palette.primary.light,
-    },
-    header: {
-        marginBottom: '8px !important',
-    },
-    tags: {
-        marginBottom: '8px',
-        '& button': {
-            color: `${theme.palette.primary.light} !important`,
-        },
-    },
-    card: {
-        position: 'relative',
-    },
-    cardActionArea: {
-        position: 'absolute !important' as BaseCSSProperties['position'],
-        height: '100%',
-        width: '100%',
-    },
-    paginationContainer: {
-        display: 'flex',
-        justifyContent: 'center',
-        marginTop: '8px',
-    },
-    pagination: {
-        '& button': {
-            backgroundColor: theme.palette.background.paper,
-        },
-    },
-}))
 
 export const pageQuery = graphql`
   query BlogList($filter: MdxFilterInput, $skip: Int = 0, $limit: Int = 10) {

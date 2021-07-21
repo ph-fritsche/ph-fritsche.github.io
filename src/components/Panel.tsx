@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core';
+import { Box, useTheme } from '@material-ui/core';
 import React, { PropsWithChildren } from 'react';
 
 export default function Panel({
@@ -7,26 +7,22 @@ export default function Panel({
 }: PropsWithChildren<{
     columns?: number,
 }>) {
-    const classes = useStyles(columns)
+    const theme = useTheme()
 
     return (
-        <div className={classes.panel}>
+        <Box sx={{
+            columnCount: 1,
+            [theme.breakpoints.up('sm')]: {
+                columnCount: Math.min(2, columns),
+            },
+            [theme.breakpoints.up('md')]: {
+                columnCount: Math.min(3, columns),
+            },
+            [theme.breakpoints.up('lg')]: {
+                columnCount: Math.min(4, columns),
+            },
+        }}>
             {children}
-        </div>
+        </Box>
     )
 }
-
-const useStyles = makeStyles(theme => ({
-    panel: {
-        columnCount: 1,
-        [theme.breakpoints.up('sm')]: {
-            columnCount: (columns: number) => Math.min(2, columns),
-        },
-        [theme.breakpoints.up('md')]: {
-            columnCount: (columns: number) => Math.min(3, columns),
-        },
-        [theme.breakpoints.up('lg')]: {
-            columnCount: (columns: number) => Math.min(4, columns),
-        },
-    },
-}))

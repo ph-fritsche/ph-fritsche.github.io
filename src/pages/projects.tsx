@@ -1,4 +1,4 @@
-import { Avatar, Button, CardActions, CardContent, CardHeader, makeStyles, Typography } from '@material-ui/core'
+import { Avatar, Button, CardActions, CardContent, CardHeader, Typography } from '@material-ui/core'
 import { OpenInNew } from '@material-ui/icons'
 import { navigate } from 'gatsby'
 import * as React from 'react'
@@ -18,8 +18,6 @@ export default function Projects() {
         right: () => navigate('/'),
     }, [])
 
-    const classes = useStyles()
-
     const shuffledProjects = React.useMemo(() => {
         return shuffle(projects)
     }, [])
@@ -35,9 +33,15 @@ export default function Projects() {
                             <Avatar
                                 variant="rounded"
                                 src={p.avatar}
-                                classes={{
-                                    root: classes.avatar,
-                                    img: classes.avatarImg,
+                                sx={{
+                                    backgroundColor: 'hsla(0, 0%, 100%, .85)',
+                                }}
+                                imgProps={{
+                                    style: {
+                                        objectFit: 'contain',
+                                        width: '95%',
+                                        height: '95%',
+                                    },
                                 }}
                             />
                         }
@@ -56,14 +60,3 @@ export default function Projects() {
         </Panel>
     </>
 }
-
-const useStyles = makeStyles(({
-    avatar: {
-        backgroundColor: 'hsla(0, 0%, 100%, .85)',
-    },
-    avatarImg: {
-        'object-fit': 'contain !important',
-        'width': '95% !important',
-        'height': '95% !important',
-    },
-}))

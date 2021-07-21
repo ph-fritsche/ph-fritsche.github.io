@@ -1,5 +1,5 @@
 import React from 'react'
-import { CssBaseline, makeStyles, ThemeProvider } from '@material-ui/core'
+import { Box, CssBaseline, ThemeProvider } from '@material-ui/core'
 import { Helmet } from 'react-helmet'
 
 import AppBar from './AppBar'
@@ -8,6 +8,7 @@ import { ConfigProvider } from './Config'
 import useTheme from './theme'
 import useBackground from './background'
 import { Swipeable } from '../Swipeable'
+import { css } from '@emotion/react'
 
 export default function App({
     children,
@@ -50,45 +51,44 @@ function AppInConfig({
 function AppInTheme({
     children,
 }: React.PropsWithChildren<unknown>) {
-    const classes = useStyles()
+    const theme = useTheme()
 
-    const bgClass = useBackground()
+    const bgSx = useBackground()
 
-    return (
-        <Swipeable>
-            <div className={classes.app}>
-                <Helmet
-                    bodyAttributes={{
-                        class: `${classes.body} ${bgClass}`,
-                    }}
-                />
-                <AppBar className={bgClass}/>
-                <main className={classes.content}>
-                    {children}
-                </main>
-                <Footer/>
-            </div>
-        </Swipeable>
-    )
-}
-
-const useStyles = makeStyles(theme => ({
-    body: {
+    const bodyCss = css({
         fontFamily: `'Alegreya Sans', sans-serif`,
         fontWeight: 100,
         margin: 0,
         color: theme.palette.getContrastText(theme.palette.background.default),
         minHeight: '100vh',
-    },
-    app: {
-        display: 'flex',
-        flexDirection: 'column',
-        minHeight: '100vh',
-    },
-    content: {
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-    },
-}))
+        ...bgSx,
+    })
+
+    return (
+        <Swipeable>
+            <Box sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                minHeight: '100vh',
+            }}>
+                <Helmet
+                    bodyAttributes={{
+                        class: `css-${bodyCss.name}`,
+                    }}
+                >
+                    <style>{`.css-${bodyCss.name} { ${bodyCss.styles} }`}</style>
+                </Helmet>
+                <AppBar sx={bgSx}/>
+                <Box component="main" sx={{
+                    flex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                }}>
+                    {children}
+                </Box>
+                <Footer/>
+            </Box>
+        </Swipeable>
+    )
+}

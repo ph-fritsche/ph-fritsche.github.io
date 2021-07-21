@@ -1,26 +1,21 @@
-import React from 'react';
-import { Container as MuiContainer, makeStyles } from '@material-ui/core'
+import React, { ComponentProps } from 'react';
+import { Container as MuiContainer } from '@material-ui/core'
 
 export default function Container({
-    className,
+    sx,
     children,
 }: React.PropsWithChildren<{
-    className?: string,
+    sx?: ComponentProps<typeof MuiContainer>['sx'],
 }>) {
-    const classes = useStyles()
-
     return (
         <MuiContainer
             maxWidth="md"
-            className={`${classes.root} ${className}`}
+            sx={{
+                ...sx,
+                overflow: 'hidden',
+            }}
         >
             {children}
         </MuiContainer>
     )
 }
-
-const useStyles = makeStyles(({
-    root: {
-        overflow: 'hidden',
-    },
-}))

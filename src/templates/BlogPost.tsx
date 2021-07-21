@@ -4,7 +4,7 @@ import { MDXRenderer } from 'gatsby-plugin-mdx'
 import { graphql, navigate, PageProps } from 'gatsby'
 import { useDarkModeSwitch } from '~src/components/App/Config'
 import * as mdxComponents from './mdxComponents'
-import { Button, CardActions, CardContent, CardHeader, CardMedia, makeStyles, Typography } from '@material-ui/core'
+import { Box, Button, CardActions, CardContent, CardHeader, CardMedia, Typography, useTheme } from '@material-ui/core'
 import Card from '~src/components/Card'
 import { getLinkProps } from '~src/components/Link'
 import Seo from '~src/components/Seo'
@@ -15,7 +15,7 @@ import { getImageProps } from '~src/components/Image'
 export default function BlogPost({data, location}: PageProps<GatsbyTypes.BlogPostQuery>) {
     useDarkModeSwitch()
 
-    const classes = useStyles()
+    const theme = useTheme()
 
     useSwipeable({
         up: () => navigate('/blog'),
@@ -38,6 +38,9 @@ export default function BlogPost({data, location}: PageProps<GatsbyTypes.BlogPos
 
     const tagsNames = data.tags.edges.map(e => e.node.path.match(/[^/]+$/)?.[0])
 
+    const headerBg = theme.palette.getContrastText(theme.palette.text.primary)
+    const headerHeight = getCssValue(theme.typography.h1.fontSize ?? '2em')
+
     return <>
         <Seo
             title={data.mdx?.meta.title}
@@ -49,7 +52,15 @@ export default function BlogPost({data, location}: PageProps<GatsbyTypes.BlogPos
             <CardContent>
                 <Typography
                     variant="subtitle2"
-                    className={isDraft ? classes.draft : undefined}
+                    sx={isDraft
+                        ? {
+                            color: theme.palette.warning.main,
+                            '& span': {
+                                margin: '2em',
+                            },
+                        }
+                        : undefined
+                    }
                 >
                     {dateStr}
                     {isDraft && <span>DRAFT</span>}
@@ -71,19 +82,46 @@ export default function BlogPost({data, location}: PageProps<GatsbyTypes.BlogPos
                 <CardMedia
                     component="img"
                     {...getImageProps(data.mdx?.meta.image ?? '')}
-                    className={classes.image}
+                    sx={{
+                        marginBottom: `-${headerHeight.value * 1.1}${headerHeight.unit}`,
+                        maxHeight: '400px',
+                        height: `calc((100vw - 32px) * 0.5)`,
+                        [theme.breakpoints.down('sm')]: {
+                            height: `calc((100vw - 16px) * 0.5)`,
+                        },
+                        [theme.breakpoints.down('xs')]: {
+                            height: `calc((100vw - 8px) * 0.5)`,
+                        },
+                    }}
                 />
             )}
             <CardHeader
                 title={data.mdx?.meta.title}
                 titleTypographyProps={{
                     variant: 'h1',
-                    className: [classes.header, data.mdx?.meta.image ? classes.headerWithMedia : null]
-                        .filter(Boolean).join(' '),
+                    sx: {
+                        color: theme.palette.primary.main,
+                        fontWeight: 'normal',
+                        ...(data.mdx?.meta.image && {
+                            textShadow: [
+                                `0px -2px 2px ${headerBg}`,
+                                `0px 2px 2px ${headerBg}`,
+                                `2px 2px 2px ${headerBg}`,
+                                `2px 0px 2px ${headerBg}`,
+                                `2px -2px 2px ${headerBg}`,
+                                `-2px 2px 2px ${headerBg}`,
+                                `-2px 0px 2px ${headerBg}`,
+                                `-2px -2px 2px ${headerBg}`,
+                            ].join(','),
+                        }),
+                    },
                 }}
             />
             <CardContent>
-                <div className={classes.content}>
+                <Box sx={{
+                    paddingBottom: '1.5em !important',
+                    paddingTop: '1.5em !important',
+                }}>
                     {
                         data.mdx?.body && (
                             <MDXProvider components={mdxComponents}>
@@ -91,9 +129,12 @@ export default function BlogPost({data, location}: PageProps<GatsbyTypes.BlogPos
                             </MDXProvider>
                         )
                     }
-                </div>
+                </Box>
             </CardContent>
-            <CardActions className={classes.actions}>
+            <CardActions sx={{
+                display: 'flex',
+                flexDirection: 'row-reverse',
+            }}>
                 <Button
                     {...getLinkProps(String(twitterShare))}
                     startIcon={<TwitterIcon/>}
@@ -115,55 +156,6 @@ function getCssValue(value: string | number) {
         unit: m?.groups?.unit ?? null,
     }
 }
-
-const useStyles = makeStyles(theme => {
-    const headerBg = theme.palette.getContrastText(theme.palette.text.primary)
-    const headerHeight = getCssValue(theme.typography.h1.fontSize ?? '2em')
-
-    return {
-        draft: {
-            color: theme.palette.warning.main,
-            '& span': {
-                margin: '2em',
-            },
-        },
-        image: {
-            marginBottom: `-${headerHeight.value * 1.1}${headerHeight.unit}`,
-            maxHeight: '400px',
-            height: `calc((100vw - 32px) * 0.5)`,
-            [theme.breakpoints.down('sm')]: {
-                height: `calc((100vw - 16px) * 0.5)`,
-            },
-            [theme.breakpoints.down('xs')]: {
-                height: `calc((100vw - 8px) * 0.5)`,
-            },
-        },
-        header: {
-            color: theme.palette.primary.main,
-            fontWeight: 'normal !important' as 'bold',
-        },
-        headerWithMedia: {
-            textShadow: [
-                `0px -2px 2px ${headerBg}`,
-                `0px 2px 2px ${headerBg}`,
-                `2px 2px 2px ${headerBg}`,
-                `2px 0px 2px ${headerBg}`,
-                `2px -2px 2px ${headerBg}`,
-                `-2px 2px 2px ${headerBg}`,
-                `-2px 0px 2px ${headerBg}`,
-                `-2px -2px 2px ${headerBg}`,
-            ].join(','),
-        },
-        content: {
-            paddingBottom: '1.5em !important',
-            paddingTop: '1.5em !important',
-        },
-        actions: {
-            display: 'flex',
-            flexDirection: 'row-reverse',
-        },
-    }
-})
 
 export const pageQuery = graphql`
     query BlogPost($id: String) {

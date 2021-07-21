@@ -1,6 +1,11 @@
 import React from 'react'
-import { alpha, makeStyles, Typography } from '@material-ui/core';
+import { alpha, Box, Typography, useTheme } from '@material-ui/core';
 import { FormatQuote } from '@material-ui/icons';
+
+const modeOpposite = {
+    light: 'dark',
+    dark: 'light',
+} as const
 
 export default function Quote({
     bg,
@@ -8,51 +13,40 @@ export default function Quote({
 }: React.PropsWithChildren<{
     bg?: 'light' | 'dark',
 }>) {
-    const classes = useStyles({bg})
+    const theme = useTheme()
 
     return (
-        <div className={classes.quoteContainer}>
-            <FormatQuote className={`${classes.icon} ${classes.leadingQuotes}`} />
-            <blockquote className={classes.quote}>
+        <Box sx={{
+            position: 'relative',
+            padding: '1px 0', // prevent collapsing margins
+        }}>
+            <FormatQuote sx={{
+                width: '1.2em !important',
+                height: '1.2em !important',
+                color: alpha(theme.palette.primary[modeOpposite[bg ?? theme.palette.mode]], .5),
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+            }}/>
+            <Box component="blockquote" sx={{
+                margin: '.7em 0',
+                padding: '4px 1em',
+                backgroundColor: (bg ?? theme.palette.mode) === 'light' ? `hsla(0, 0%, 0%, 7%)` : `hsla(0, 0%, 100%, 7%)`,
+                borderRadius: '4px',
+            }}>
                 { typeof children === 'string'
                     ? <Typography>{children}</Typography>
                     : children
                 }
-            </blockquote>
-            <FormatQuote className={`${classes.icon} ${classes.trailingQuotes}`} />
-        </div>
+            </Box>
+            <FormatQuote sx={{
+                width: '1.2em !important',
+                height: '1.2em !important',
+                color: alpha(theme.palette.primary[modeOpposite[bg ?? theme.palette.mode]], .5),
+                position: 'absolute',
+                top: 0,
+                right: 0,
+            }}/>
+        </Box>
     )
 }
-
-const modeOpposite = {
-    light: 'dark',
-    dark: 'light',
-} as const
-const useStyles = makeStyles(theme => ({
-    quoteContainer: {
-        position: 'relative',
-        padding: '1px 0', // prevent collapsing margins
-    },
-    quote: {
-        margin: '.7em 0',
-        padding: '4px 1em',
-        backgroundColor: ({bg}: {bg?: 'light' | 'dark'}) =>
-            (bg ?? theme.palette.mode) === 'light' ? `hsla(0, 0%, 0%, 7%)` : `hsla(0, 0%, 100%, 7%)`,
-        borderRadius: '4px',
-    },
-    icon: {
-        width: '1.2em !important',
-        height: '1.2em !important',
-        color: ({bg}: {bg?: 'light' | 'dark'}) => alpha(theme.palette.primary[modeOpposite[bg ?? theme.palette.mode]], .5),
-    },
-    leadingQuotes: {
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-    },
-    trailingQuotes: {
-        position: 'absolute',
-        top: 0,
-        right: 0,
-    },
-}))

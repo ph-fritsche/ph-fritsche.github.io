@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core';
+import { Box, Theme, useTheme } from '@material-ui/core';
 import React, { useRef, createContext, useEffect, useContext } from 'react';
 
 type SwipeHandler = () => void
@@ -60,8 +60,6 @@ export function Swipeable({
 }: React.PropsWithChildren<{
     position?: 'fixed' | 'absolute',
 }>) {
-    const classes = useStyles({position})
-
     const handlers = useRef(createContextValue()).current
 
     const container = useRef<HTMLDivElement>(null)
@@ -83,7 +81,7 @@ export function Swipeable({
 
     function clearTrack() {
         if (track.touchDirection) {
-            const marginEl = container.current?.querySelector(`.${classes[track.touchDirection]}`) as HTMLElement
+            const marginEl = container.current?.querySelector(`[data-direction='${track.touchDirection}']`) as HTMLElement
             marginEl.style.margin = ''
         }
         delete track.touchDirection
@@ -138,7 +136,7 @@ export function Swipeable({
             return
         }
 
-        const marginEl = container.current?.querySelector(`.${classes[track.touchDirection]}`) as HTMLElement
+        const marginEl = container.current?.querySelector(`[data-direction='${track.touchDirection}']`) as HTMLElement
         marginEl.style.margin = `0px`
 
         if (abs > swipeActionThreshold && (new Date()).getTime() > track.touchTime + swipeActionDelay) {
@@ -147,38 +145,37 @@ export function Swipeable({
         }
     }
 
+    const sx = makeSx(useTheme(), position)
+
     return (
-        <div
+        <Box
             ref={container}
-            className={classes.container}
             onTouchStart={startTrack}
             onTouchMove={evaluateTrack}
             onTouchEnd={clearTrack}
             onTouchCancel={clearTrack}
+            sx={sx.container}
         >
-            <div className={`${classes.margin} ${classes.vertical} ${classes.up}`}/>
-            <div className={`${classes.margin} ${classes.vertical} ${classes.down}`}/>
-            <div className={`${classes.margin} ${classes.horizontal} ${classes.left}`}/>
-            <div className={`${classes.margin} ${classes.horizontal} ${classes.right}`}/>
-            <div className={classes.content}>
+            <Box sx={{...sx.margin, ...sx.vertical, ...sx.up}} data-direction="up"/>
+            <Box sx={{...sx.margin, ...sx.vertical, ...sx.down}} data-direction="down"/>
+            <Box sx={{...sx.margin, ...sx.horizontal, ...sx.left}} data-direction="left"/>
+            <Box sx={{...sx.margin, ...sx.horizontal, ...sx.right}} data-direction="right"/>
+            <Box>
                 <SwipeableContext.Provider value={handlers}>
                     {children}
                 </SwipeableContext.Provider>
-            </div>
-        </div>
+            </Box>
+        </Box>
     )
 }
 
-const useStyles = makeStyles(theme => ({
+const makeSx = (theme: Theme, position: 'fixed' | 'absolute') => ({
     container: {
         position: 'relative',
-        overflow: ({ position }: { position: 'fixed' | 'absolute' }) =>
-            position === 'fixed' ? undefined : 'hidden',
-    },
-    content: {
+        overflow: position === 'fixed' ? undefined : 'hidden',
     },
     margin: {
-        position: ({position}: {position: 'fixed' | 'absolute'}) => position,
+        position,
         transition: 'margin 200ms 0s ease-in',
         zIndex: 9999,
     },
@@ -226,4 +223,4 @@ const useStyles = makeStyles(theme => ({
             transparent 70%
         )`,
     },
-}))
+} as const)
