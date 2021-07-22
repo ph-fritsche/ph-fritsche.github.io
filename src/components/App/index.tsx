@@ -1,5 +1,6 @@
 import React, { Suspense } from 'react'
 import { Helmet } from 'react-helmet'
+import BackgroundProvider from './Background'
 
 const App = React.lazy(() => import('./App'))
 
@@ -22,10 +23,12 @@ export default function AppWrapper({
                 rel="stylesheet"
             />
         </Helmet>
-        <Suspense fallback={null}>
-            <App>
-                {children}
-            </App>
-        </Suspense>
+        <BackgroundProvider>
+            <Suspense fallback={null}>
+                <App>
+                    {children}
+                </App>
+            </Suspense>
+        </BackgroundProvider>
     </div>
 }

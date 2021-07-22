@@ -1,15 +1,12 @@
-import React, { ComponentProps, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { alpha, AppBar as MuiAppBar, Box, Button, IconButton, Theme, useTheme } from '@material-ui/core';
 import { SettingsBrightness } from '@material-ui/icons'
 import { getLinkProps } from '~src/components/Link';
 import Container from './Container';
 import { useConfig } from './Config';
+import { useBackground } from './Background';
 
-export default function AppBar({
-    sx: sxProp,
-}: {
-    sx: ComponentProps<typeof MuiAppBar>['sx']
-}) {
+export default function AppBar() {
     const anchorEl = useRef<HTMLDivElement>(null)
     const [anchored, setAnchored] = useState(true)
 
@@ -26,6 +23,7 @@ export default function AppBar({
         state: [configState],
     } = useConfig()
 
+    const background = useBackground()
     const sx = makeSx(useTheme())
 
     return (<>
@@ -40,8 +38,9 @@ export default function AppBar({
 
         <MuiAppBar
             position="sticky"
+            className={background?.name}
             sx={{
-                ...sxProp,
+                backgroundColor: 'transparent',
                 ...sx.appBar,
                 ...(anchored ? sx.appBarAnchored : undefined),
             }}

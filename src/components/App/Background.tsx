@@ -1,10 +1,13 @@
-import { useTheme } from '@material-ui/core'
-import { useEffect, useState } from 'react'
+import React, { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
+import { css, SerializedStyles } from '@emotion/react'
 import lowPolyGrid from '~res/images/low-poly-grid.svg'
+import { Helmet } from 'react-helmet'
 
-export default function useBackground() {
-    const theme = useTheme()
+const BackgroundContext = createContext<SerializedStyles|undefined>(undefined)
 
+export default function BackgroundProvider({
+    children,
+}: PropsWithChildren<unknown>) {
     const [hue, setHue] = useState(0)
 
     useEffect(() => {
@@ -15,13 +18,27 @@ export default function useBackground() {
         return () => document.body.removeEventListener('click', rotateBg)
     }, [setHue])
 
-    return {
+    const styles = css({
         backgroundBlendMode: 'hard-light, luminosity, normal, normal, normal',
         backgroundAttachment: 'fixed',
         backgroundSize: '100vw 100vh, cover, 100vw 100vh, 100vw 100vh, 100vw 100vh',
-        backgroundColor: `${theme.palette.background.default} !important`,
+        backgroundColor: `hsl(0, 0%, 3%) !important`,
         ...backgrounds[hue],
-    } as const
+    } as const)
+    styles.name = `css-${styles.name}`
+
+    return <>
+        <Helmet>
+            <style>{`body, .${styles.name} { ${styles.styles} }`}</style>
+        </Helmet>
+        <BackgroundContext.Provider value={styles}>
+            {children}
+        </BackgroundContext.Provider>
+    </>
+}
+
+export function useBackground() {
+    return useContext(BackgroundContext)
 }
 
 function rotateHue(hue: number, angle: number) {
