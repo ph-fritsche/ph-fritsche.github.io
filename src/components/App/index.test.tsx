@@ -1,9 +1,9 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import App from '.'
 
-test('render content in App', () => {
+test('render content in App', async () => {
     render(<App>foo</App>)
 
-    expect(screen.getByText('foo')).toBeInTheDocument()
+    await waitFor(() => expect(screen.getByText('foo')).toBeInTheDocument())
 })
