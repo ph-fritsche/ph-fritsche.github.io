@@ -41,6 +41,7 @@ function AppInTheme({
         fontWeight: 100,
         color: theme.palette.getContrastText(theme.palette.background.default),
         minHeight: '100vh',
+        margin: 0,
     })
 
     return (
