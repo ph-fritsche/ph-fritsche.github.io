@@ -1,9 +1,17 @@
-import React from 'react'
+import React, { ComponentProps } from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
-import App from '.'
+import AppWrapper from '.'
+import App from './App'
+
+jest.mock('./App', () => ({
+    __esModule: true,
+    default: function AppMock({children}: ComponentProps<typeof App>) {
+        return <>{children}</>
+    },
+}))
 
 test('render content in App', async () => {
-    render(<App>foo</App>)
+    render(<AppWrapper>foo</AppWrapper>)
 
-    await waitFor(() => expect(screen.getByText('foo')).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText('foo')).toBeInTheDocument(), {timeout: 1})
 })
