@@ -1,8 +1,7 @@
 import React, { ComponentProps, ComponentPropsWithoutRef } from 'react'
-import Highlight, { defaultProps, Language } from 'prism-react-renderer';
-import darkTheme from 'prism-react-renderer/themes/vsDark';
-import lightTheme from 'prism-react-renderer/themes/vsLight';
 import { Box, useTheme } from '@material-ui/core';
+
+import PrismHighlight from './PrismHighlight';
 
 export function Pre({
     className,
@@ -62,13 +61,10 @@ export function Code({
     }
 
     if (typeof children === 'string' && language) {
-        return <Highlight
-            {...defaultProps}
+        return <PrismHighlight
             code={children.trim()}
-            language={language as Language}
-            theme={theme.palette.mode === 'light' ? lightTheme : darkTheme}
-        >
-            {({className, getLineProps, getTokenProps, style, tokens}) => (
+            language={language}
+            render={({className, getLineProps, getTokenProps, style, tokens}) => (
                 <Box component="code"
                     sx={codeSx}
                     className={[className, className].join(' ')}
@@ -83,7 +79,7 @@ export function Code({
                     ))}
                 </Box>
             )}
-        </Highlight>
+        />
     }
 
     return (
