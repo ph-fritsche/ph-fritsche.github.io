@@ -1,0 +1,111 @@
+---
+title: Attune to a higher pitch
+tags:
+    - php
+    - symfony
+    - pitch
+image: https://unsplash.com/photos/xIoze9dH4WI
+description: >
+    Separate concerns and write more concise Controllers by following ADR pattern in your Symfony applications.
+date: 2021-07-25
+---
+
+[PHP](https://php.net) is great for backend development.  
+It is fast, it is reliable and it makes it easy to write clean code.
+There also are tons of well-written and battle-tested libraries at [Packagist](https://packagist.org).  
+The language and its ecosystem came a long way from just adding some content to HTML at runtime.
+
+And [Symfony](https://symfony.com) is one of the most mature frameworks out there.
+It allows easy setups for small projects and powerful integration with the tools needed in large scale applications.  
+But one thing bugged me for a while:
+Symfony [follows](https://symfony.com/legacy/doc/gentle-introduction/1_4/en/02-Exploring-Symfony-s-Code#chapter_02_the_mvc_pattern) - or better [followed](https://symfony.com/doc/current/create_framework/introduction.html#why-would-you-like-to-create-your-own-framework) - some [Model-View-Controller pattern](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller).
+A [`Controller`](https://symfony.com/doc/current/controller.html) is required to return a [`Response`](https://symfony.com/doc/current/components/http_foundation.html#response) object.  
+For example when creating an HTML page per [Twig templates](https://symfony.com/doc/current/templates.html#twig-templating-language), the Controller is supposed to call the `twig` service and apply the appropriate template to any data it wants to return to the client.
+
+```php
+namespace App\Controller;
+
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
+class MyController extends AbstractController
+{
+    public function __invoke(
+        Request $request,
+    ) {
+        // ... handle request data ...
+
+        // ... read from / write to database or other endpoint ...
+
+        // ... prepare response data ...
+
+        return $this->render('myTemplate.html.twig', [
+            // some data to use in the template
+        ]);
+    }
+}
+```
+
+Often there can be invalid requests or multiple different outputs so there are multiple calls to `render` and often enough multiple instances of data preparations.  
+This approach quickly bloats the Controller and leads to duplicate code. While there are solutions for repeated code ([Inheritance](https://www.php.net/manual/en/language.oop5.inheritance.php), [Traits](https://www.php.net/manual/en/language.oop5.traits.php)), there is another problem with this in my opinion:  
+It mixes different concerns inside the Controller - request handling, data handling and response handling.
+
+> Separation of concerns is always underrated.
+
+With [Pitch](https://packagist.org/?query=pitch%2F) I started a collection of packages that helps to boil down the Controller code to just the data handling.  
+
+## Symfony as ADR
+
+One of the lesser known facts is that Symfony does not actually require your Controller to return a `Response` like it says in the docs.  
+If it does not, Symfony dispatches a `kernel.view` event with the `ControllerResult`. Then [Event Subscribers](https://symfony.com/doc/current/event_dispatcher.html#creating-an-event-subscriber) can act on this event and set a `Response` before Symfony would throw an exception.  
+(This [is for example exploited](https://github.com/sensiolabs/SensioFrameworkExtraBundle/blob/77d892524da1aa7770dd052f02944076bab8e1b2/src/EventListener/TemplateListener.php#L79-L120) by the popular [sensio/framwork-extra-bundle](https://packagist.org/packages/sensio/framework-extra-bundle) for its `@Template` annotation.)
+
+[Pitch/symfony-adr](https://packagist.org/packages/pitch/symfony-adr), the cornerstone of Pitch package collection, allows you to easily follow [Action-Domain-Responder pattern](https://en.wikipedia.org/wiki/Action%E2%80%93domain%E2%80%93responder) in your Symfony application:  
+It adds a `Responder` to the `kernel.view` event and instead of walking through a bunch of Event Subscribers it allows you to register Response Handlers for specific types of return values.
+
+```php
+namespace App\Controller;
+
+use App\Entity\MyEntity;
+
+class MyController
+{
+    public function __invoke()
+    {
+        // just return e.g. an entity
+        return new MyEntity();
+    }
+}
+```
+```php
+namespace App\Responder;
+
+use App\Entity\MyEntity;
+use Pitch\AdrBundle\Responder\ResponseHandlerInterface;
+use Pitch\AdrBundle\Responder\ResponsePayloadEvent;
+
+class MyEntityHandler implements ResponseHandlerInterface
+{
+    public function getSupportedPayloadTypes(): array
+    {
+        return [MyEntity::class];
+    }
+
+    public function handleResponsePayload(ResponsePayloadEvent $event)
+    {
+        // Create the appropriate response
+        // to return MyEntity to the client.
+        // E.g. convert per Twig.
+    }
+}
+```
+
+It also comes with a `Graceful` annotation/configuration that allows you to define which exceptions in your Controllers are supposed to be handled as regular response by a Response Handler.
+This allows you to not create the same `try..catch` blocks in multiple controllers.
+
+## Outlook
+
+The project is still young but I'm really excited about the changes it brings to Symfony applications.
+
+If you like what you see and/or can make use of this in one of your applications, please spread the word!
+Issues and PRs to improve this are always welcome. :)
