@@ -1,4 +1,4 @@
-import React, { ComponentProps, ComponentPropsWithoutRef } from 'react'
+import React, { ComponentProps, ComponentPropsWithoutRef, CSSProperties } from 'react'
 import { Box, useTheme } from '@material-ui/core';
 
 import PrismHighlight from './PrismHighlight';
@@ -20,6 +20,7 @@ export function Pre({
                     paddingBottom: '1em !important',
                     maxWidth: '100%',
                     overflow: 'auto',
+                    fontSize: '0.9em',
                 },
             }}
             className={className}
@@ -50,7 +51,7 @@ export function Code({
 }: ComponentProps<'code'> & { language?: string }) {
     const theme = useTheme()
 
-    const codeSx = {
+    const codeSx: CSSProperties = {
         display: 'inline-block',
         padding: '0px 4px',
         borderRadius: '4px',
@@ -58,6 +59,8 @@ export function Code({
             ? `hsla(0, 0%, 0%, 7%)`
             : `hsla(0, 0%, 100%, 7%)`
         } !important`,
+        fontFamily: `'Inconsolata', monospace`,
+        fontWeight: 400,
     }
 
     if (typeof children === 'string' && language) {
