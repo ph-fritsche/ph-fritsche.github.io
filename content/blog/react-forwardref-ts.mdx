@@ -1,0 +1,202 @@
+---
+title: Component injection with React.forwardRef
+tags:
+    - react
+    - typescript
+image: https://unsplash.com/photos/ZBstHWt9vLc
+date: 2021-08-05
+description: >
+    Create wrapper components that can forward ref and infer their prop typings from the injectable wrapped component.
+---
+
+There are two main patterns how to separate concerns into different components in React.
+Either - given the concrete implementation to be wrapped - you create a new wrapped component as described in [React's Guide on Higher-Order Components](https://reactjs.org/docs/higher-order-components.html) ...
+
+```jsx
+function createNewWrappedComponent(WrappedComponent) {
+    return function Wrapper({title, children, ...others}) {
+        return <WrappedComponent {...others}>
+            <h3>{title}</h3>
+            {children}
+        </WrappedComponent>
+    }
+}
+const DivWithTitle = createNewWrappedComponent("div")
+
+render(<DivWithTitle title="foo" className="bar">
+    baz
+</DivWithTitle>)
+
+// results in
+<div className="bar"><h3>foo</h3>baz</div>
+```
+
+... or you accept a component as a prop - making the concrete implementation for the wrapped component injectable.
+
+```jsx
+function Wrapper({WrappedComponent, title, children, ...others}) {
+    return <WrappedComponent {...others}>
+        <h3>{title}</h3>
+        {children}
+    </WrappedComponent>
+}
+
+render(<Wrapper WrappedComponent="div" title="foo" className="bar">
+    bar
+</Wrapper>)
+
+// results in
+<div className="bar"><h3>foo</h3>baz</div>
+```
+
+When working with Typescript you want all component props to be typed - especially on reused code, no matter if you set the `WrappedComponent` beforehand or per prop.
+
+## The problem
+
+One can infer props from the injected `WrappedComponent` like this:
+
+```tsx
+function Wrapper<
+    T extends React.ElementType<{children?: React.ReactNode}>,
+>({WrappedComponent, title, children, ...others}: {
+    WrappedComponent: T
+    title: string
+} & Omit<
+    React.ComponentPropsWithoutRef<T>,
+    'WrappedComponent' // prevent type widening on this prop
+    'title' // remove any other props we don't pass down
+>): React.Element|null {
+    /// ...
+}
+```
+
+### `Ref` is not a regular prop
+
+As [React's Guide on Forwarding Refs](https://reactjs.org/docs/forwarding-refs.html#forwarding-refs-in-higher-order-components) points out `ref` it is not passed to regular components.
+When one tries to have a `Wrapper` accept a `ref` because one wants it to mimic the behavior of the `WrappedComponent` so it can replace it in some context, it needs to be passed through `React.forwardRef`.
+
+```jsx
+const ForwardingWrapper = React.forwardRef(function Wrapper(
+    {WrappedComponent, title, children, ...others},
+    ref,
+) {
+    return <WrappedComponent {...others} ref={ref}>
+        <h3>{title}</h3>
+        {children}
+    </WrappedComponent>
+})
+```
+
+This `ForwardingWrapper` infers its props and types from `Wrapper` but if our `Wrapper` is generically typed like described above this does not work and we end up with basically untyped props (and ref) on `ForwardingWrapper`.
+And without knowing the `WrappedComponent` beforehand one can not set the types for ref and props on `React.forwardRef<T, P>()`.
+
+### Concrete types don't match generics
+
+The `Wrapper` as types above has a `WrappedComponent` variable that is typed to `T` which `extends React.Elements` - but it is not `React.Elements` because it could be a different subtype.
+(If this does not ring a bell consider yourself lucky. I guess stumbling over `ts2322` at some point and feeling stupid for not seeing the problem at first glance before Typescript yelled is part of the Typescript experience. ;) )
+
+```tsx
+const element = <WrappedComponent // this is T
+    // Props must match ComponentProps<T> & Attributes
+    // But Typescript can not decide if this is the case
+/>
+```
+
+Of course one could work around this per `React.createElement` because its props type defaults to `any`. But this kind of defeats the purpose.
+
+## The solution
+
+By typing `ForwardingWrapper` as a component function that infers its props (including ref) from one of its own props and using Typescript's inference from usage for the implementation of `Wrapper` we get the correct types both inside and outside our implementation.
+
+First we create generic types for props and ref:
+```ts
+/**
+ * Infer the ForwardedRef from a component
+ */
+export type ComponentForwardRef<T extends React.ElementType>
+    = React.ForwardedRef<React.ElementRef<T>>
+
+/**
+ * Properties of a wrapper component
+ */
+export type WrapperProps<
+    /**
+     * The property key for the component to be wrapped.
+     */
+    ComponentProp extends PropertyKey,
+    /**
+     * Additional properties for the wrapper.
+     */
+    AdditionalProps extends unknown,
+    /**
+     * The property key for properties passed down to the wrapped component.
+     * `unknown` if properties of wrapper and wrapped are merged.
+     */
+    PropertiesProp extends PropertyKey | unknown,
+    /**
+     * The wrapped component.
+     */
+    Component extends React.ElementType,
+> = {
+    [k in ComponentProp]: Component
+} & (
+    PropertiesProp extends PropertyKey
+    ? { [k in PropertiesProp]: React.ComponentProps<Component> }
+    : Omit<React.ComponentProps<Component>, keyof AdditionalProps | ComponentProp>
+) & AdditionalProps
+```
+
+We also prepare a generic type that properly describes `ForwardingWrapper`:
+```ts
+export interface ForwardRefWrapper<
+    ComponentProp extends PropertyKey,
+    AdditionalProps extends unknown = unknown,
+    PropertiesProp extends PropertyKey | unknown = unknown,
+    /**
+     * Base type for the wrapped component.
+     */
+    ComponentType extends React.ElementType = React.ElementType,
+> extends OmitCallable<React.ForwardRefExoticComponent<any>> {
+    <T extends ComponentType>(
+        props: WrapperProps<ComponentProp, AdditionalProps, PropertiesProp, T>,
+    ): React.ReactElement | null
+}
+type OmitCallable<T> = Pick<T, keyof T>
+```
+
+With these types we are ready to write a utility function to create `React.ForwardRefExoticComponent` with our infered typing:
+```ts
+function createForwardRefWrapper<
+    ComponentProp extends PropertyKey,
+    AdditionalProps extends unknown = unknown,
+    PropertiesProp extends PropertyKey | unknown = unknown,
+    ComponentType extends React.ElementType = React.ElementType,
+>(
+    wrapper: (
+        props: WrapperProps<ComponentProp, AdditionalProps, PropertiesProp, ComponentType>,
+        ref: ComponentForwardRef<ComponentType>
+    ) => React.ReactElement | null,
+): ForwardRefWrapper<ComponentProp, AdditionalProps, PropertiesProp, ComponentType> {
+    return React.forwardRef(wrapper)
+}
+```
+
+Now we can easily write a type safe wrapper with forwarded `ref`:
+```tsx
+const ForwardingWrapper = createForwardRefWrapper<
+    'WrappedComponent',
+    {title: string}
+>(function Wrapper({WrappedComponent, title, children, ...others}, ref) {
+    return (
+        <WrappedComponent
+            {...others}
+            ref={ref}
+        >
+            <h3>{title}</h3>
+            {children}
+        </WrappedComponent>
+    )
+})
+```
+
+You can import `createForwardRefWrapper` and the utility types from [`liform-util`](https://www.npmjs.com/package/liform-util).
