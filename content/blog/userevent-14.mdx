@@ -1,0 +1,96 @@
+---
+title: Testing with user-event 14
+tags:
+    - react
+    - testing
+image: https://unsplash.com/photos/yITP9KQqqkQ
+description: >
+    Testing Library's user-event package helps you increase the confidence gained from your tests. Let's take a look at the upcoming version.
+---
+
+[`@testing-library/user-event`](https://github.com/testing-library/user-event) is all about describing user interaction in your integration tests. This is different from [directly firing the events](https://testing-library.com/docs/dom-testing-library/api-events#fireevent) you wrote handlers for as it allows to reassure your assumptions about the events which are actually fired on a perceived user interaction as well as catch event handlers interfering with each other.  
+While it can not replace e2e testing, it can heavily increase the confidence you gain from your tests.  
+`userEvent@14` is the next step on that mission.
+
+## Setup
+
+`user-event` implements a few workarounds on the DOM provided by your test environment so that it can simulate manipulating displayed values that are not normally available programmatically (e.g. selecting and overwriting a character in an `<input type="number"/>`input).  
+Previously these workarounds were applied during calls to one of the userEvent APIs which might lead to changes before/between API calls not being recognized by the implementation.  
+The new `userEvent.setup` allows you to prepare the document for interacting per `user-event` APIs right when you set up your test.
+
+It returns the userEvent APIs you already know, but it also applies your default options to each of the API calls and reapplies the input device state (e.g. a key being pressed down) to the next call.
+
+```jsx
+// Note that this could be used with any Testing Library framework
+import { render, screen } from '@testing-library/react'
+import { setup } from '@testing-library/user-event'
+
+const user = setup({
+    // Some defaults ...
+    skipPointerEventsCheck: true,
+    // This could also e.g. include a localized keyboard mapping:
+    keyboardMap: [
+        // German keyboard with the double quotes on [Digit2]
+        {key: '"', code: 'Digit2', shiftKey: true},
+        // ...
+    ],
+})
+
+test('use the api from setup', () => {
+    render(<MyComponent/>)
+
+    // This skips the check for `pointer-events: none`
+    user.click(screen.getByLabelText('What happened?'))
+
+    // This now dispatches key events for [Digit2] for the double quotes
+    user.keyboard('Bar shouted: "baz"')
+
+    // If you want to, you can always override a default:
+    user.click(screen.getByRole('button'), undefined, {skipPointerEventsCheck: false})
+
+    // Or you can change some defaults for a bunch of calls:
+    const withPointerCheck = user.setup({skipPointerEventsCheck: true})
+    withPointerCheck.click(screen.getByRole('button'))
+
+    // The APIs automatically share the input device state
+    user.keyboard('{Shift>}')
+    user.keyboard('a') // shiftKey: true
+
+    // ...
+})
+```
+
+I recommend to use the APIs provided by `setup` whenever you test a user workflow on a component as it can move configuration out of the [`Act`](https://wiki.c2.com/?ArrangeActAssert) and improve readability of the test.  
+Calling `setup` on the document also gives us at Testing Library an entry point to apply (future) workarounds for kinks of testing environments we might not know yet. This means your automated test can alert you about problems in your implementation or false assumptions in your tests as the test environment and tools are upgraded.  
+And in the end alerting about possible problems - ideally before any consumer notices them - is the main feat of automated tests, isn't it?
+
+## Pointer
+
+`user-event@13` introduced the `userEvent.keyboard` API which allows to describe any user interaction per keyboard and internally replaced the old implementation for `userEvent.type`.  
+So it is only fitting that `user-event@14` comes with a `userEvent.pointer` API which does the same for user interaction per pointer devices.  
+Yes, you're correct! "Device**s**" implies that you will be able to simulate the events for user interaction per touchscreen or stylus.
+
+```jsx
+// Move the mouse over an element
+user.pointer({target: screen.getByRole('button')})
+
+// Double click at current position
+user.pointer('[MouseLeft][MouseLeft]')
+
+// Multiple actions that are performed in one sequence like a swipe
+user.pointer([
+    {
+        keys: '[TouchA]',
+        target: screen.getByLabelText('Swipe here!'),
+        coords: {x: 100, y: 50},
+    },
+    {pointerName: 'TouchA', coords: {x: 150, y: 50}},
+    '[/TouchA]',
+])
+```
+
+There are some limitations to simulating pointer events that we won't be able to change though.  
+Our primary target audience tests per `jest` in a `jsdom` environment and there is no layout in `jsdom`. This means that different from your browser the elements don't exist in a specific position, layer and size. We won't be able to determine if the pointer action you describe is possible in your layout. If you tell `user-event` that the user clicks on a button which in reality is hidden behind a massive advertisement banner, we won't be able to tell you that this *can not* work.
+
+Remember? It wasn't our mission to replace e2e tests. You should probably still run [a few](https://kentcdodds.com/blog/write-tests) of those.
+But with `user-event@14` you can gain more from running integration tests that check your handling of pointer events.
