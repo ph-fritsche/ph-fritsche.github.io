@@ -87,6 +87,10 @@ user.pointer([
     {pointerName: 'TouchA', coords: {x: 150, y: 50}},
     '[/TouchA]',
 ])
+
+// Pressing keys manipulates pointer events
+user.keyboard('[ShiftLeft>]')
+user.pointer('[MouseLeft]') // a click with shiftKey=true
 ```
 
 There are some limitations to simulating pointer events that we won't be able to change though.  
