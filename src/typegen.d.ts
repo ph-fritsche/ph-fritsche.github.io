@@ -3460,6 +3460,14 @@ type SeoQueryVariables = Exact<{ [key: string]: never; }>;
 
 type SeoQuery = { readonly site: Maybe<{ readonly siteMetadata: Maybe<{ readonly author: Maybe<Pick<SiteSiteMetadataAuthor, 'name' | 'twitter'>> }> }> };
 
+type BlogQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+type BlogQuery = { readonly allMdx: { readonly pageInfo: Pick<PageInfo, 'currentPage' | 'pageCount' | 'hasNextPage' | 'hasPreviousPage' | 'totalCount' | 'perPage'>, readonly edges: ReadonlyArray<{ readonly node: (
+        Pick<Mdx, 'excerpt'>
+        & { readonly meta: Pick<MdxMeta, 'title' | 'slug'> }
+      ) }> } };
+
 type GatsbyImageSharpFixedFragment = Pick<ImageSharpFixed, 'base64' | 'width' | 'height' | 'src' | 'srcSet'>;
 
 type GatsbyImageSharpFixed_tracedSVGFragment = Pick<ImageSharpFixed, 'tracedSVG' | 'width' | 'height' | 'src' | 'srcSet'>;
@@ -3485,13 +3493,5 @@ type GatsbyImageSharpFluid_withWebp_tracedSVGFragment = Pick<ImageSharpFluid, 't
 type GatsbyImageSharpFluid_noBase64Fragment = Pick<ImageSharpFluid, 'aspectRatio' | 'src' | 'srcSet' | 'sizes'>;
 
 type GatsbyImageSharpFluid_withWebp_noBase64Fragment = Pick<ImageSharpFluid, 'aspectRatio' | 'src' | 'srcSet' | 'srcWebp' | 'srcSetWebp' | 'sizes'>;
-
-type BlogQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-type BlogQuery = { readonly allMdx: { readonly pageInfo: Pick<PageInfo, 'currentPage' | 'pageCount' | 'hasNextPage' | 'hasPreviousPage' | 'totalCount' | 'perPage'>, readonly edges: ReadonlyArray<{ readonly node: (
-        Pick<Mdx, 'excerpt'>
-        & { readonly meta: Pick<MdxMeta, 'title' | 'slug'> }
-      ) }> } };
 
 }

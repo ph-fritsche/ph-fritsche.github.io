@@ -33,9 +33,6 @@ export default function Projects() {
                             <Avatar
                                 variant="rounded"
                                 src={p.avatar}
-                                sx={{
-                                    backgroundColor: 'hsla(0, 0%, 100%, .85)',
-                                }}
                                 imgProps={{
                                     style: {
                                         objectFit: 'contain',
