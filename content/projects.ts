@@ -1,3 +1,11 @@
+import ActionRelease from './icons/action-release.svg'
+import ActionDispatch from './icons/action-dispatch.svg'
+import LiformMaterial from './icons/liform-material.svg'
+import LiformReactFinal from './icons/liform-react-final.svg'
+import Liform from './icons/liform.svg'
+import Adr from './icons/symfony-adr.svg'
+import PitchForm from './icons/symfony-form.svg'
+
 const projects: {
     name: string,
     owner?: string,
@@ -9,33 +17,47 @@ const projects: {
     {
         name: 'action-release',
         description: 'Conveniently create releases in your Github Workflow per Semantic Release',
-        avatar: 'https://avatars.githubusercontent.com/u/44036562?s=200&v=4',
+        avatar: ActionRelease,
     },
     {
         name: 'action-dispatch',
         description: 'Dispatch workflow events in Github Workflow',
-        avatar: 'https://avatars.githubusercontent.com/u/44036562?s=200&v=4',
+        avatar: ActionDispatch,
     },
     {
-        name: 'user-event',
+        name: '@testing-library/user-event',
         owner: 'testing-library',
+        repo: 'https://github.com/testing-library/user-event',
         description: 'Simulate events that would happen in the browser',
         avatar: 'https://raw.githubusercontent.com/testing-library/user-event/master/other/dog.png',
     },
     {
-        name: 'liform',
+        name: 'pitch/liform',
+        repo: 'https://github.com/ph-fritsche/liform',
         description: 'Transform Symfony Forms into JSON Schema',
-        avatar: 'https://raw.githubusercontent.com/ph-fritsche/liform/master/docs/assets/liform.svg',
+        avatar: Liform,
     },
     {
         name: 'liform-react-final',
         description: 'Create React forms from Liform JSON Schema based on React Final Form',
-        avatar: 'https://raw.githubusercontent.com/ph-fritsche/liform-react-final/master/docs/assets/liform-react-final.svg',
+        avatar: LiformReactFinal,
     },
     {
         name: 'liform-material',
         description: 'Material theme for liform-react-final',
-        avatar: 'https://raw.githubusercontent.com/ph-fritsche/liform-material/master/docs/assets/liform-material.svg',
+        avatar: LiformMaterial,
+    },
+    {
+        name: 'pitch/symfony-adr',
+        repo: 'https://github.com/ph-fritsche/symfony-adr',
+        description: 'Write Symfony applications in ADR pattern',
+        avatar: Adr,
+    },
+    {
+        name: 'pitch/form',
+        repo: 'https://github.com/ph-fritsche/symfony-form',
+        description: 'Move input validation out of Symfony Controllers',
+        avatar: PitchForm,
     },
 ]
 
