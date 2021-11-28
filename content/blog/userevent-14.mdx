@@ -37,25 +37,25 @@ const user = setup({
     ],
 })
 
-test('use the api from setup', () => {
+test('use the api from setup', async () => {
     render(<MyComponent/>)
 
     // This skips the check for `pointer-events: none`
-    user.click(screen.getByLabelText('What happened?'))
+    await user.click(screen.getByLabelText('What happened?'))
 
     // This now dispatches key events for [Digit2] for the double quotes
-    user.keyboard('Bar shouted: "baz"')
+    await user.keyboard('Bar shouted: "baz"')
 
     // If you want to, you can always override a default:
-    user.click(screen.getByRole('button'), undefined, {skipPointerEventsCheck: false})
+    await user.click(screen.getByRole('button'), undefined, {skipPointerEventsCheck: false})
 
     // Or you can change some defaults for a bunch of calls:
     const withPointerCheck = user.setup({skipPointerEventsCheck: true})
-    withPointerCheck.click(screen.getByRole('button'))
+    await withPointerCheck.click(screen.getByRole('button'))
 
     // The APIs automatically share the input device state
-    user.keyboard('{Shift>}')
-    user.keyboard('a') // shiftKey: true
+    await user.keyboard('{Shift>}')
+    await user.keyboard('a') // shiftKey: true
 
     // ...
 })
@@ -73,13 +73,13 @@ Yes, you're correct! "Device**s**" implies that you will be able to simulate the
 
 ```jsx
 // Move the mouse over an element
-user.pointer({target: screen.getByRole('button')})
+await user.pointer({target: screen.getByRole('button')})
 
 // Double click at current position
-user.pointer('[MouseLeft][MouseLeft]')
+await user.pointer('[MouseLeft][MouseLeft]')
 
 // Multiple actions that are performed in one sequence like a swipe
-user.pointer([
+await user.pointer([
     {
         keys: '[TouchA]',
         target: screen.getByLabelText('Swipe here!'),
@@ -90,8 +90,8 @@ user.pointer([
 ])
 
 // Pressing keys manipulates pointer events
-user.keyboard('[ShiftLeft>]')
-user.pointer('[MouseLeft]') // a click with shiftKey=true
+await user.keyboard('[ShiftLeft>]')
+await user.pointer('[MouseLeft]') // a click with shiftKey=true
 ```
 
 There are some limitations to simulating pointer events that we won't be able to change though.  
