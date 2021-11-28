@@ -1,0 +1,133 @@
+---
+title: user-event 14 reaches beta
+tags:
+    - react
+    - testing
+image: https://unsplash.com/photos/7_kRuX1hSXM
+description: >
+    The upcoming user-event 14 is ready to be tried out by a larger audience. A quick overview on some new features.
+date: 2021-11-28
+---
+
+Version 14 introduces two new APIs: `userEvent.pointer` and `userEvent.setup`.
+When publishing the first alpha release, I've written about them [here](https://ph-fritsche.github.io/blog/post/userevent-14). These alone are worth migrating to a new version and so this was the opportunity to also implement other changes that might break existing code.
+
+But don't worry: If you don't rely on some unintended or straight up erroneous side effects of the previous implementation, the transition will be simple.
+
+## Asynchronous APIs
+
+This might be the biggest change you'll notice and possibly the only one that requires you to adjust your test code. In the new version all functional APIs of `userEvent` return a `Promise`.
+```js
+userEvent.doSomething()
+// becomes
+await userEvent.doSomething()
+```
+
+The rationale behind this is that while most API calls could also be performed synchronously - certain operations can not.  
+Therefore some APIs (`type` and `keyboard`) wrapped already asynchronous implementations and needed to conditionally `await` or `void` the internal `Promise`.
+With a growing number of asynchronous implementations this added unnecessary complexity and also blocked some otherwise desirable changes.
+
+As a side effect more people using frameworks with asynchronous rendering might find the call of one of our APIs just working out of the box.
+
+## UI state
+
+The biggest constraints of `user-event` are a result of trying the impossible:
+We simulate what normally is the result of a `trusted event` that can not be created or controlled programmatically.
+
+See for example the selection on an `<input type="number">` element:  
+If you select one of the digits and then press `Backspace`, you'll delete that digit.  
+<input type="number" defaultValue="123"/>  
+
+But here's the catch: The selection on the element exists only for the UI. The `selectionStart` and `selectionEnd` properties are not implemented on `number` inputs. There is no programmatic selection for this kind of element.
+
+After previous versions tried to tweak what our APIs would do so that the behavior might more closely immitate what our users expect, the new version implements these UI features on top of the DOM and then let the API implementations act upon these UI features.
+
+But why should you be bothered by this? Well for a start this means our new implementations now promise to do exactly what they tell you they're doing - no hidden workarounds that are applied on special occasions.  
+This also means that you are able to use these UI features across different API calls as you can see in the next section...
+
+## Select per pointer
+
+The new version allows you to set a selection per dragging the primary pointer device like the user does.
+
+This allows to test exactly the scenario described above and select and overwrite the second digit on a number field:
+```js
+const user = userEvent.setup()
+const input = screen.getByRole('spinbutton')
+
+await user.pointer([
+    // Press the primary mouse button at offset 1
+    {keys: '[MouseLeft>]', target: input, offset: 1},
+    // Select the second digit by moving the mouse to offset 2
+    {offset: 2},
+    // Optional: release the primary mouse button
+    '[/MouseLeft]',
+])
+// The keyboard honors the current selection
+await user.keyboard('[Backspace]')
+
+expect(input).toHaveValue(13)
+```
+
+It also allows to select a word per `userEvent.dblClick` or a line of text per the new `userEvent.tripleClick`:
+```js
+// Select the whole number input
+await user.tripleClick(input)
+
+await user.keyboard('9')
+
+expect(input).toHaveValue(9)
+```
+
+## Event init
+
+The new version honors the device states across different calls (at least if you use the APIs per `setup` instead of creating a new state each call).
+
+```js
+const user = userEvent.setup()
+
+// Perform a click with ctrlKey=true
+await user.keyboard('[ControlLeft>]')
+await user.pointer('[MouseLeft]')
+```
+
+This (and some smaller changes along the way) removed the use case for user supplied event properties on our API calls, so we removed the `init` parameters from all our APIs.
+
+## Selection outside of input elements
+
+The new versions implements its selection and input handling on top of the [`Selection` API](https://developer.mozilla.org/en-US/docs/Web/API/Selection). Therefore all user interactions are applied in accordance with any calls your components make to that API.
+
+This resolved some long-running issues with `contenteditable` elements as well.
+
+## Clipboard
+
+The `userEvent.paste` API has been replaced so that it acts on the current active element and selection. Also `userEvent.copy` and `userEvent.cut` have been added.
+
+This allows you to properly test user workflows that involve copy/cut & paste.
+
+You can either get/set the data through the APIs:
+```js
+// Paste "foo" at the current cursor position / selection
+await userEvent.paste('foo')
+
+// Copy whatever is currently selected
+const dataTransfer = await userEvent.copy()
+```
+
+Or you can interact with the [`Clipboard` API](https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API):
+Our `setup` function automatically replaces `navigator.clipboard` with a stub as the real `Clipboard` is not available in Jsdom and heavily limited or unavailable in browser test environments.
+```js
+const user = userEvent.setup()
+
+// Paste the clipboard content
+await user.paste()
+// Copy the current selection
+await user.copy()
+```
+
+--- 
+
+## Contributing
+
+I hope you'll enjoy the new features as much as I do.  
+As new implementations almost always result in new issues and possibilities, any contribution - including bug reports - is more than welcome.
+If you'd like to discuss and shape the future of `user-event`, please [join us at Discord](https://discord.com/channels/723559267868737556/898557003893469224).
