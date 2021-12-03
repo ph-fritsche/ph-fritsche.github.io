@@ -1,0 +1,116 @@
+---
+title: Why you should test with user-event
+tags:
+    - testing
+    - react
+image: https://unsplash.com/photos/NL_DF0Klepc
+description: >
+    Choosing the right developing tools for your project can be a daunting task. Here's why user-event should be one of them.
+date: 2021-12-03
+---
+
+One of the hardest tasks when developing software might not be within the code but choosing between the multitude of options when it comes to tools and libraries you use to write, test and maintain the code.
+
+## The community
+
+It's been a while since I stumbled over [Testing Library](https://testing-library.com/) and their [`user-event`](https://www.npmjs.com/package/@testing-library/user-event) package. Something not working yet at the time bugged me and so I filed an issue, opened a PR and - as the package was already valuable to me, I loved its premise and the communication with the people already on the project was very welcoming - I ended up working with and on it a lot more.  
+Let me share why you should, too, use `@testing-library/user-event` (and maybe contribute to it).
+
+So the first reason to use any of the Testing Library packages is right there: They have a great community behind them.  
+If you have a question or want to discuss your approach to testing some components, join [the Testing Library's Discord](https://discord.gg/testing-library) and it's very likely that someone can help you out.  
+If you find a bug or would like to see a new feature, issues and pull requests are very much welcome [at GitHub](https://github.com/testing-library).  
+So when you use these packages, you're neither on your own nor stuck with the current level of technology.
+
+## The premise
+
+There are lots of patterns and principles out there how you should write and organize tests. No matter the testing philosophy you follow, the Testing Library packages can help you assert that your components deliver what they promise. They can help you gain confidence that the user can use your piece of software as expected.  
+
+When you are not only serving static content it is of uttermost importance that your components react on user interactions correctly. This is where `user-event` comes into the picture.
+
+If your software renders in the DOM, it allows you to describe how the user interacts with it and it will apply changes and dispatch events like a browser would.
+This allows you to catch bugs that otherwise would require end-to-end testing. (Which you probably should still run. But they are expensive and this way you need less of them.)
+
+## The use case
+
+Think of a component that renders a simple text input. (I'll use React here, but it could be any framework.)
+```jsx
+function MyTextField() {
+    const [val, setVal] = useState('foo')
+    return <input
+        value={val}
+        onChange={e => setVal(e.target.value)}
+    />
+}
+```
+
+A very common approach for testing this is dispatching the event that was mentioned in the code.
+```jsx
+test('change the text field', () => {
+    render(<MyTextField/>)
+    const input = screen.getByRole('textbox')
+
+    const event = new Event('change')
+    input.value = 'bar'
+    input.dispatchEvent(event)
+
+    expect(input).toHaveValue('bar')
+})
+```
+
+There is even a utility exported by the Testing Library framework packages to help with this:
+```jsx
+test('change the text field', () => {
+    render(<MyTextField/>)
+    const input = screen.getByRole('textbox');
+
+    fireEvent.change(input, { target: { value: 'bar' } });
+
+    expect(input).toHaveValue('bar');
+})
+```
+
+While this might be quicker to write, it's still the same. It just dispatches the event you told it to. And this might be a mistake.  
+(`fireEvent` exists for a reason and there are valid cases to use it. But this is not one of them. It should be used sparsely - think of it as an escape hatch.)  
+In your software a lot of things can happen and a lot of things do happen in the DOM when the user interacts with it.  
+
+The test above might look like a test that ensures a user could write into the field. But this is not the case.  
+It merely ensures that when the value has been bar `bar` and a `change` event has been dispatched, the value is still `bar`.
+
+Let's add a `keydown` handler that is supposed to handle some key combination.
+```jsx
+function MyExtendedTextField() {
+  return (
+    <div
+      onKeyDown={(e) => {
+        // this is supposed to be doing something else,
+        // but it also does...
+        e.preventDefault();
+      }}
+    >
+      <MyTextField />
+    </div>
+  );
+}
+```
+
+If you rendered `MyExtendedTextField` in the tests above, they would still pass. But a user would never be able to overwrite the value. (Or at least not per keyboard.)
+
+The following test (using `@testing-library/user-event@14.0.0-beta`) on the other hand describes the user workflow and will fail:
+```jsx
+test('overwrite the text field', () => {
+    render(<MyExtendedTextField/>)
+    const user = userEvent.setup();
+    const input = screen.getByRole('textbox');
+
+    await user.tripleClick(input);
+    await user.keyboard('bar');
+
+    expect(input).toHaveValue('bar');
+})
+```
+
+Now I'm sure that this case is an obvious one, but let me ensure you there are many more in which different event handlers tamper with events and the effect on the user interaction is not as obvious.  
+Even with `user-event` you won't be able to catch every bug. There might still be edge cases not covered by the tests. But it makes it a lot more likely that one of your tests breaks when one of your changes has unintended side-effects.
+
+Talking about obvious... Did you notice that when the user would type into the `<MyTextField>` component the value would never change on a `change` event?  
+In fact React calls your `onChange` handler whenever the value on the element changes. For a typing user this happens on the `input` event. The following `change` event - when the element loses focus - will be discarded by React because the `onChange` handler would have been called before with the element already having that value.
