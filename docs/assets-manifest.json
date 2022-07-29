@@ -1,0 +1,12 @@
+{
+  "main.js": "render-page.js",
+  "render-page.js.map": "render-page.js.map",
+  "static/action-dispatch.svg": "static/action-dispatch-e58dabe941c423edd492c36250717890.svg",
+  "static/action-release.svg": "static/action-release-affce34bd1b165d0b065aad22181cb4d.svg",
+  "static/liform-material.svg": "static/liform-material-186c0a687f1e7558c1e05ba235d443d4.svg",
+  "static/liform-react-final.svg": "static/liform-react-final-c9931cae9c60468fe81afd2f64a8d4df.svg",
+  "static/liform.svg": "static/liform-14ffaefee418fc8d06018aba46d1db4c.svg",
+  "static/me.jpg": "static/me-4e9d84f770aa299115286ac5376d153f.jpg",
+  "static/symfony-adr.svg": "static/symfony-adr-0b04e9faf33bb9c53a3349be21b5dda7.svg",
+  "static/symfony-form.svg": "static/symfony-form-bad0eb6e439c72565a8fdac8bb298176.svg"
+}
