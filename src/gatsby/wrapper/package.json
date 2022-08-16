@@ -1,4 +1,5 @@
 {
     "name": "gatsby-plugin-wrapper",
-    "private": true
+    "private": true,
+    "main": "./wrapper.tsx"
 }

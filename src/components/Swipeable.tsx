@@ -1,4 +1,4 @@
-import { Box, Theme, useTheme } from '@material-ui/core';
+import { Box, Theme, useTheme } from '@mui/material';
 import React, { useRef, createContext, useEffect, useContext } from 'react';
 
 type SwipeHandler = () => void

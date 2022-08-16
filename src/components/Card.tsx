@@ -1,5 +1,5 @@
 import React, { ComponentPropsWithoutRef } from 'react';
-import { Box, Card as MuiCard } from '@material-ui/core'
+import { Box, Card as MuiCard } from '@mui/material'
 
 export default function Card({
     component = 'div',

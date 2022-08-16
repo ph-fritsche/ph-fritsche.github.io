@@ -1,7 +1,7 @@
 import React from 'react'
 import { graphql, navigate, PageProps } from 'gatsby'
 import { useDarkModeSwitch } from '~src/components/App/Config'
-import { Box, Button, CardActionArea, CardContent, CardHeader, Pagination, Typography, useTheme } from '@material-ui/core'
+import { Box, Button, CardActionArea, CardContent, CardHeader, Pagination, Typography, useTheme } from '@mui/material'
 import Card from '~src/components/Card'
 import Panel from '~src/components/Panel'
 import { getLinkProps } from '~src/components/Link'

@@ -1,4 +1,4 @@
-import { alpha, Box, useTheme } from '@material-ui/core'
+import { alpha, Box, useTheme } from '@mui/material'
 import React from 'react'
 import Container from './Container'
 

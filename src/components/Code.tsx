@@ -1,5 +1,5 @@
 import React, { ComponentProps, ComponentPropsWithoutRef, CSSProperties } from 'react'
-import { Box, useTheme } from '@material-ui/core';
+import { Box, useTheme } from '@mui/material';
 
 import PrismHighlight from './PrismHighlight';
 

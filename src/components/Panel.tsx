@@ -1,4 +1,4 @@
-import { Box, useTheme } from '@material-ui/core';
+import { Box, useTheme } from '@mui/material';
 import React, { PropsWithChildren } from 'react';
 
 export default function Panel({

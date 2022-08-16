@@ -1,6 +1,6 @@
 import React, { SyntheticEvent } from 'react'
 import { navigate } from 'gatsby'
-import { Link as MuiLink } from '@material-ui/core'
+import { Link as MuiLink } from '@mui/material'
 
 export function Link({
     href,

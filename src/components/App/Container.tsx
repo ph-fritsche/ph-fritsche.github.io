@@ -1,5 +1,5 @@
 import React, { ComponentProps } from 'react';
-import { Container as MuiContainer } from '@material-ui/core'
+import { Container as MuiContainer } from '@mui/material'
 
 export default function Container({
     sx,

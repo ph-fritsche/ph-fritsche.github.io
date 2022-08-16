@@ -1,5 +1,5 @@
 import React, { ComponentProps } from 'react'
-import { useTheme } from '@material-ui/core'
+import { useTheme } from '@mui/material'
 import Highlight, { defaultProps, Language, Prism } from 'prism-react-renderer'
 import darkTheme from 'prism-react-renderer/themes/vsDark'
 import lightTheme from 'prism-react-renderer/themes/vsLight'

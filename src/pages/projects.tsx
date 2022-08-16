@@ -1,5 +1,5 @@
-import { Avatar, Button, CardActions, CardContent, CardHeader, Typography } from '@material-ui/core'
-import { OpenInNew } from '@material-ui/icons'
+import { Avatar, Button, CardActions, CardContent, CardHeader, Typography } from '@mui/material'
+import { OpenInNew } from '@mui/icons-material'
 import { navigate } from 'gatsby'
 import * as React from 'react'
 import projects from '~content/projects'

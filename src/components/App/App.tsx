@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, CssBaseline, ThemeProvider } from '@material-ui/core'
+import { Box, CssBaseline, ThemeProvider } from '@mui/material'
 import { Helmet } from 'react-helmet'
 
 import AppBar from './AppBar'
