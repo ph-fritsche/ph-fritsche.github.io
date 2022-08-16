@@ -1,0 +1,206 @@
+---
+title: Render prop and rerendering
+tags:
+    - react
+image: https://unsplash.com/photos/PdJGFcYk7g0
+description: >
+    Calling a render prop is similar to using it as a component. But it's not the same.
+date: 2022-08-16
+---
+
+> I had always assumed that
+> ```jsx
+> const ComponentA = ({renderSomething}) => <div>{
+>    renderSomething({text: "foo"})
+> }</div>
+> ```
+> and
+> ```jsx 
+> const ComponentB = ({Something}) => <div>
+>    <Something text="foo"/>
+> </div>
+> ```
+> were functionally exactly the same, but they're not.
+> It appears that `renderSomething` is treated as the same component, i.e. mounts once,
+> whereas `Something` gets treated as a new component each time and will remount on each render.
+> 
+> I'm a bit perplexed by this - reading the [React render props documentation](https://reactjs.org/docs/render-props.html#using-props-other-than-render) doesn't mention anything about a naming convention, and infact seems to suggest that any property name is fine. 
+
+I just stumbled over this and a confusion as described here, if you know the reason behind it, can seem silly and, as the missing hint in the React docs might suggest, not requiring any extra explanation.
+But the quoted bit reminded me that this difference can be rather subtle.
+
+## JSX element vs statement
+
+One of the biggest features of React is the simplicity of the syntax. There are no special operators, attributes or decorators. Everything in code for React is either the the simple [JSX](https://facebook.github.io/jsx/) syntax or good old vanilla JS.
+
+> JSX is an XML-like syntax extension to ECMAScript without any defined semantics.
+
+If there is a `<Component ` it starts a JSX block that ends at `/>` or, if it isn't immediately closed, at the corresponding `</Component>`. In the position of an XML attribute or child node curly brackets can enclose a part of JS - which can itself contain JSX again.
+
+```jsx
+const element = <Component foo="some Text" bar={1+2}>
+    {'some child'}
+    <div>some other child</div>
+</Component>
+
+// translates to
+
+const element = React.createElement(
+    Component, // the element type
+    {foo: 'someText', bar: 3} // the props that will be passed to the component
+    'some child', // the children...
+    React.createElement(
+        'div', // this is a so called "intrinsic" element
+        {}, // props are empty
+        'some other child',
+    )
+)
+```
+
+`React.createElement` returns an object that can be mounted in the React tree.
+
+## A component is rendered
+
+If the `element` object above is inserted as a node in the React tree, React calls [the lifecycle methods](https://reactjs.org/docs/react-component.html#the-component-lifecycle) on the `Component`.
+When the `render` method - which in case of a functional component is the component - is called, the JS inside it is evaluated.
+A valid component returns an `ReactElement` which is either an object like `element` or `null`. React proceeds to render that subtree.
+
+## Should an element be rerendered?
+
+When `element` is the result of a subsequent rendering,
+on the `shouldComponentUpdate` step of the lifecycle it is determined
+if executing the `render` step is required again.
+For `React.PureComponent` and functional components this determined per shallow comparision of props and state.
+
+```js
+// props on 1st render
+{foo: 'someText', bar: 3}
+
+// 2nd render - will skip the render
+{foo: 'someText', bar: 3}
+
+// 3rd render - changing a value causes a rerender
+{foo: 'someText', bar: 4}
+
+// 4th render - adding/removing props cause a rerender
+const anObject = {x: 1}
+{foo: 'someText', bar: 4, baz: anObject}
+
+// 5th render - the comparison is shallow
+{foo: 'someText', bar: 4, baz: anObject} // will not cause a rerender
+{foo: 'someText', bar: 4, baz: {x: 1}} // will cause a rerender
+```
+
+## One more element in the tree
+
+For props to be compared as above, the element has to be considered the same.
+An element is the same if it's `key` and `type` (the component) are the same. Ergo if `key` or `type` is different, the object is considered to be a new element without a previous state or `render` result.
+
+In JS two variables of type `object` or `function` are equal if they are identical.
+```js
+() => {} == () => {} // false
+```
+
+As a consequence, if you create a callback function in your code, it is a different function each time although the results might be the same.
+```js
+function funcA() {
+    return function funcB() {
+        return 'foo'
+    }
+}
+
+funcA == funcA // true
+funcA() == funcA() // false -- funcB₁ != funcB₂
+funcA()() == funcA()() // true -- "foo" == "foo"
+```
+
+This brings us back to the initial conundrum. If our two components - one treating the prop as a render callback and one treating is as a component - are passed a new function that does the same on a rerender, the resulting tree is different.
+
+```jsx
+const ComponentA = ({renderSomething}) => <div>{
+    renderSomething({text: "foo"})
+}</div>
+
+// Using it like
+<ComponentA renderSomething={({text}) => <p>{text}</p>}/>
+// means
+React.createElement(
+    ComponentA,
+    {renderSomething: ({text}) => React.createElement(
+        'p',
+        {},
+        text,
+    )},
+)
+```
+
+`ComponentA` will always be rerendered here because the `renderSomething` prop is different each time.
+But notice how the render result of `ComponentA` only contains elements with a `type` that will be equal on rerenders.  
+Therefore rerendering of its children will be skipped.
+
+```jsx
+ComponentA({renderSomething: ({text}) => React.createElement(
+    'p',
+    {},
+    text,
+)})
+// results in
+React.createElement(
+    'div',
+    {},
+    React.createElement(
+        'p',
+        {},
+        'foo,
+    )},
+)
+```
+
+Now let's try to do the same with our other component:
+
+```jsx
+const ComponentB = ({Something}) => <div><Something text="foo"/></div>
+
+// Using it like
+<ComponentB Something={({text}) => <p>{text}</p>}/>
+// means
+React.createElement(
+    ComponentB,
+    {Something: ({text}) => React.createElement(
+        'p',
+        {},
+        text,
+    )},
+)
+```
+
+Again our component will always be rerendered because the `Something` prop is different each time.
+But this time, the render result looks different.
+
+```jsx
+ComponentB({Something: ({text}) => React.createElement(
+    'p',
+    {},
+    text,
+)})
+// results in
+React.createElement(
+    'div',
+    {},
+    React.createElement(
+        // `Something` is used as an element type here
+        ({text}) => React.createElement(
+            'p',
+            {},
+            text,
+        ),
+        {text: 'foo'}
+    )},
+)
+```
+
+## The result
+
+When `Something` is rendered, it will produce the same DOM tree as before.
+But because the `Something` element is considered to be a new element in the React tree, all its descendants are replaced.  
+This means they won't retain their state and the resulting DOM elements will be new elements, i.e. they won't have e.g. focus or a selection in the browser even if their look-alike predecessor had it.
