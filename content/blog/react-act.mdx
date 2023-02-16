@@ -1,0 +1,197 @@
+---
+title: Handling React's act warnings
+tags:
+    - react
+    - testing
+image: https://unsplash.com/photos/bSpqe48INMg
+description: >
+    React doesn't issue warnings just to make people get rid of the warning.
+    An article on how to avoid a common false fix.
+date: 2023-02-16
+---
+
+When testing components whose state is updated asynchronously,
+people often run into the (in)famous `act` warning:
+```
+console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+```
+
+I'm by no means the first one to write about this.
+If the topic is new to you, you might want to check out [this article by Kent](https://kentcdodds.com/blog/fix-the-not-wrapped-in-act-warning) in which he explains the concept of `act` warnings. (Note that the code examples are with earlier versions of React and Testing Library, but the premise remains unchanged.)
+
+If you ran into the warning and "somehow" fixed it, keep reading!
+
+## An unexpected state update
+
+React requires us to declare that a state update is expected in our test.
+This might come off as annoying, but that's a good thing. It is a reminder that we might have forgotten about some cascade of events and updates
+that is triggered by our test - and therefore will be counted as covered -
+but is unexpected and therefore probably not verified.
+
+To demonstrate the issue we'll create a simple counter component.
+It displays a loading state, subscribes to a storage entry when mounted and allows to increase the value.
+
+```tsx
+function MyCounter() {
+    const [count, setCount] = useState<undefined|number>();
+
+    useEffect(() => defaultStore.onValue(setCount), []);
+
+    return (
+        <div>
+            Current count: <output>{count ?? 'loading...'}</output>
+            <button onClick={() => defaultStore.increase()}>Increase</button>
+        </div>
+    );
+}
+```
+
+A storage implementation simulates our database and some network latency.
+
+```tsx
+const defaultStore = new class CountStore {
+    protected value = 123
+    protected subscribers = new Set<(count: number) => void>()
+
+    /** Wait to simulate latency */
+    sync() {
+        return new Promise((r) => setTimeout(r, 1))
+    }
+    /** Notify subscribers */
+    dispatch() {
+        this.subscribers.forEach(s => s(this.value))
+    }
+    /** Sync with backend and notify subscribers */
+    async syncAndDispatch() {
+        await this.sync()
+        this.dispatch()
+    }
+    /** Subscribe to value changes. Returns unsubscribe callback. */
+    onValue(callback: (count: number) => void) {
+        this.subscribers.add(callback)
+        void this.syncAndDispatch()
+        return () => void this.subscribers.delete(callback)
+    }
+    /** Increase the value by one */
+    increase() {
+        this.value++
+        return this.syncAndDispatch()
+    }
+}
+```
+
+Now we write a test asserting that our component renders with a loading state.
+
+```tsx
+test('render my counter and display loading state', () => {
+    render(<MyCounter/>)
+    expect(screen.getByRole('status')).toHaveTextContent('loading...')
+})
+```
+
+This is where confusion about `act` warnings starts. The test above passes and there is no warning, but we already introduced a potential issue that might be triggered by other code changes (i.e. upgrades of dependencies like React). So what did we see?
+
+```
+start test
+  -> render my counter
+  -> useEffect -> subscribe to value
+  -> assert textContext==='loading...'
+  -> end test
+```
+
+After the component is mounted per `render`, React executes the callback in `useEffect`.  
+Notice how we pass the `React.Dispatch` as a callback. We add it to the subscribers and trigger `CountStore.syncAndDispatch()` which will now update our state after `CountStore.sync()` is resolved. The `useEffect` callback isn't supposed to block anything and synchronously returns an unsubscribe callback for when the component is unmounted.   
+The JS runtime continues with the synchronous code in the same task: our assertion and subsequently the end of the test.
+
+So far, so good. There's no warning, our test passes and we feel confident that everything works as indented,  
+...but there is a catch:
+The `CountStore.syncAndDispatch()` would eventually trigger a state update.  
+Our test just happens to end here. Therefore the `afterEach` callbacks are executed and `@testing-library/react` [conveniently added a `cleanup()` call](https://github.com/testing-library/react-testing-library/blob/c43512a9271f5738496a3ed49aed7e3e9dad071c/src/index.js#L12-L15). This unmounts our component and the callback is unsubscribed. But even if we didn't unsubscribe here, our state update would disappear into nirvana, as our component is already unmounted.
+
+So far we dodged the <del>bullet</del> warning, but it was just a coincidence. In fact, we created a [race condition](https://en.wikipedia.org/wiki/Race_condition) between `cleanup()` and `CountStore.dispatch()`.
+
+## The warning surfaces
+
+The specific way how JavaScript runtimes execute code per [Event Loop](https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop) makes the order of execution predictable.
+If it doesn't involve signals from outside of the JS runtime thread, the order even of asynchronous operations will be exactly the same every time the code is run.  
+This might lead to the fallacy that this order would be defined and could be relied upon, but this is only the case in a synchronous code block.
+
+In the example above on the `await this.sync()` the following code is delayed at least until the [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) returned by `this.sync()` is resolved. But what other code might or might not be executed in the meantime is undefined.
+A change in the component itself, a library, in React or the test environment can easily shuffle the order of execution just enough for the warning to be triggered.
+
+```tsx
+beforeEach(() => {
+    vi.spyOn(defaultStore, 'sync')
+        // If .sync() resolves fast enough, the warning is triggered.
+        .mockImplementationOnce(() => Promise.resolve())
+})
+test('just render like before and trigger the warning', () => {
+    render(<MyCounter/>)
+})
+```
+
+## A common mistake
+
+The wording of the error message makes many people believe that they should just add `act()` calls to their test code, but this usually isn't the case.  
+In fact, when working with [Testing Library's utilities](https://testing-library.com/) it is rather rare that a developer should add `act()` to their test code because of the warning, as the APIs which imply a state change - like `waitFor` or `userEvent` - already handle `act` warnings.
+
+The warning might disappear, but most of the time the additional `act()` call just covers up the underlying problem by adding `await` operators.
+
+```tsx
+beforeEach(() => {
+    vi.spyOn(defaultStore, 'sync')
+        .mockImplementationOnce(() => Promise.resolve()
+            // Just add new microtasks before the promise is resolved.
+            // Depending on the React version and the test environment
+            // you might need any other number of tasks
+            // for delaying the state update just enough.
+            .then(() => void 0)
+            .then(() => void 0)
+            .then(() => void 0)
+            .then(() => void 0)
+        )
+})
+test('just render like before and dodge the warning', () => {
+    render(<MyCounter/>)
+})
+```
+
+## Fixing the underlying issue
+
+The `act` warning is just that: a warning. You can silence it, but it might come back to haunt you.  
+Don't try to cover it up by pushing the state update just enough up or down the event loop.
+
+It is intended that rendering our example component causes a state update. Therefore we should just expect it in our test.
+
+```tsx
+test('render and increase counter', async () => {
+    const { user } = renderElement(<MyCounter />)
+    expect(screen.getByRole('status')).toHaveTextContent('loading...')
+
+    // The component has been rendered and subscribes to the count value.
+    // The following `waitFor` acknowledges
+    // the "unknown" duration of the `CountStore.sync()` call
+    // - even if we can predict it in our test environment.
+    await waitFor(() => {
+        expect(screen.getByRole('status')).toHaveTextContent('123')
+    })
+
+    await user.click(screen.getByRole('button', {name: 'Increase'}))
+    // Any state update during the event macrotask
+    // - even if it were applied asynchronously -
+    // would already be applied during the userEvent API call.
+
+    // But because we have a "network round trip",
+    // we again expect the state to be updated after an unspecified time.
+    await waitFor(() => {
+        expect(screen.getByRole('status')).toHaveTextContent('124')
+    })
+})
+```
+
+---
+
+You can find the example code [on Github](https://github.com/ph-fritsche/example-react-act).
