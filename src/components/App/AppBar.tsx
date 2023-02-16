@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { alpha, AppBar as MuiAppBar, Box, Button, IconButton, Theme, useTheme } from '@mui/material';
+import React, { useEffect, useRef, useState } from 'react'
+import { alpha, AppBar as MuiAppBar, Box, Button, IconButton, Theme, useTheme } from '@mui/material'
 import { SettingsBrightness } from '@mui/icons-material'
-import { getLinkProps } from '~src/components/Link';
-import Container from './Container';
-import { useConfig } from './Config';
-import { useBackground } from './Background';
+import { getLinkProps } from '~src/components/Link'
+import Container from './Container'
+import { useConfig } from './Config'
+import { useBackground } from './Background'
 
 export default function AppBar() {
     const anchorEl = useRef<HTMLDivElement>(null)

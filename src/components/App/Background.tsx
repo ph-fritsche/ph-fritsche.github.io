@@ -59,7 +59,7 @@ function getBackgroundImage(hue: number) {
                 hsla(${rotateHue(hue, 0)}, 100%, 30%, 10%),
                 hsla(${rotateHue(hue, 0)}, 100%, 5%, 0%)
             ),
-            url('${lowPolyGrid}'),
+            url('${String(lowPolyGrid)}'),
             linear-gradient(
                 130deg,
                 hsla(${rotateHue(hue, 300)}, 100%, 7%, 100%),

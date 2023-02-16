@@ -1,5 +1,5 @@
-import { CreateResolversArgs, GatsbyNode } from 'gatsby';
-import { capitalize } from '../../utils';
+import { CreateResolversArgs, GatsbyNode } from 'gatsby'
+import { capitalize } from '../../utils'
 
 type GraphQLOutputType = unknown
 type FiltersCache = unknown

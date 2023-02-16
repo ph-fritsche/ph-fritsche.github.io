@@ -30,15 +30,15 @@ export default function BlogList({
     }
 
     useSwipeable({
-        right: () => navigate(tagsIndex > 0 ? makeBlogPath(tagsNames[tagsIndex - 1], 0) : '/projects'),
+        right: () => void navigate(tagsIndex > 0 ? makeBlogPath(tagsNames[tagsIndex - 1], 0) : '/projects'),
         left: tagsIndex < tagsNames.length -1
-            ? () => navigate(makeBlogPath(tagsNames[tagsIndex + 1]))
+            ? () => void navigate(makeBlogPath(tagsNames[tagsIndex + 1]))
             : undefined,
         down: list.pageInfo.currentPage > 1
-            ? () => navigate(makeBlogPath(tag, list.pageInfo.currentPage - 1))
+            ? () => void navigate(makeBlogPath(tag, list.pageInfo.currentPage - 1))
             : undefined,
         up: list.pageInfo.pageCount > list.pageInfo.currentPage
-            ? () => navigate(makeBlogPath(tag, list.pageInfo.currentPage + 1))
+            ? () => void navigate(makeBlogPath(tag, list.pageInfo.currentPage + 1))
             : undefined,
     }, [tag, tagsIndex])
 
@@ -70,7 +70,7 @@ export default function BlogList({
                             key={t}
                             size="small"
                             onClick={() => {
-                                navigate(`/blog/tag/${t}`)
+                                void navigate(`/blog/tag/${String(t)}`)
                             }}
                         >
                             #{t}
@@ -101,12 +101,12 @@ export default function BlogList({
                                     size="small"
                                     color="primary"
                                     onClickCapture={(e) => {
-                                        navigate(`/blog/tag/${t}`)
+                                        void navigate(`/blog/tag/${String(t)}`)
                                         e.preventDefault()
                                         e.stopPropagation()
                                     }}
                                     href={`/blog/tag/${t}`}
-                                    tabIndex="-1"
+                                    tabIndex={-1}
                                 >
                                     #{t}
                                 </Button>
@@ -129,7 +129,7 @@ export default function BlogList({
                         color="primary"
                         count={list.pageInfo.pageCount}
                         page={list.pageInfo.currentPage}
-                        onChange={(e, i) => navigate(makeBlogPath(tag, i))}
+                        onChange={(e, i) => void navigate(makeBlogPath(tag, i))}
                         sx={{
                             '& button': {
                                 backgroundColor: theme.palette.background.paper,

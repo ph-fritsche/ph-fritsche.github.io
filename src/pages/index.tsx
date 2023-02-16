@@ -12,8 +12,8 @@ import Me from '~content/me.jpg'
 
 export default function Home() {
     useSwipeable({
-        left: () => navigate('/projects'),
-        up: () => navigate('/projects'),
+        left: () => void navigate('/projects'),
+        up: () => void navigate('/projects'),
     }, [])
 
     const theme = useTheme()
@@ -31,7 +31,7 @@ export default function Home() {
                     justifyContent: 'center',
                     alignItems: 'center',
                 }}>
-                    <Avatar src={Me} sx={{
+                    <Avatar src={String(Me)} sx={{
                         width: '180px !important',
                         height: '180px !important',
                     }}/>

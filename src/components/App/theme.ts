@@ -1,7 +1,7 @@
-import { createTheme as createMuiTheme, darken, Theme, useTheme as useThemeContext } from '@mui/material';
-import { useMemo } from 'react';
-import { colorPrimary } from '../../config'; // ts paths don't work for the cjs module
-import { useConfig } from './Config';
+import { createTheme as createMuiTheme, darken, Theme, useTheme as useThemeContext } from '@mui/material'
+import { useMemo } from 'react'
+import { colorPrimary } from '../../config' // ts paths don't work for the cjs module
+import { useConfig } from './Config'
 
 export default function useTheme() {
     const [config] = useConfig().settings

@@ -1,3 +1,1 @@
-module.exports = {
-    colorPrimary: 'hsl(180, 100%, 80%)',
-}
+export const colorPrimary = 'hsl(180, 100%, 80%)'

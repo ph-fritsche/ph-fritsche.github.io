@@ -1,8 +1,10 @@
 {
     "include": [
-        "./src/**/*"
+        "src",
+        "test"
     ],
     "compilerOptions": {
+        "noEmit": true,
         "outDir": "dist",
         "target": "esnext",
         "module": "CommonJS",

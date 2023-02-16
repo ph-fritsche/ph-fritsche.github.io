@@ -1,6 +1,6 @@
 import React from 'react'
-import { alpha, Box, Typography, useTheme } from '@mui/material';
-import { FormatQuote } from '@mui/icons-material';
+import { alpha, Box, Typography, useTheme } from '@mui/material'
+import { FormatQuote } from '@mui/icons-material'
 
 const modeOpposite = {
     light: 'dark',

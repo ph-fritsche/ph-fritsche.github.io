@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { CreateSchemaCustomizationArgs, GatsbyNode } from 'gatsby';
+import { CreateSchemaCustomizationArgs, GatsbyNode } from 'gatsby'
 
 export const createSchemaCustomization: GatsbyNode['createSchemaCustomization'] = async ({
     actions,

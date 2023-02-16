@@ -1,4 +1,7 @@
-module.exports = {
+import {pathsToModuleNameMapper} from 'ts-jest'
+import tsConfig from './tsconfig.json' assert {type: 'json'}
+
+export default {
     verbose: true,
     collectCoverage: true,
     collectCoverageFrom: [
@@ -26,8 +29,8 @@ module.exports = {
     ],
     moduleNameMapper: {
         '.+\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$': `<rootDir>/test/_mocks/assets.ts`,
-        ...require('ts-jest/utils').pathsToModuleNameMapper(
-            require('./tsconfig.json').compilerOptions.paths,
+        ...pathsToModuleNameMapper(
+            tsConfig.compilerOptions.paths,
             {prefix: '<rootDir>'},
         ),
     },

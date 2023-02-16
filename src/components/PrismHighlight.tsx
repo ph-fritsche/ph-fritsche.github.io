@@ -2,9 +2,9 @@ import React, { ComponentProps } from 'react'
 import { useTheme } from '@mui/material'
 import Highlight, { defaultProps, Language, Prism } from 'prism-react-renderer'
 import darkTheme from 'prism-react-renderer/themes/vsDark'
-import lightTheme from 'prism-react-renderer/themes/vsLight'
+import lightTheme from 'prism-react-renderer/themes/vsLight';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
 ((typeof global !== 'undefined' ? global : window) as any).Prism = Prism
 require('prismjs/components/prism-php')
 

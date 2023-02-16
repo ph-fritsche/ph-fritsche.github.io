@@ -7,6 +7,6 @@ jest.mock('gatsby', () => ({
     graphql: jest.fn(),
     StaticQuery: jest.fn(),
     useStaticQuery: jest.fn(() => ({})),
-}))
+} as unknown))
 
 global.IntersectionObserver = InterSectionObserverMock

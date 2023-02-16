@@ -25,7 +25,7 @@ function getLinkDestination(destination: string) {
 
     if (isInternal) {
         return (e: SyntheticEvent) => {
-            navigate(destination)
+            void navigate(destination)
             e.preventDefault()
         }
     }

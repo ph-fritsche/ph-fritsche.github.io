@@ -54,23 +54,23 @@ export default function Seo({
                     content: description,
                 },
                 {
-                    property: `og:site_name`,
-                    content: site?.siteMetadata?.author?.name,
+                    name: `og:site_name`,
+                    content: site?.siteMetadata?.author?.name ?? undefined,
                 },
                 {
-                    property: `og:title`,
-                    content: title ?? site?.siteMetadata?.author?.name,
+                    name: `og:title`,
+                    content: title ?? site?.siteMetadata?.author?.name ?? undefined,
                 },
                 {
-                    property: `og:description`,
+                    name: `og:description`,
                     content: description,
                 },
                 {
-                    property: `og:type`,
+                    name: `og:type`,
                     content: type,
                 },
                 {
-                    property: `og:image`,
+                    name: `og:image`,
                     content: image && getImageOg(image),
                 },
                 {

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useReducer, useRef } from 'react';
+import React, { useEffect, useMemo, useReducer, useRef } from 'react'
 
 const key = 'appConfig'
 const ConfigContext = React.createContext<ReturnType<typeof useConfigProvider> | undefined>(undefined)
@@ -12,7 +12,7 @@ function getLocalStorage() {
 function getFromStore(): ReturnType<typeof createSettings> {
     const stored = getLocalStorage()?.getItem(key)
     return stored
-        ? JSON.parse(stored)
+        ? JSON.parse(stored) as ReturnType<typeof createSettings>
         : createSettings()
 }
 

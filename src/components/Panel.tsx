@@ -1,5 +1,5 @@
-import { Box, useTheme } from '@mui/material';
-import React, { PropsWithChildren } from 'react';
+import { Box, useTheme } from '@mui/material'
+import React, { PropsWithChildren } from 'react'
 
 export default function Panel({
     columns = 1,

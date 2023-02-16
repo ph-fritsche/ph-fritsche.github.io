@@ -1,7 +1,7 @@
 import React, { ComponentProps, ComponentPropsWithoutRef, CSSProperties } from 'react'
-import { Box, useTheme } from '@mui/material';
+import { Box, useTheme } from '@mui/material'
 
-import PrismHighlight from './PrismHighlight';
+import PrismHighlight from './PrismHighlight'
 
 export function Pre({
     className,

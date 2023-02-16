@@ -9,7 +9,8 @@ export function pre({children, ...others}: ComponentPropsWithRef<'pre'>) {
     const language = children
         && typeof children === 'object'
         && 'props' in children
-        ? getLangFromClassName(children.props.className)
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        ? getLangFromClassName(String(children.props.className))
         : undefined
 
     return <Pre

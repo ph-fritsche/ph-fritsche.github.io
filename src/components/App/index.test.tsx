@@ -1,5 +1,5 @@
 import React, { ComponentProps } from 'react'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import AppWrapper from '.'
 import App from './App'
 
@@ -13,5 +13,5 @@ jest.mock('./App', () => ({
 test('render content in App', async () => {
     render(<AppWrapper>foo</AppWrapper>)
 
-    await waitFor(() => expect(screen.getByText('foo')).toBeInTheDocument(), {timeout: 1})
+    expect(await screen.findByText('foo')).toBeInTheDocument()
 })

@@ -14,8 +14,8 @@ export default function Projects() {
     useDarkModeSwitch()
 
     useSwipeable({
-        left: () => navigate('/blog'),
-        right: () => navigate('/'),
+        left: () => void navigate('/blog'),
+        right: () => void navigate('/'),
     }, [])
 
     const shuffledProjects = React.useMemo(() => {

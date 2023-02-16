@@ -18,8 +18,8 @@ export default function BlogPost({data, location}: PageProps<GatsbyTypes.BlogPos
     const theme = useTheme()
 
     useSwipeable({
-        up: () => navigate('/blog'),
-        down: () => navigate('/blog'),
+        up: () => void navigate('/blog'),
+        down: () => void navigate('/blog'),
     }, [location.pathname])
 
     const twitterShare = new URL(`https://twitter.com/intent/tweet?${
@@ -83,7 +83,7 @@ export default function BlogPost({data, location}: PageProps<GatsbyTypes.BlogPos
                     component="img"
                     {...getImageProps(data.mdx?.meta.image ?? '')}
                     sx={{
-                        marginBottom: `-${headerHeight.value * 1.1}${headerHeight.unit}`,
+                        marginBottom: `-${headerHeight.value * 1.1}${String(headerHeight.unit)}`,
                         maxHeight: '400px',
                         height: `calc((100vw - 32px) * 0.5)`,
                         [theme.breakpoints.down('sm')]: {
